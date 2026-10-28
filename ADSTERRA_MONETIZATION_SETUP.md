@@ -39,3 +39,9 @@ JOBPATH INDIA remains independent of ByteBright and all other projects. Preserve
 ## Google setup checkpoint
 
 Before the owner changed provider, Google's existing-account upgrade accepted the JOBPATH INDIA Netlify address and opened onboarding. **Connect your site** was still required; site verification and review were not completed. No live Google ads were enabled. See `ADSENSE_MONETIZATION_SETUP.md` for that paused path.
+
+## Validation and deployment checkpoint
+
+The Netlify build completed locally for all **39 routes**. All **30 JavaScript tests**, **98 Python tests**, recruitment-data validation, and the site audit passed. The generated output contains no Google ad loader and no `ads.txt` while advertising is disabled. The GitHub quality workflow also passed for the setup checkpoint.
+
+The public homepage and privacy page returned HTTP 200 and visibly showed advertising inactive. However, the live `/data/ads-config.json` and `/auto-recruitment-notices/` paths returned HTTP 404, and the homepage did not contain the current configuration. The latest GitHub-built output was therefore **not confirmed deployed**. Check the existing Netlify site's repository connection, production branch, build command `python3 scripts/build_dist.py`, and publish directory `dist` before releasing actual Adsterra integration. Preserve the existing Netlify site and its URL.
