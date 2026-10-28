@@ -2,6 +2,9 @@ name: Import JobPath India website source from uploaded ZIP
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-source-zip.yml'
 
 permissions:
   contents: write
