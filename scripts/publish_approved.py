@@ -160,6 +160,15 @@ def prepare_publication(queue: dict, published: list[dict], sources: list[dict],
     for lead in queue.get("leads", []):
         if lead.get("status") != "reviewed" or lead.get("auto_publish_approved") is not True:
             continue
+        # Already-released records must not require renewal every 14 days.
+        # Their publicly verified fields remain unchanged until an editor revises them.
+        old_approved = lead.get("approved_job")
+        if isinstance(old_approved, dict) and old_approved.get("id") in published_ids:
+            existing = published_ids[old_approved["id"]]
+            if (existing.get("notificationUrl") != old_approved.get("notificationUrl") or
+                existing.get("notificationUrl") != lead.get("notice_url")):
+                errors.append(f"Review lead {lead.get('id')}: existing job ID belongs to another notice")
+            continue
         source = source_map.get(lead.get("source_id"))
         if not source:
             errors.append(f"Review lead {lead.get('id')}: unrecognized source")
