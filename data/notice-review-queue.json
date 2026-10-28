@@ -18,9 +18,62 @@
         "application_link_checked": false
       },
       "pdf_review": {
-        "status": "extraction_failed",
-        "checked_on": "2026-10-28",
-        "reason": "PDFParsingError"
+        "status": "needs_manual_verification",
+        "page_count": 52,
+        "pages_scanned": 12,
+        "text_characters": 41267,
+        "method": "pypdf_text_only_no_ocr",
+        "evidence": [
+          {
+            "page": 1,
+            "excerpt": "Advertisement No CWC/I-Manpower/DR/Rectt/2026/01 Date: 17.10.2026"
+          },
+          {
+            "page": 1,
+            "excerpt": "CFSs/ICDs, Land Custom Stations, Air Cargo Complexes etc. for import -export cargo, invites online application"
+          },
+          {
+            "page": 1,
+            "excerpt": "from eligible candidates(Male/Female/Transgender), who fulfil the prescribed qualification, experience, age, etc.,"
+          },
+          {
+            "page": 1,
+            "excerpt": "for the posts indicated below:"
+          },
+          {
+            "page": 1,
+            "excerpt": "A. DETAILS OF POSTS"
+          },
+          {
+            "page": 1,
+            "excerpt": "No. of vacancies Scale of"
+          },
+          {
+            "page": 1,
+            "excerpt": "AGE (As on last date of"
+          },
+          {
+            "page": 2,
+            "excerpt": "1. 10% of Vacancies are reserved for the EWS as per the directions of Government of India instructions"
+          },
+          {
+            "page": 2,
+            "excerpt": "(i) Minimum age to apply for all the posts is 18 Years."
+          },
+          {
+            "page": 2,
+            "excerpt": "(ii) For the Post Code 01, 02, 03, 04, 05, 06, 07 and 08 in addition to Basic Pay & IDA, they will be entitled"
+          },
+          {
+            "page": 2,
+            "excerpt": "(iii) Employees of the Corporation in regular pay scale are also entitled for other allowances / perks such as"
+          },
+          {
+            "page": 2,
+            "excerpt": "members as per eligibility, as per the policies of the Corporation from time to time."
+          }
+        ],
+        "checked_on": "2026-10-28"
       }
     },
     {
@@ -40,9 +93,50 @@
         "application_link_checked": false
       },
       "pdf_review": {
-        "status": "extraction_failed",
-        "checked_on": "2026-10-28",
-        "reason": "PDFParsingError"
+        "status": "needs_manual_verification",
+        "page_count": 4,
+        "pages_scanned": 4,
+        "text_characters": 7730,
+        "method": "pypdf_text_only_no_ocr",
+        "evidence": [
+          {
+            "page": 1,
+            "excerpt": "Pay Scale/Level and"
+          },
+          {
+            "page": 1,
+            "excerpt": "Pay Scale/Level"
+          },
+          {
+            "page": 1,
+            "excerpt": "(i) Interested and eligible candidates shall have to apply Online through the link:"
+          },
+          {
+            "page": 1,
+            "excerpt": "https://www.cwceportal.com/Careers. The Link for Online Application shall remain active from"
+          },
+          {
+            "page": 1,
+            "excerpt": "• Self-Attested copies of Educational Qualification Certificate (Provisional/ Original)"
+          },
+          {
+            "page": 2,
+            "excerpt": "Note: Those candidates, who fulfill the eligibility criteria, shall only be called for Personal"
+          },
+          {
+            "page": 3,
+            "excerpt": "6. Consultant/Advisor would be paid TA/DA/Hotel charges as per eligibility of the last post held at"
+          },
+          {
+            "page": 3,
+            "excerpt": "the time of retirement and in the case from other PSU/Govt., of the equivalent post in CWC,"
+          },
+          {
+            "page": 3,
+            "excerpt": "relationship with CWC. Hence, they will not be eligible/ entitled for any such benefits available"
+          }
+        ],
+        "checked_on": "2026-10-28"
       }
     },
     {
@@ -62,9 +156,13 @@
         "application_link_checked": false
       },
       "pdf_review": {
-        "status": "extraction_failed",
-        "checked_on": "2026-10-28",
-        "reason": "PDFParsingError"
+        "status": "requires_ocr_or_manual_read",
+        "page_count": 1,
+        "pages_scanned": 1,
+        "text_characters": 0,
+        "method": "pypdf_text_only_no_ocr",
+        "evidence": [],
+        "checked_on": "2026-10-28"
       }
     }
   ]

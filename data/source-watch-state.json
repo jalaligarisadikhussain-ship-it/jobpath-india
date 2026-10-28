@@ -29,7 +29,7 @@
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "523326dc824ede94db499ccc9fd9c8c91cc64b1d7330d8e280769bd06952f1ac",
+      "fingerprint": "26bf1d973db7219641db6041bd4ef81e676ee8e5a2daf5a2415d3bc1b99c6e54",
       "last_change_or_status_date": "2026-10-28"
     },
     "rrb": {
@@ -76,7 +76,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
+      "note": "Could not check: network/DNS/TLS error (OSError); not proof of a closed recruitment"
     },
     "employment-news": {
       "name": "Employment News",

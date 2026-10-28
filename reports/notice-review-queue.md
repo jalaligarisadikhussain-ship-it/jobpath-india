@@ -11,9 +11,24 @@ qualification, age, fees, notification number, dates, corrigenda and application
 
 | Organization | Link label | First seen | PDF text status | Review state | Source document |
 |---|---|---|---|---|---|
-| Central Warehousing Corporation — Careers | Click here | 2026-10-28 | extraction_failed | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/45/45_Detailed Advertisement_7109fe46-7e18-4b68-84a5-8b6d6708e571.pdf) |
-| Central Warehousing Corporation — Careers | Click here | 2026-10-28 | extraction_failed | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/44/44_Notice for Engagement of Consultant_482c03e5-ba5f-47ba-8a35-d40667a0c446.pdf) |
-| Central Warehousing Corporation — Careers | IMPORTANT NOTICE | 2026-10-28 | extraction_failed | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/45/IMPORTANT NOTICE.pdf) |
+| Central Warehousing Corporation — Careers | Click here | 2026-10-28 | needs_manual_verification | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/45/45_Detailed Advertisement_7109fe46-7e18-4b68-84a5-8b6d6708e571.pdf) |
+| Central Warehousing Corporation — Careers | Click here | 2026-10-28 | needs_manual_verification | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/44/44_Notice for Engagement of Consultant_482c03e5-ba5f-47ba-8a35-d40667a0c446.pdf) |
+| Central Warehousing Corporation — Careers | IMPORTANT NOTICE | 2026-10-28 | requires_ocr_or_manual_read | Needs review | [Source link](https://cwceportal.com/Careers/Guidelines/45/IMPORTANT NOTICE.pdf) |
+
+## Unverified excerpts from original PDFs
+
+These lines require checking the original layout, tables and any corrigenda.
+
+### Click here
+- PDF page 1: Advertisement No CWC/I-Manpower/DR/Rectt/2026/01 Date: 17.10.2026
+- PDF page 1: CFSs/ICDs, Land Custom Stations, Air Cargo Complexes etc. for import -export cargo, invites online application
+- PDF page 1: from eligible candidates(Male/Female/Transgender), who fulfil the prescribed qualification, experience, age, etc.,
+
+### Click here
+- PDF page 1: Pay Scale/Level and
+- PDF page 1: Pay Scale/Level
+- PDF page 1: (i) Interested and eligible candidates shall have to apply Online through the link:
+
 
 **Safety:** Discovery does not edit the public jobs database.
 **Scope:** SBI, CWC and KVS HTML pages initially. Blocked websites, scripts and PDFs may be missed.

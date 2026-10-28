@@ -20,7 +20,7 @@ An unreachable source is **not** proof that a recruitment is closed.
 | National Insurance Company — Recruitment | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment | [Visit source](https://nationalinsurance.nic.co.in/recruitment) |
 | Central Teacher Eligibility Test | reachable | 2026-10-28 | — | [Visit source](https://ctet.nic.in/) |
 | Kendriya Vidyalaya Sangathan | reachable | 2026-10-28 | — | [Visit source](https://kvsangathan.nic.in/) |
-| Navodaya Vidyalaya Samiti | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment | [Visit source](https://navodaya.gov.in/) |
+| Navodaya Vidyalaya Samiti | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (OSError); not proof of a closed recruitment | [Visit source](https://navodaya.gov.in/) |
 | Employment News | unreachable | 2026-10-28 | Could not check: unexpectedly short website response; not proof of a closed recruitment | [Visit source](https://employmentnews.gov.in/) |
 
 **What this does not do:** read every PDF, verify all vacancies, update application eligibility, or publish new jobs automatically.
