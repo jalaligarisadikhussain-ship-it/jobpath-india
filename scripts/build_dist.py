@@ -31,7 +31,7 @@ for filename in ('robots.txt', 'sitemap.xml', 'googlefcd24aba957dc07b.html'):
     shutil.copyfile(ROOT / filename, DIST / filename)
 shutil.copytree(ROOT / 'assets', DIST / 'assets')
 public_json = ('jobs.json', 'sources.json', 'pages.json', 'exam-updates.json',
-               'regions.json', 'notice-watch.json')
+               'regions.json', 'notice-watch.json', 'auto-notices.json')
 (DIST/'data').mkdir()
 for filename in public_json:
     shutil.copyfile(ROOT / 'data' / filename, DIST / 'data' / filename)
