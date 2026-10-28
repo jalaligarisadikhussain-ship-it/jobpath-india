@@ -113,6 +113,43 @@ class PdfEvidenceTests(unittest.TestCase):
         self.assertEqual(stats["no_text"], 1)
         self.assertEqual(queue["leads"][0]["status"], "needs_human_review")
 
+    def test_official_pdf_url_with_spaces_encoded_for_request(self):
+        original = ("https://cwceportal.com/Careers/Guidelines/44/"
+                    "44_Notice for Engagement of Consultant_abcd.pdf")
+        result = pdf.encoded_request_url(original)
+        self.assertIn("Notice%20for%20Engagement%20of%20Consultant", result)
+        self.assertEqual(pdf.encoded_request_url(result), result)
+
+    def test_pdf_redirect_keeps_same_site_with_spaces(self):
+        handler = pdf.SameSiteRedirectHandler(SOURCE["url"])
+        original = "https://cwceportal.com/Careers/Recruitment2026.pdf"
+        request = handler.redirect_request(
+            Request(original), None, 302, "redirect", {},
+            "https://cwceportal.com/Careers/Guidelines/Notice 2026.pdf")
+        self.assertIn("Notice%202026.pdf", request.full_url)
+
+    def test_old_pdf_parsing_failures_get_one_retry(self):
+        x = pending()
+        x["pdf_review"] = {"status": "extraction_failed",
+                           "checked_on": "2026-10-28", "reason": "PDFParsingError"}
+        result, stats = pdf.enrich_queue({"version": 1, "leads": [x]}, [SOURCE],
+                                         lambda *_: b"%PDF-mock", fake_extract, "2026-10-28")
+        self.assertEqual(stats["successful"], 1)
+        self.assertEqual(result["leads"][0]["status"], "needs_human_review")
+
+    def test_repeat_pdf_parsing_error_retries_after_seven_days(self):
+        def broken(_):
+            raise RuntimeError("PDF parser cannot read mock")
+        first, stats = pdf.enrich_queue({"version": 1, "leads": [pending()]}, [SOURCE],
+                                        lambda *_: b"%PDF-mock", broken, "2026-10-28")
+        self.assertEqual(first["leads"][0]["pdf_review"]["status"], "extraction_failed")
+        self.assertEqual(first["leads"][0]["pdf_review"]["retry_after"], "2026-11-04")
+        second, stats = pdf.enrich_queue(first, [SOURCE],
+                                         lambda *_: (_ for _ in ()).throw(AssertionError),
+                                         fake_extract, "2026-10-29")
+        self.assertEqual(stats["examined"], 0)
+        self.assertEqual(first, second)
+
     def test_cross_site_redirect_rejected(self):
         handler = pdf.SameSiteRedirectHandler(SOURCE["url"])
         with self.assertRaises(HTTPError):
