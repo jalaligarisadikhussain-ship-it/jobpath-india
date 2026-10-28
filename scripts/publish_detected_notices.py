@@ -13,7 +13,7 @@ import re
 import sys
 from datetime import date, timedelta
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 
 from discover_notice_leads import normalized_url
 from validate_review_queue import validate_review_queue
@@ -36,7 +36,7 @@ EXCLUDED_TERMS = re.compile(
 )
 RECRUITMENT_TERMS = re.compile(
     r"\b(?:recruitment|vacanc(?:y|ies)|advertisement|advt|hiring|"
-    r"application[s]? for|appointment[s]? of|notification)\b", re.I
+    r"application[s]? for|appointment[s]? of|notification|engagement of consultant)\b", re.I
 )
 
 
@@ -49,13 +49,42 @@ def is_date(value):
         return None
 
 
+def canonical_document_key(url: str) -> tuple[str, str]:
+    """Match www, URL-encoded spaces and case variants of the same PDF."""
+    parsed = urlparse(url)
+    return ((parsed.hostname or "").lower().removeprefix("www."),
+            unquote(parsed.path).casefold())
+
+
+def safe_notice_title(label: str, url: str) -> str | None:
+    """Replace non-descriptive anchors using only the official PDF filename."""
+    title = " ".join(label.strip().split())
+    if title.casefold() in {"click here", "download", "view", "read more",
+                            "important notice", "notice", "download pdf"}:
+        filename = unquote(urlparse(url).path.rsplit("/", 1)[-1])
+        if not filename.lower().endswith(".pdf"):
+            return None
+        stem = filename[:-4]
+        stem = re.sub(r"^\d{1,4}_", "", stem)
+        stem = re.sub(r"_[0-9a-f-]{18,}$", "", stem, flags=re.I)
+        title = " ".join(stem.replace("_", " ").replace("-", " ").split())
+    if len(title) < 12 or len(title) > 160:
+        return None
+    if not RECRUITMENT_TERMS.search(title) or EXCLUDED_TERMS.search(title):
+        return None
+    if re.search(r"[\x00-\x1f\x7f]", title):
+        return None
+    return title
+
+
 def build_public_feed(queue: dict, sources: list[dict], jobs: list[dict], today: date):
     errors = validate_review_queue(queue, sources)
     if errors:
         raise ValueError("Invalid review queue: " + "; ".join(errors[:5]))
     by_id = {source["id"]: source for source in sources}
-    already_published = {job.get("notificationUrl") for job in jobs
-                         if job.get("verified") is True and job.get("isDemo") is False}
+    already_published = {canonical_document_key(job["notificationUrl"]) for job in jobs
+                         if job.get("verified") is True and job.get("isDemo") is False
+                         and isinstance(job.get("notificationUrl"), str)}
     seen_urls = set()
     notices = []
     for lead in queue["leads"]:
@@ -68,20 +97,15 @@ def build_public_feed(queue: dict, sources: list[dict], jobs: list[dict], today:
         if not source:
             continue
         link = lead.get("notice_url", "")
-        title = str(lead.get("title") or "").strip()
+        title = safe_notice_title(str(lead.get("title") or ""), link)
         first_seen = is_date(lead.get("first_seen"))
         if not first_seen or not (today - timedelta(days=MAX_AGE_DAYS) <= first_seen <= today):
             continue
         if (not isinstance(link, str) or normalized_url(source["url"], link) != link
-                or link in seen_urls or link in already_published):
+                or canonical_document_key(link) in seen_urls
+                or canonical_document_key(link) in already_published or not title):
             continue
-        if len(title) < 12 or len(title) > 160:
-            continue
-        if EXCLUDED_TERMS.search(title) or not RECRUITMENT_TERMS.search(title):
-            continue
-        if re.search(r"[\x00-\x1f\x7f]", title):
-            continue
-        seen_urls.add(link)
+        seen_urls.add(canonical_document_key(link))
         notices.append({
             "id": lead["id"],
             "title": title,
