@@ -31,6 +31,8 @@ jobs:
         run: python3 scripts/daily_source_monitor.py
       - name: Discover official notice links for human review only
         run: python3 scripts/discover_notice_leads.py
+      - name: Validate official-link review queue
+        run: python3 scripts/validate_review_queue.py
       - name: Run project unit tests
         run: npm test
       - name: Validate verified-job records
