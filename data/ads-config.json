@@ -5,5 +5,6 @@
   "slots": {
     "content": ""
   },
-  "note": "AdSense remains disabled until account/site approval and actual publisher and unit identifiers are configured. Never fabricate IDs."
+  "requestedProvider": "adsterra",
+  "note": "Owner selected Adsterra on 2026-10-28. Live advertising remains disabled pending publisher sign-in, JOBPATH INDIA site approval, genuine ad code, and privacy/consent setup. No Adsterra integration or approval is claimed."
 }

@@ -1,6 +1,14 @@
 # JOBPATH INDIA — Advertising and revenue setup
 
-## Current state (no ad account connected)
+## Current state — AdSense work paused on 28 October 2026
+
+The owner selected **Adsterra** as the current monetization provider. Continue with `ADSTERRA_MONETIZATION_SETUP.md`. Live advertising remains **OFF**.
+
+Before that change, the authenticated Google account confirmed publisher ID `pub-8073443569494348`, an open account, and AdMob as its existing active product. Google's documented existing-account upgrade flow accepted `jobpath-india.netlify.app` and opened website onboarding with **Connect your site** still required. This establishes registration, **not** site verification, review completion, approval, ad serving, or earnings. No Google display ad unit was obtained. Further AdSense setup is paused.
+
+The payment warning requires the owner to complete verification directly with Google. Do not store payment or identity documents in this repository.
+
+## Original AdSense implementation
 
 The repository is **AdSense-ready** but advertising is **OFF** by default. This is intentional: ad revenue is impossible until Google approves the publisher's actual AdSense account/site and ad inventory begins serving. No publisher account ID, ad-unit ID, approval or payment balance has been invented.
 
