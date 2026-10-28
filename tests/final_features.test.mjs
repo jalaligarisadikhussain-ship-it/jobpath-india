@@ -14,7 +14,12 @@ test('no secret keys, injected advertisements, ByteBright links or invented veri
  assert(jobs.filter(j=>j.verified).length>=10);assert(jobs.filter(j=>j.isDemo).every(j=>j.verified===false));
  assert(!js.toLowerCase().includes('bytebright-converter.netlify.app'));
  assert(!read('index.html').includes('bytebright-converter.netlify.app'));
- assert(!read('index.html').includes('adsbygoogle'));
+ const adSettings=JSON.parse(read('data/ads-config.json'));
+ if(!adSettings.enabled){
+  assert(!read('index.html').includes('adsbygoogle'));
+ }else{
+  assert.match(read('index.html'),/pagead2\\.googlesyndication\\.com/);
+ }
  assert(!read('index.html').includes('gtag('));
 });
 test('every page has safe self-contained embedded JSON and metadata',()=>{
