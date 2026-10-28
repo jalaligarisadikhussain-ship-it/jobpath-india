@@ -44,6 +44,7 @@ def lead():
         "notice_url": job["notificationUrl"],
         "first_seen": "2026-10-20", "status": "reviewed",
         "reviewed_by": "Test Editor", "reviewed_at": "2026-10-28",
+        "auto_publish_approved": True,
         "review_checklist": {
             "original_notice_checked": True, "dates_checked": True,
             "vacancies_checked": True, "eligibility_checked": True,
@@ -70,6 +71,12 @@ class AutoPublishTests(unittest.TestCase):
         result = run([x])
         self.assertEqual(result[2], [])
         self.assertEqual(result[0], [])
+
+    def test_reviewed_but_not_explicitly_approved_stays_private(self):
+        x = lead()
+        x["auto_publish_approved"] = False
+        jobs, ledger, added, errors = run([x])
+        self.assertEqual((jobs, added, errors), ([], [], []))
 
     def test_unverified_pdf_cannot_trigger_auto_publication(self):
         x = lead()
