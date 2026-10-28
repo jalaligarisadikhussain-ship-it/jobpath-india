@@ -177,22 +177,37 @@ def update_queue(sources: list[dict], previous: dict, published: list[dict],
 def report_md(queue: dict) -> str:
     leads = queue.get("leads", [])
     pending = [item for item in leads if item.get("status") == "needs_human_review"]
+    with_pdf = sum(bool(item.get("pdf_review")) for item in leads)
     out = [
         "# JobPath India — Notification review queue", "",
         "**NOT published jobs.** These are links discovered on known official source pages.",
         "A link does not establish a real vacancy, open application, deadline or eligibility.",
-        f"**Total links:** {len(leads)} | **Awaiting review:** {len(pending)}", "",
+        f"**Total links:** {len(leads)} | **Awaiting review:** {len(pending)} | **PDFs examined:** {with_pdf}", "",
+        "**PDF evidence below is unverified text, not structured job data.**", "",
         "Before publishing, check the original notice, issuing authority, post, vacancies,",
         "qualification, age, fees, notification number, dates, corrigenda and application link.", "",
-        "| Organization | Link label | First seen | Review state | Source document |",
-        "|---|---|---|---|---|"
+        "| Organization | Link label | First seen | PDF text status | Review state | Source document |",
+        "|---|---|---|---|---|---|"
     ]
     for item in pending:
         label = str(item["title"]).replace("|", " ").replace("\n", " ").replace("]", " ")
         org = str(item["source_name"]).replace("|", " ")
-        out.append(f'| {org} | {label} | {item["first_seen"]} | Needs review | [Source link]({item["notice_url"]}) |')
+        pdf_data = item.get("pdf_review", {})
+        pdf_status = str(pdf_data.get("status", "not_scanned")).replace("|", " ")
+        out.append(f'| {org} | {label} | {item["first_seen"]} | {pdf_status} | Needs review | [Source link]({item["notice_url"]}) |')
     if not pending:
-        out.append("| — | No pending official links detected yet | — | — | — |")
+        out.append("| — | No pending official links detected yet | — | — | — | — |")
+    evidence_leads = [item for item in pending if item.get("pdf_review", {}).get("evidence")]
+    if evidence_leads:
+        out += ["", "## Unverified excerpts from original PDFs", "",
+                "These lines require checking the original layout, tables and any corrigenda.", ""]
+        for item in evidence_leads[:20]:
+            heading = html.escape(str(item["title"]).replace("\n", " "))[:130]
+            out.append(f"### {heading}")
+            for evidence in item["pdf_review"]["evidence"][:3]:
+                snippet = html.escape(str(evidence.get("excerpt", ""))).replace("|", " ").replace("`", "'")
+                out.append(f'- PDF page {evidence.get("page", "?")}: {snippet}')
+            out.append("")
     out += [
         "", "**Safety:** Discovery does not edit the public jobs database.",
         "**Scope:** SBI, CWC and KVS HTML pages initially. Blocked websites, scripts and PDFs may be missed.", ""
