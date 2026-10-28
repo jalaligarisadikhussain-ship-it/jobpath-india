@@ -1,4 +1,15 @@
 {
   "version": 1,
-  "notices": []
+  "notices": [
+    {
+      "id": "5b06d4a9c64eeab83375",
+      "title": "Notice for Engagement of Consultant",
+      "organization": "Central Warehousing Corporation — Careers",
+      "source_id": "cwc",
+      "noticeUrl": "https://cwceportal.com/Careers/Guidelines/44/44_Notice for Engagement of Consultant_482c03e5-ba5f-47ba-8a35-d40667a0c446.pdf",
+      "detectedDate": "2026-10-28",
+      "verificationStatus": "automatically_detected_unverified",
+      "applicationStatus": "unknown"
+    }
+  ]
 }
