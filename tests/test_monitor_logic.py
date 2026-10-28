@@ -1,7 +1,7 @@
 import importlib.util
 import unittest
 from pathlib import Path
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 
 path = Path(__file__).resolve().parents[1] / 'scripts' / 'daily_source_monitor.py'
 spec = importlib.util.spec_from_file_location('monitor', path)
@@ -38,6 +38,41 @@ class MonitorTests(unittest.TestCase):
         state, obs = monitor.monitor_sources(self.sources, initial, blocked, self.today)
         self.assertEqual(obs[0][1], 'unreachable')
         self.assertEqual(state['sources']['ssc']['fingerprint'], 'abc')
+
+    def test_http_block_is_diagnostic_not_a_closed_vacancy(self):
+        blocked = HTTPError('https://ssc.gov.in/', 403, 'Forbidden', None, None)
+        label = monitor.describe_fetch_failure(blocked)
+        self.assertIn('HTTP 403', label)
+        state, obs = monitor.monitor_sources(self.sources, {'sources': {}},
+                                             lambda _: (_ for _ in ()).throw(blocked), self.today)
+        self.assertEqual(obs[0][1], 'unreachable')
+        self.assertIn('HTTP 403', state['sources']['ssc']['note'])
+        self.assertNotIn('jobs', state)
+
+    def test_same_error_reason_avoids_repeated_state_changes(self):
+        def inaccessible(_):
+            raise URLError('restricted')
+        first, _ = monitor.monitor_sources(self.sources, {'sources': {}}, inaccessible, self.today)
+        second, observations = monitor.monitor_sources(self.sources, first, inaccessible, '2026-10-29')
+        self.assertEqual(observations[0][1], 'unchanged_unreachable')
+        self.assertEqual(first, second)
+
+    def test_different_error_reason_updates_monitor_diagnostic(self):
+        first, _ = monitor.monitor_sources(self.sources, {'sources': {}},
+                                          lambda _: (_ for _ in ()).throw(URLError('offline')), self.today)
+        def rejected(_):
+            raise HTTPError('https://ssc.gov.in/', 429, 'Too Many Requests', None, None)
+        second, observations = monitor.monitor_sources(self.sources, first, rejected, '2026-10-29')
+        self.assertEqual(observations[0][1], 'unreachable')
+        self.assertIn('HTTP 429', second['sources']['ssc']['note'])
+
+    def test_recovery_does_not_claim_new_verified_vacancy(self):
+        first, _ = monitor.monitor_sources(self.sources, {'sources': {}},
+                                          lambda _: (_ for _ in ()).throw(URLError('offline')), self.today)
+        second, observations = monitor.monitor_sources(self.sources, first, lambda _: 'digest', '2026-10-29')
+        self.assertEqual(observations[0][1], 'baseline')
+        self.assertEqual(second['sources']['ssc']['status'], 'reachable')
+        self.assertNotIn('jobs', second)
 
     def test_normalize_ignores_script_noise(self):
         first = monitor.canonical_content(b'<main>Hello India</main><script>var n=1</script>', 'text/html')
