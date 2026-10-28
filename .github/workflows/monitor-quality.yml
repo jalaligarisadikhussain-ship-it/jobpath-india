@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/daily_source_monitor.py'
       - 'scripts/discover_notice_leads.py'
+      - 'scripts/enrich_notice_pdfs.py'
+      - 'requirements-pdf.txt'
       - 'scripts/validate_review_queue.py'
       - 'tests/**'
       - 'data/jobs.json'
@@ -37,6 +39,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install local PDF parser
+        run: python3 -m pip install --disable-pip-version-check -r requirements-pdf.txt
       - name: Test monitoring and notice discovery offline
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Validate review queue and official link provenance
