@@ -155,9 +155,10 @@ def prepare_publication(queue: dict, published: list[dict], sources: list[dict],
     source_map = {s["id"]: s for s in sources}
     published_ids = {j.get("id"): j for j in published}
     approved = []
-    # Only human-reviewed leads with explicit structured data are candidates.
+    # Explicit opt-in prevents a routine completed editorial review from silently
+    # turning into a public job. Only an editor-marked publication approval qualifies.
     for lead in queue.get("leads", []):
-        if lead.get("status") != "reviewed":
+        if lead.get("status") != "reviewed" or lead.get("auto_publish_approved") is not True:
             continue
         source = source_map.get(lead.get("source_id"))
         if not source:
