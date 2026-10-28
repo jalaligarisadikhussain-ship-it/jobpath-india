@@ -41,8 +41,8 @@ EVIDENCE_TERMS = re.compile(
 def encoded_request_url(url: str) -> str:
     """Make official URLs with spaces safe for HTTP without changing the authority."""
     parsed = urlparse(url)
-    path = quote(parsed.path, safe="/%:@!class SameSiteRedirectHandler(HTTPRedirectHandler):'()*+,;=-._~")
-    query = quote(parsed.query, safe="/%:@!class SameSiteRedirectHandler(HTTPRedirectHandler):'()*+,;=?-._~")
+    path = quote(parsed.path, safe="/%:@!$&'()*+,;=-._~")
+    query = quote(parsed.query, safe="/%:@!$&'()*+,;=?-._~")
     return parsed._replace(path=path, query=query).geturl()
 
 
