@@ -18,6 +18,10 @@ on:
       - 'assets/js/app.mjs'
       - 'scripts/build_final.py'
       - 'scripts/build_dist.py'
+      - 'scripts/validate_ads_config.py'
+      - 'data/ads-config.json'
+      - 'assets/js/ads.mjs'
+      - 'assets/css/styles.css'
       - 'data/auto-publish-ledger.json'
       - '.github/workflows/auto-publish-approved-jobs.yml'
       - 'tests/**'
@@ -62,8 +66,12 @@ jobs:
         run: python3 scripts/sync_job_status.py --check
       - name: Ensure automatic public notice feed matches source evidence
         run: python3 scripts/publish_detected_notices.py --check
+      - name: Validate advertising configuration and ensure no unapproved tags
+        run: python3 scripts/validate_ads_config.py
       - name: Check dynamic website JavaScript syntax
-        run: node --check assets/js/app.mjs
+        run: |
+          node --check assets/js/app.mjs
+          node --check assets/js/ads.mjs
       - name: Build Netlify website output
         run: python3 scripts/build_dist.py
       - name: Audit site pages and SEO
