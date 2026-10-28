@@ -188,5 +188,10 @@
     "path": "verify-notice",
     "title": "How to Verify an Official Recruitment Notice",
     "description": "Check issuer, notification number, official URL, deadlines, corrigenda and eligibility before using any recruitment information."
+  },
+  "autonotices": {
+    "path": "auto-recruitment-notices",
+    "title": "Automatically Detected Recruitment Notices",
+    "description": "Automatically discovered official recruitment notice links; unverified leads, not confirmed open vacancies. Check original official notices."
   }
 }
