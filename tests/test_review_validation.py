@@ -52,6 +52,32 @@ class ReviewValidationTests(unittest.TestCase):
         candidate = dict(BASE, status="rejected")
         self.assertTrue(validate_review_queue({"version": 1, "leads": [candidate]}, [SOURCE]))
 
+    def test_pdf_evidence_does_not_mark_notice_verified(self):
+        candidate = dict(BASE, pdf_review={
+            "status": "needs_manual_verification",
+            "checked_on": "2026-10-28",
+            "method": "pypdf_text_only_no_ocr",
+            "page_count": 2, "pages_scanned": 2,
+            "evidence": [{"page": 1, "excerpt": "Last date: see original notice"}]
+        })
+        self.assertEqual(validate_review_queue({"version": 1, "leads": [candidate]}, [SOURCE]), [])
+        self.assertEqual(candidate["status"], "needs_human_review")
+        self.assertFalse(any(candidate["review_checklist"].values()))
+
+    def test_overlong_pdf_excerpt_is_rejected(self):
+        candidate = dict(BASE, pdf_review={
+            "status": "needs_manual_verification", "checked_on": "2026-10-28",
+            "evidence": [{"page": 1, "excerpt": "x" * 231}]
+        })
+        self.assertTrue(validate_review_queue({"version": 1, "leads": [candidate]}, [SOURCE]))
+
+    def test_pdf_retry_must_have_valid_date(self):
+        candidate = dict(BASE, pdf_review={
+            "status": "download_failed", "checked_on": "2026-10-28",
+            "reason": "HTTPError", "retry_after": "soon"
+        })
+        self.assertTrue(validate_review_queue({"version": 1, "leads": [candidate]}, [SOURCE]))
+
     def test_repeated_links_rejected(self):
         candidate = dict(BASE, id="abc456")
         self.assertTrue(validate_review_queue({"version": 1, "leads": [BASE, candidate]}, [SOURCE]))
