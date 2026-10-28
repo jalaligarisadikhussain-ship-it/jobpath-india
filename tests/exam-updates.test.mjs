@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+const load=f=>readFileSync(new URL(f,root),'utf8');
+const records=JSON.parse(load('data/exam-updates.json'));
+test('one distinct schedule notice, not a vacancy',()=>{assert.equal(records.length,1);const n=records[0];assert.equal(n.recruitmentApplicationOpen,false);assert.equal(n.applicationDeadline,null);assert.equal(n.vacancyCount,null);assert.equal(n.directOfficialNoticeUrl,null)});
+test('SSC JE two proposed windows transcribed without conflation',()=>{const x=records[0].revisedProposedExams[0];assert.equal(x.tier,'Paper-I (CBE)');assert.deepEqual(x.windows,[{start:'2026-11-02',end:'2026-11-06'},{start:'2026-11-30',end:'2026-12-01'}])});
+test('SSC SI proposed dates match supplied document',()=>{const x=records[0].revisedProposedExams[1];assert.deepEqual(x.windows,[{start:'2026-11-23',end:'2026-11-28'}])});
+test('source review pending is explicit and noindex',()=>{const n=records[0];assert.match(n.sourceStatus,/Not independently verified/);assert.match(load('exam-updates/index.html'),/noindex,follow/);assert.doesNotMatch(load('sitemap.xml'),/exam-updates/)});
+test('Google verification file and original pages preserved',()=>{assert.match(load('googlefcd24aba957dc07b.html'),/google-site-verification:/);assert.match(load('index.html'),/jobpath-india.netlify.app/)});

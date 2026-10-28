@@ -1,0 +1,170 @@
+[
+  {
+    "id": "upsc",
+    "name": "Union Public Service Commission (UPSC)",
+    "category": "Central",
+    "url": "https://upsc.gov.in/",
+    "note": "Recruitment notices, examination calendars and official updates.",
+    "lastChecked": null
+  },
+  {
+    "id": "ssc",
+    "name": "Staff Selection Commission (SSC)",
+    "category": "Central",
+    "url": "https://ssc.gov.in/",
+    "note": "SSC examination and recruitment notices.",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "ibps",
+    "name": "Institute of Banking Personnel Selection (IBPS)",
+    "category": "Banking",
+    "url": "https://www.ibps.in/",
+    "note": "Common recruitment process information.",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "sbi",
+    "name": "State Bank of India Careers",
+    "category": "Banking",
+    "url": "https://sbi.co.in/web/careers",
+    "note": "SBI careers and announcements.",
+    "lastChecked": null
+  },
+  {
+    "id": "rrb",
+    "name": "Railway Recruitment Board Chandigarh",
+    "category": "Railway",
+    "url": "https://www.rrbcdg.gov.in/",
+    "note": "One RRB information portal. Select your relevant RRB region.",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "appsc",
+    "name": "Andhra Pradesh Public Service Commission",
+    "category": "State",
+    "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
+    "note": "Official APPSC list of recruitment notifications. Notice existence does not mean application window is still open.",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "tgpsc",
+    "name": "Telangana Public Service Commission",
+    "category": "State",
+    "url": "https://www.tgpsc.gov.in/",
+    "note": "Commission domain confirmed in India government directory. Portal availability and currently open vacancies not independently confirmed.",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "ctet",
+    "name": "Central Teacher Eligibility Test",
+    "category": "Teaching",
+    "url": "https://ctet.nic.in/",
+    "note": "Eligibility test website; not a live vacancy listing.",
+    "lastChecked": null
+  },
+  {
+    "id": "army",
+    "name": "Join Indian Army",
+    "category": "Defence",
+    "url": "https://joinindianarmy.nic.in/",
+    "note": "Army recruitment information; confirm all notices directly.",
+    "lastChecked": null
+  },
+  {
+    "id": "ncs",
+    "name": "National Career Service (NCS)",
+    "category": "National",
+    "url": "https://www.ncs.gov.in/",
+    "note": "Government careers information and employment services; not a replacement for the issuing advertisement.",
+    "lastChecked": null
+  },
+  {
+    "id": "kvs",
+    "name": "Kendriya Vidyalaya Sangathan",
+    "category": "Teaching",
+    "url": "https://kvsangathan.nic.in/",
+    "note": "Central school organization; confirm recruiting notices and dates independently.",
+    "lastChecked": null
+  },
+  {
+    "id": "nvs",
+    "name": "Navodaya Vidyalaya Samiti",
+    "category": "Teaching",
+    "url": "https://navodaya.gov.in/",
+    "note": "School-system information and recruitment resources; current postings not checked.",
+    "lastChecked": null
+  },
+  {
+    "id": "indian-navy",
+    "name": "Indian Navy recruitment information",
+    "category": "Defence",
+    "url": "https://www.joinindiannavy.gov.in/",
+    "note": "Navy careers information; notice and eligibility rules must be checked.",
+    "lastChecked": null
+  },
+  {
+    "id": "indian-airforce",
+    "name": "Indian Air Force careers",
+    "category": "Defence",
+    "url": "https://careerindianairforce.cdac.in/",
+    "note": "Air Force career information reference; confirm latest official domain and announcements.",
+    "lastChecked": null
+  },
+  {
+    "id": "rrb-mumbai",
+    "name": "Railway Recruitment Board Mumbai",
+    "category": "Railway",
+    "url": "https://www.rrbmumbai.gov.in/",
+    "note": "Regional RRB reference; check that this is your issuing board before applying.",
+    "lastChecked": null
+  },
+  {
+    "id": "ap-gov",
+    "name": "Andhra Pradesh Government",
+    "category": "State",
+    "url": "https://www.ap.gov.in/",
+    "note": "State government portal for finding department and recruitment organization links.",
+    "lastChecked": null
+  },
+  {
+    "id": "tg-gov",
+    "name": "Telangana Government",
+    "category": "State",
+    "url": "https://www.telangana.gov.in/",
+    "note": "State portal reference; find current TGPSC and department destinations from official cross-links.",
+    "lastChecked": null
+  },
+  {
+    "id": "upsc-online",
+    "name": "UPSC online recruitment application information",
+    "category": "Central",
+    "url": "https://upsconline.gov.in/",
+    "note": "UPSC application-related reference. Confirm exact application destination in each notice.",
+    "lastChecked": null
+  },
+  {
+    "id": "employment-news",
+    "name": "Employment News",
+    "category": "National",
+    "url": "https://employmentnews.gov.in/",
+    "note": "Recruitment information publication reference. Always cross-check the issuing organization.",
+    "lastChecked": null
+  },
+  {
+    "id": "cwc",
+    "name": "Central Warehousing Corporation — Careers",
+    "category": "Central",
+    "url": "https://cwceportal.com/careers",
+    "note": "CWC recruitment advertisement 2026/01 and online application link (deadline 15 November 2026).",
+    "lastChecked": "2026-10-28"
+  },
+  {
+    "id": "national-insurance",
+    "name": "National Insurance Company — Recruitment",
+    "category": "Banking",
+    "url": "https://nationalinsurance.nic.co.in/recruitment",
+    "note": "Administrative Officer recruitment 2026; check insurer advertisement and the separate IBPS registration page.",
+    "lastChecked": "2026-10-28"
+  }
+]

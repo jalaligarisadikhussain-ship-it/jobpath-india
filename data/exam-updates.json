@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ssc-2026-corrigendum-exam-dates",
+    "type": "Exam date corrigendum — not a new vacancy",
+    "title": "SSC 2026: Revised proposed dates for JE Paper-I and SI (Delhi Police/CAPFs)",
+    "organization": "Staff Selection Commission (SSC)",
+    "reference": "HQ-EC033/7/2025-EC",
+    "noticeHeading": "Corrigendum to Important Notice dated 01.10.2026",
+    "noticeSignedDate": "2026-10-26",
+    "referencedNoticeDate": "2026-10-01",
+    "source": "SSC official notice board (notice title/date) and reader-supplied corrigendum screenshots (date table)",
+    "sourceStatus": "Not independently verified against the direct original SSC PDF; official SSC notice-board title/date confirmed, schedule transcribed from supplied screenshots.",
+    "officialWebsite": "https://ssc.gov.in/",
+    "directOfficialNoticeUrl": null,
+    "recruitmentApplicationOpen": false,
+    "applicationDeadline": null,
+    "vacancyCount": null,
+    "revisedProposedExams": [
+      {
+        "name": "Junior Engineer Examination, 2026",
+        "tier": "Paper-I (CBE)",
+        "windows": [
+          {
+            "start": "2026-11-02",
+            "end": "2026-11-06"
+          },
+          {
+            "start": "2026-11-30",
+            "end": "2026-12-01"
+          }
+        ]
+      },
+      {
+        "name": "Sub-Inspector in Delhi Police and Central Armed Police Forces Examination, 2026",
+        "tier": "CBE",
+        "windows": [
+          {
+            "start": "2026-11-23",
+            "end": "2026-11-28"
+          }
+        ]
+      }
+    ],
+    "caveat": "Dates are revised proposed dates in the supplied corrigendum. Visit SSC regularly for additional changes and confirm the most recent official notice.",
+    "imageFiles": [
+      "/assets/notices/ssc-2026-corrigendum-page-1.png",
+      "/assets/notices/ssc-2026-corrigendum-page-2.png"
+    ]
+  }
+]

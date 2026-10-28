@@ -1,0 +1,192 @@
+{
+  "home": {
+    "path": "",
+    "title": "Government Jobs Information, Exams & Official Sources",
+    "description": "Independent India government recruitment directory with source-reviewed vacancies, exam updates, APPSC notice tracker and filters."
+  },
+  "latest": {
+    "path": "latest-jobs",
+    "title": "Latest Government Jobs",
+    "description": "Reviewed government recruitment openings in India, including Railway NTPC, Central Warehousing Corporation and National Insurance. Confirm eligibility on official notices."
+  },
+  "central": {
+    "path": "central-government-jobs",
+    "title": "Central Government Jobs",
+    "description": "Verified 2026 Central Government and CPSE recruitment notices with official sources and application dates."
+  },
+  "state": {
+    "path": "state-government-jobs",
+    "title": "State Government Jobs",
+    "description": "Find state-specific government recruitment sources and try the location filters with demo data."
+  },
+  "ap": {
+    "path": "andhra-pradesh-jobs",
+    "title": "Andhra Pradesh Government Jobs",
+    "description": "Andhra Pradesh public service recruitment notice watch: APPSC Group I, Group II and forest/engineering updates with verification status."
+  },
+  "telangana": {
+    "path": "telangana-jobs",
+    "title": "Telangana Government Jobs",
+    "description": "Explore Telangana recruitment categories and demonstration search tools. Check current notices directly with the commission."
+  },
+  "railway": {
+    "path": "railway-jobs",
+    "title": "Railway Recruitment",
+    "description": "RRB NTPC CEN 06/2026 Graduate recruitment: official notice, vacancies, deadline and application portal."
+  },
+  "banking": {
+    "path": "banking-jobs",
+    "title": "Banking Government Jobs",
+    "description": "Source-checked National Insurance AO recruitment and banking recruitment authority directory."
+  },
+  "ssc": {
+    "path": "ssc-recruitment",
+    "title": "SSC Recruitment",
+    "description": "Staff Selection Commission recruitment information and source directory."
+  },
+  "upsc": {
+    "path": "upsc-recruitment",
+    "title": "UPSC Recruitment",
+    "description": "Union Public Service Commission recruitment and examination information."
+  },
+  "defence": {
+    "path": "police-defence-jobs",
+    "title": "Police & Defence Jobs",
+    "description": "Find defence and police recruitment sources; confirm official notices before applying."
+  },
+  "teaching": {
+    "path": "teaching-jobs",
+    "title": "Teaching Jobs",
+    "description": "Teaching eligibility and recruitment information with example filtering."
+  },
+  "qualifications": {
+    "path": "qualification-wise-jobs",
+    "title": "Jobs by Qualification",
+    "description": "Find 10th, 12th, ITI, Diploma, degree, engineering, and postgraduate pathways."
+  },
+  "admit": {
+    "path": "admit-cards",
+    "title": "Government Exam Admit Cards",
+    "description": "A guide to safely obtaining admit cards from official examination portals."
+  },
+  "results": {
+    "path": "exam-results",
+    "title": "Government Exam Results",
+    "description": "A guide to checking official examination results and protecting your details."
+  },
+  "syllabus": {
+    "path": "exam-syllabus",
+    "title": "Government Exam Syllabus",
+    "description": "Find official examination syllabus information and preparation guidance."
+  },
+  "upcoming": {
+    "path": "upcoming-exams",
+    "title": "Upcoming Government Exams",
+    "description": "How to track examination calendars and official announcements."
+  },
+  "dates": {
+    "path": "important-dates",
+    "title": "Important Application Dates",
+    "description": "Demo deadline tracker and guidance for verifying application windows."
+  },
+  "job": {
+    "path": "job",
+    "title": "Job Details",
+    "description": "Illustrative recruitment detail view for testing portal functionality."
+  },
+  "search": {
+    "path": "job-search",
+    "title": "Search and Filter Jobs",
+    "description": "Filter illustrative government jobs by state, qualification, category, and application dates."
+  },
+  "saved": {
+    "path": "saved-jobs",
+    "title": "Saved Jobs",
+    "description": "View jobs saved locally in this browser."
+  },
+  "alerts": {
+    "path": "job-alerts",
+    "title": "Job Alerts & Preferences",
+    "description": "Local-only saved job preferences and explanation of future alert features."
+  },
+  "sources": {
+    "path": "official-sources",
+    "title": "Official Recruitment Source Directory",
+    "description": "Recruitment source directory with official references: SSC, UPSC, APPSC, Telangana PSC, RRB, CWC, NIICL and others."
+  },
+  "about": {
+    "path": "about",
+    "title": "About JobPath India",
+    "description": "About this independent Indian government jobs information project."
+  },
+  "contact": {
+    "path": "contact",
+    "title": "Contact JobPath India",
+    "description": "Contact and correction information for JobPath India."
+  },
+  "privacy": {
+    "path": "privacy-policy",
+    "title": "Privacy Policy",
+    "description": "How JobPath India uses local browser storage and protects privacy."
+  },
+  "terms": {
+    "path": "terms",
+    "title": "Terms and Conditions",
+    "description": "Terms of use for the independent JobPath India website."
+  },
+  "disclaimer": {
+    "path": "disclaimer",
+    "title": "Disclaimer",
+    "description": "Important independence, non-affiliation and recruitment verification information."
+  },
+  "examupdates": {
+    "path": "exam-updates",
+    "title": "SSC 2026 Exam Date Corrigendum — Source Review Pending",
+    "description": "SSC 2026 revised proposed JE and SI dates. Official notice title confirmed; exam date windows transcribed from supplied image pending original PDF comparison."
+  },
+  "statesdir": {
+    "path": "states-directory",
+    "title": "Government Jobs by State and Union Territory",
+    "description": "Explore recruitment research pathways for all 28 states and 8 union territories, without unverified vacancy claims."
+  },
+  "calendar": {
+    "path": "exam-calendar",
+    "title": "Government Exam Calendar & Planning Tracker",
+    "description": "Understand SSC, UPSC, banking, railway and state exam calendar workflows and corrections."
+  },
+  "applicationguide": {
+    "path": "application-guide",
+    "title": "How to Apply for Government Jobs Safely",
+    "description": "Step-by-step checklist for finding verified notifications, eligibility, documents, deadlines and official application forms."
+  },
+  "editorial": {
+    "path": "editorial-policy",
+    "title": "Editorial Policy & Recruitment Verification",
+    "description": "Our verification, correction, status expiration, attribution, and anti-misinformation standards."
+  },
+  "faq": {
+    "path": "faq",
+    "title": "Government Job Search FAQs",
+    "description": "Answers about application links, qualifications, exam updates, deadlines, and official notices."
+  },
+  "careerguides": {
+    "path": "career-guides",
+    "title": "Government Recruitment Pathways",
+    "description": "Compare SSC, UPSC, railway, banking, teaching, police and defence recruitment information channels."
+  },
+  "updates": {
+    "path": "recruitment-updates",
+    "title": "Recruitment & Examination Updates",
+    "description": "APPSC 2026 official notification watch and SSC proposed examination dates, with source labels and verification status."
+  },
+  "maintenance": {
+    "path": "content-plan",
+    "title": "Editorial Maintenance & Content Plan",
+    "description": "How JobPath India checks notices, publishes updates, fixes errors and maintains recruitment information."
+  },
+  "contactsources": {
+    "path": "verify-notice",
+    "title": "How to Verify an Official Recruitment Notice",
+    "description": "Check issuer, notification number, official URL, deadlines, corrigenda and eligibility before using any recruitment information."
+  }
+}
