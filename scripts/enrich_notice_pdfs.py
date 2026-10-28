@@ -14,7 +14,7 @@ import re
 from datetime import date, timedelta, timezone, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from discover_notice_leads import (
@@ -38,6 +38,14 @@ EVIDENCE_TERMS = re.compile(
 )
 
 
+def encoded_request_url(url: str) -> str:
+    """Make official URLs with spaces safe for HTTP without changing the authority."""
+    parsed = urlparse(url)
+    path = quote(parsed.path, safe="/%:@!class SameSiteRedirectHandler(HTTPRedirectHandler):'()*+,;=-._~")
+    query = quote(parsed.query, safe="/%:@!class SameSiteRedirectHandler(HTTPRedirectHandler):'()*+,;=?-._~")
+    return parsed._replace(path=path, query=query).geturl()
+
+
 class SameSiteRedirectHandler(HTTPRedirectHandler):
     """No redirect to a third-party, http, IP, or changed source host."""
 
@@ -49,7 +57,7 @@ class SameSiteRedirectHandler(HTTPRedirectHandler):
         target = normalized_url(self.source_url, newurl)
         if target is None:
             raise HTTPError(newurl, code, "Cross-site redirect blocked", headers, fp)
-        return super().redirect_request(req, fp, code, msg, headers, target)
+        return super().redirect_request(req, fp, code, msg, headers, encoded_request_url(target))
 
 
 def download_official_pdf(url: str, source_url: str) -> bytes:
@@ -58,7 +66,7 @@ def download_official_pdf(url: str, source_url: str) -> bytes:
     if not PDF_PATH.search(urlparse(url).path):
         raise ValueError("Not a direct PDF notice")
     opener = build_opener(SameSiteRedirectHandler(source_url))
-    request = Request(url, headers={
+    request = Request(encoded_request_url(url), headers={
         "User-Agent": "JobPathIndiaSourceWatch/1.0 (+https://jobpath-india.netlify.app/)",
         "Accept": "application/pdf,application/octet-stream;q=0.6",
         "Accept-Encoding": "identity",
@@ -135,8 +143,9 @@ def enrich_queue(queue: dict, sources: list[dict], downloader, extractor,
             not isinstance(notice_url, str) or not source_url or
             normalized_url(source_url, notice_url) != notice_url or
             not PDF_PATH.search(urlparse(notice_url).path) or
-            (prior_status is not None and prior_status != "download_failed") or
-            (prior_status == "download_failed" and prior.get("retry_after", "") > today) or
+            (prior_status not in (None, "download_failed", "extraction_failed")) or
+            (prior_status in ("download_failed", "extraction_failed")
+             and prior.get("retry_after", "") > today) or
             stats["examined"] >= max_documents):
             stats["skipped"] += 1
             updated["leads"].append(item)
@@ -165,7 +174,8 @@ def enrich_queue(queue: dict, sources: list[dict], downloader, extractor,
             item["pdf_review"] = {
                 "status": "extraction_failed",
                 "checked_on": today,
-                "reason": "PDFParsingError"
+                "reason": "PDFParsingError",
+                "retry_after": (date.fromisoformat(today) + timedelta(days=RETRY_DAYS)).isoformat()
             }
             stats["failed"] += 1
         updated["leads"].append(item)
