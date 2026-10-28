@@ -5,8 +5,20 @@ on:
     branches: [main]
     paths:
       - 'scripts/daily_source_monitor.py'
-      - 'tests/test_monitor_logic.py'
+      - 'scripts/discover_notice_leads.py'
+      - 'tests/**'
+      - 'data/jobs.json'
+      - 'data/notice-review-queue.json'
       - '.github/workflows/monitor-quality.yml'
+      - '.github/workflows/daily-source-watch.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'data/jobs.json'
+      - 'data/notice-review-queue.json'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
@@ -24,8 +36,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test monitoring logic (no external requests)
-        run: python3 -m unittest discover -s tests -p 'test_monitor*.py' -v
+      - name: Test monitoring and notice discovery offline
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Test site logic
         run: npm test
       - name: Validate recruitment data
