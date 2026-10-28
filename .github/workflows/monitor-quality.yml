@@ -9,6 +9,9 @@ on:
       - 'scripts/enrich_notice_pdfs.py'
       - 'requirements-pdf.txt'
       - 'scripts/validate_review_queue.py'
+      - 'scripts/publish_approved.py'
+      - 'data/auto-publish-ledger.json'
+      - '.github/workflows/auto-publish-approved-jobs.yml'
       - 'tests/**'
       - 'data/jobs.json'
       - 'data/notice-review-queue.json'
@@ -45,6 +48,8 @@ jobs:
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Validate review queue and official link provenance
         run: python3 scripts/validate_review_queue.py
+      - name: Simulate approved-only publisher without committing
+        run: python3 scripts/publish_approved.py
       - name: Test site logic
         run: npm test
       - name: Validate recruitment data
