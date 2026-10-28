@@ -47,3 +47,14 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .source-card,.job-card{overflow-wrap:anywhere;min-width:0}
 .exam-schedule-card{min-width:0}
 @media(max-width:740px){.source-card{padding:18px}.btn{white-space:normal;text-align:center}.notice-data{overflow-wrap:anywhere}.footer{padding-bottom:115px}}
+
+/* Revenue readiness: clearly separate paid advertising from official vacancies. */
+.ad-placement{
+  margin:24px 0; padding:14px 12px 16px; min-height:120px;
+  background:var(--surface);border:1px solid var(--line);border-radius:13px;
+  overflow:hidden;clear:both;text-align:center;
+}
+.ad-placement-label{display:block;font-size:.7rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:9px}
+.ad-placement ins.adsbygoogle{max-width:100%;overflow:hidden}
+@media print{.ad-placement{display:none!important}}
