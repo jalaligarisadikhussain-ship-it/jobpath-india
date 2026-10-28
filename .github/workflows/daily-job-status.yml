@@ -1,0 +1,59 @@
+name: Daily verified-job status maintenance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/daily-job-status.yml'
+  schedule:
+    # 02:35 UTC = 08:05 India Standard Time.
+    - cron: '35 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jobpath-daily-status-maintenance
+  cancel-in-progress: false
+
+jobs:
+  sync-verified-job-statuses:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply date-based updates to previously verified jobs only
+        run: python3 scripts/sync_job_status.py
+      - name: Verify status transitions and demo preservation
+        run: python3 -m unittest discover -s tests -p 'test_job_status_sync.py' -v
+      - name: Validate website job records
+        run: npm run validate
+      - name: Regenerate site for link and build checking
+        run: python3 scripts/build_dist.py
+      - name: Run website regression tests
+        run: npm test
+      - name: Commit only genuine status changes
+        shell: bash
+        run: |
+          git add data/jobs.json
+          if test -f reports/jobs-status-audit.md; then
+            git add reports/jobs-status-audit.md
+          fi
+          if git diff --cached --quiet; then
+            echo "No job dates crossed today; no website changes." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(jobs): auto-close expired verified application windows"
+          git push
+          echo "Date-based job statuses synced from previously verified deadlines. Check official corrigenda independently." >> "$GITHUB_STEP_SUMMARY"
