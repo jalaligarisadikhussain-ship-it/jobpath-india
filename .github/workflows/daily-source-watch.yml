@@ -67,4 +67,21 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(notices): publish daily official-source notice leads"
-          git push
+          # Non-fast-forward pushes can happen when another editorial change lands
+          # while slow government sites are being monitored. Rebase safely; never
+          # overwrite another commit, and fail rather than force a conflict.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "Monitoring report committed and pushed." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "Push race on attempt $attempt; rebasing monitoring commit on current main"
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "Review data conflict. Aborted without overwriting another commit." >&2
+              exit 1
+            fi
+          done
+          echo "Could not safely push monitoring updates after three retries." >&2
+          exit 1
