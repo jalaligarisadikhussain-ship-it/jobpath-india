@@ -174,6 +174,16 @@ class AutoPublishTests(unittest.TestCase):
         self.assertFalse(added)
         self.assertEqual(jobs[0]["description"], existing["description"])
 
+    def test_old_approved_entry_does_not_block_future_runs(self):
+        x = lead()
+        x["reviewed_at"] = "2026-09-01"
+        x["approved_job"]["lastVerifiedDate"] = "2026-09-01"
+        old = copy.deepcopy(x["approved_job"])
+        jobs, ledger, added, issues = run([x], jobs=[old])
+        self.assertFalse(issues)
+        self.assertEqual(jobs, [old])
+        self.assertFalse(added)
+
     def test_existing_job_with_same_id_different_notice_blocked(self):
         x = lead()
         existing = copy.deepcopy(x["approved_job"])
