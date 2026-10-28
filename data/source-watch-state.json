@@ -1,4 +1,105 @@
 {
   "version": 1,
-  "sources": {}
+  "sources": {
+    "upsc": {
+      "name": "Union Public Service Commission (UPSC)",
+      "url": "https://upsc.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    },
+    "ssc": {
+      "name": "Staff Selection Commission (SSC)",
+      "url": "https://ssc.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: ValueError (not proof of a closed recruitment)"
+    },
+    "ibps": {
+      "name": "Institute of Banking Personnel Selection (IBPS)",
+      "url": "https://www.ibps.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    },
+    "sbi": {
+      "name": "State Bank of India Careers",
+      "url": "https://sbi.co.in/web/careers",
+      "status": "reachable",
+      "fingerprint": "07895c4d0052ba079bae884ab326ba0a2cec316217ab7ede6bb9776c67902cb8",
+      "last_change_or_status_date": "2026-10-28"
+    },
+    "rrb": {
+      "name": "Railway Recruitment Board Chandigarh",
+      "url": "https://www.rrbcdg.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    },
+    "appsc": {
+      "name": "Andhra Pradesh Public Service Commission",
+      "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    },
+    "tgpsc": {
+      "name": "Telangana Public Service Commission",
+      "url": "https://www.tgpsc.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: HTTPError (not proof of a closed recruitment)"
+    },
+    "ctet": {
+      "name": "Central Teacher Eligibility Test",
+      "url": "https://ctet.nic.in/",
+      "status": "reachable",
+      "fingerprint": "33a862e9c89aa39a3516459f79670ab9f1a81bc3a8f42ae39d0d12e4fd17291e",
+      "last_change_or_status_date": "2026-10-28"
+    },
+    "kvs": {
+      "name": "Kendriya Vidyalaya Sangathan",
+      "url": "https://kvsangathan.nic.in/",
+      "status": "reachable",
+      "fingerprint": "c1d8e0dc0a04b450789fdd3fbc803bc84231e7f71a3bcc4c4c42dd4e29afc6b8",
+      "last_change_or_status_date": "2026-10-28"
+    },
+    "nvs": {
+      "name": "Navodaya Vidyalaya Samiti",
+      "url": "https://navodaya.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    },
+    "employment-news": {
+      "name": "Employment News",
+      "url": "https://employmentnews.gov.in/",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: ValueError (not proof of a closed recruitment)"
+    },
+    "cwc": {
+      "name": "Central Warehousing Corporation — Careers",
+      "url": "https://cwceportal.com/careers",
+      "status": "reachable",
+      "fingerprint": "054f22265e3e731e716780f79d65734e7e94512fe4e63c49dee60b04710cf6ff",
+      "last_change_or_status_date": "2026-10-28"
+    },
+    "national-insurance": {
+      "name": "National Insurance Company — Recruitment",
+      "url": "https://nationalinsurance.nic.co.in/recruitment",
+      "status": "unreachable",
+      "fingerprint": null,
+      "last_change_or_status_date": "2026-10-28",
+      "note": "Could not check: URLError (not proof of a closed recruitment)"
+    }
+  }
 }
