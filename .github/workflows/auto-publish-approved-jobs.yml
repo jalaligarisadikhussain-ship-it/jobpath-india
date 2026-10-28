@@ -1,0 +1,56 @@
+name: Publish human-approved recruitment jobs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/notice-review-queue.json'
+  schedule:
+    # 02:25 UTC = 07:55 IST; after 07:45 IST source watch.
+    - cron: '25 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jobpath-approved-job-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish-approved-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate human-reviewed official notice queue
+        run: python3 scripts/validate_review_queue.py
+      - name: Stage strictly approved vacancies only
+        run: python3 scripts/publish_approved.py
+      - name: Run website regression tests
+        run: npm test
+      - name: Validate all public recruitment data
+        run: npm run validate
+      - name: Check approval and publication security logic
+        run: python3 -m unittest discover -s tests -p 'test_publish_approved.py' -v
+      - name: Commit reviewed vacancies to website and audit log
+        shell: bash
+        run: |
+          git add data/jobs.json data/auto-publish-ledger.json reports/auto-publish-latest.md
+          if git diff --cached --quiet; then
+            echo "No newly approved verified vacancies. Nothing published." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "feat(jobs): publish human-reviewed verified recruitment records"
+          git push
+          echo "Approved government recruitment jobs committed for automatic Netlify deployment." >> "$GITHUB_STEP_SUMMARY"
