@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "provider": "none",
+  "publisherId": "",
+  "slots": {
+    "content": ""
+  },
+  "note": "AdSense remains disabled until account/site approval and actual publisher and unit identifiers are configured. Never fabricate IDs."
+}
