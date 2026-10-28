@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/daily-source-watch.yml'
+      - 'scripts/enrich_notice_pdfs.py'
+      - 'scripts/discover_notice_leads.py'
+      - 'scripts/publish_detected_notices.py'
   schedule:
     # UTC time. 02:15 UTC = 07:45 India Standard Time (IST).
     - cron: '15 2 * * *'
