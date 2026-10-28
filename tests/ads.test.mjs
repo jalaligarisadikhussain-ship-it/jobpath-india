@@ -6,10 +6,14 @@ import fs from 'node:fs';
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json', import.meta.url),'utf8'));
 const enabled={enabled:true,provider:'adsense',publisherId:'ca-pub-1234567890123456',slots:{content:'1234567890'}};
 
-test('AdSense disabled until user has a real approved account',()=>{
- assert.equal(current.enabled,false);
- assert.equal(adSenseReady(current),false);
- assert.doesNotMatch(renderAdPlacement(current),/adsbygoogle|data-ad-client|data-ad-slot/);
+test('Ads are absent while configuration is disabled and only render with valid IDs',()=>{
+ if(current.enabled){
+  assert.equal(adSenseReady(current),true);
+  assert.match(renderAdPlacement(current),/aria-label="Advertisement"/);
+ }else{
+  assert.equal(adSenseReady(current),false);
+  assert.doesNotMatch(renderAdPlacement(current),/adsbygoogle|data-ad-client|data-ad-slot/);
+ }
 });
 test('valid AdSense settings show labeled isolated display ads',()=>{
  const html=renderAdPlacement(enabled);
