@@ -29,8 +29,12 @@ jobs:
           node-version: '22'
       - name: Check official source pages (never create job posts automatically)
         run: python3 scripts/daily_source_monitor.py
+      - name: Install local PDF parser
+        run: python3 -m pip install --disable-pip-version-check -r requirements-pdf.txt
       - name: Discover official notice links for human review only
         run: python3 scripts/discover_notice_leads.py
+      - name: Extract bounded PDF evidence into manual review queue
+        run: python3 scripts/enrich_notice_pdfs.py
       - name: Validate official-link review queue
         run: python3 scripts/validate_review_queue.py
       - name: Run project unit tests
