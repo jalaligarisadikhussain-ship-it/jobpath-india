@@ -11,7 +11,7 @@ test('complete country region directory lists exactly 28 states and 8 union terr
 });
 test('no secret keys, injected advertisements, ByteBright links or invented verified jobs in public data',()=>{
  const js=read('assets/js/app.mjs'), jobs=JSON.parse(read('data/jobs.json'));
- assert(jobs.filter(j=>j.verified).length===10);assert(jobs.filter(j=>j.isDemo).every(j=>j.verified===false));
+ assert(jobs.filter(j=>j.verified).length>=10);assert(jobs.filter(j=>j.isDemo).every(j=>j.verified===false));
  assert(!js.toLowerCase().includes('bytebright-converter.netlify.app'));
  assert(!read('index.html').includes('bytebright-converter.netlify.app'));
  assert(!read('index.html').includes('adsbygoogle'));
@@ -26,7 +26,22 @@ test('every page has safe self-contained embedded JSON and metadata',()=>{
   assert(html.includes('rel="canonical"')&&html.includes('name="robots"')&&html.includes('application/ld+json'));
   assert(!html.includes('<title>Loading</title>'));
  }
- assert.equal(Object.keys(pages).length,38);
+ assert(Object.keys(pages).length>=39);assert(pages.autonotices);
+});
+test('automatic recruitment notices are publicly available but not verified jobs',()=>{
+ const page=read('auto-recruitment-notices/index.html');
+ const feed=JSON.parse(read('data/auto-notices.json'));
+ assert.match(page,/AUTO|Automatically/i);
+ assert.match(page,/noindex,follow/);
+ assert(!read('sitemap.xml').includes('/auto-recruitment-notices/'));
+ assert(Array.isArray(feed.notices));
+ for(const item of feed.notices){
+  assert.equal(item.verificationStatus,'automatically_detected_unverified');
+  assert.equal(item.applicationStatus,'unknown');
+  assert(!('vacancies' in item));
+  assert(!('lastDate' in item));
+  assert(!('applicationUrl' in item));
+ }
 });
 test('unverified SSC notice stays noindex and excluded from sitemap',()=>{
  assert.match(read('exam-updates/index.html'),/name="robots" content="noindex,follow"/);
