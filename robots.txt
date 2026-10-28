@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jobpath-india.netlify.app/sitemap.xml

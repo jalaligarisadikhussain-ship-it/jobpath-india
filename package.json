@@ -1,0 +1,16 @@
+{
+  "name": "jobpath-india",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent source-first government recruitment information portal with offline-first verified-data workflow",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate.mjs",
+    "serve": "python -m http.server 8000",
+    "domain": "node scripts/configure-domain.mjs",
+    "build": "python3 scripts/build_final.py",
+    "audit": "python3 tests/site_audit.py",
+    "package": "python3 scripts/package_final.py"
+  }
+}
