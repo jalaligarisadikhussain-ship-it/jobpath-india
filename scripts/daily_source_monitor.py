@@ -126,12 +126,17 @@ def monitor_sources(sources, previous, fetcher, today):
 
 
 def report_markdown(state):
+    entries = [state.get("sources", {}).get(sid) for sid in WATCH_IDS]
+    reachable = sum(bool(item) and item.get("status") == "reachable" for item in entries)
+    unreachable = sum(bool(item) and item.get("status") == "unreachable" for item in entries)
     output = ["# JobPath India — Recruitment source monitoring", "",
               "This is a **change-monitoring report**, not a list of verified new vacancies.",
               "Changes can be due to navigation, announcements, site redesigns or dynamic content.",
               "Before publishing a vacancy, a person must check its official notification PDF, dates, eligibility, vacancies and application link.", "",
-              "| Source | Last observed state | Date of last material change | Source website |",
-              "|---|---|---|---|"]
+              f"**Reachable:** {reachable} · **Unreachable:** {unreachable} · **Monitored sources:** {len(WATCH_IDS)}",
+              "An unreachable source is **not** proof that a recruitment is closed.", "",
+              "| Source | Last observed state | Last status change | Diagnostic | Source website |",
+              "|---|---|---|---|---|"]
     for sid in WATCH_IDS:
         item = state.get("sources", {}).get(sid)
         if not item:
@@ -140,7 +145,9 @@ def report_markdown(state):
         name = item.get("name", sid).replace("|", " ")
         status = item.get("status", "unknown")
         date = item.get("last_change_or_status_date", "-")
-        output.append(f"| {name} | {status} | {date} | [Visit source]({url}) |")
+        note = item.get("note", "—") if status == "unreachable" else "—"
+        note = note.replace("|", " ").replace(chr(10), " ")
+        output.append(f"| {name} | {status} | {date} | {note} | [Visit source]({url}) |")
     output += ["", "**What this does not do:** read every PDF, verify all vacancies, update application eligibility, or publish new jobs automatically.",
                "**Monitoring caveat:** blocked sites are 'unreachable', not 'no recruitment'; content changes are leads for review, not confirmed jobs.", ""]
     return "\n".join(output)
