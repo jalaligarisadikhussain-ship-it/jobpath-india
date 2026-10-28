@@ -9,10 +9,10 @@ pages=json.loads((root/'data/pages.json').read_text())
 source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
 exams=json.loads((root/'data/exam-updates.json').read_text())
-jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json']}
+jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json','/data/auto-notices.json']}
 inline_json=json.dumps(jsdata,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
-noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates'}
-nav=[('Home','/'),('Latest Jobs','/latest-jobs/'),('All States','/states-directory/'),('SSC','/ssc-recruitment/'),('UPSC','/upsc-recruitment/'),('Exam Calendar','/exam-calendar/'),('Exam Updates','/exam-updates/'),('Official Sources','/official-sources/'),('Notice Desk','/recruitment-updates/')]
+noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates','autonotices'}
+nav=[('Home','/'),('Latest Jobs','/latest-jobs/'),('Auto Notices','/auto-recruitment-notices/'),('All States','/states-directory/'),('SSC','/ssc-recruitment/'),('UPSC','/upsc-recruitment/'),('Exam Calendar','/exam-calendar/'),('Exam Updates','/exam-updates/'),('Official Sources','/official-sources/'),('Notice Desk','/recruitment-updates/')]
 seo_text={
 'home':('Government Jobs Research Across India','Find the issuing authority before you apply. Navigate recruitment boards, region-specific information, exam guides, source verification and qualification categories. The portal only displays source-checked vacancies publicly.'),
 'latest':('Latest Government Jobs: Verification First','Browse the official-source-checked job database and always open the issuing authority recruitment notice before applying.'),
@@ -49,6 +49,7 @@ seo_text={
 'editorial':('How JobPath Verifies Recruitment Information','Review source links, advertisement numbers, dates and corrigenda before posting a real opening; correct or close expired records.'),
 'faq':('Frequently Asked Government Job Questions','Answers about official source links, eligibility, sample records, corrections and indexing.'),
 'careerguides':('Central, State, Railway and Banking Career Routes','Overview of recruitment organizations and how to verify each career pathway.'),
+'autonotices':('Automatically Detected Recruitment Notice Links','Official recruitment notice links detected by a daily automated checker. These are unverified leads, not confirmed open government jobs.'),
 'updates':('Source-labeled Exam and Recruitment Notices','An exam-date corrigendum is not a new vacancy. We label reader-submitted documents awaiting independent verification.'),
 'maintenance':('Editorial Maintenance Plan','A 30-day source-first content schedule for accuracy, regional coverage, accessibility and search performance.'),
 'contactsources':('Official Notice Verification Checklist','Verify issuer, PDF advertisement number, date, eligibility, official links and later amendments.'),
@@ -69,6 +70,17 @@ def fallback_content(key):
    buf+=['</div></section>']
   if key in ('home','ap','updates'):
    buf+=['<section><h2>APPSC 2026 notice register</h2><p>APPSC published Group-I (07/2026), Group-II (37/2026), Forest Beat Officer (18/2026) and other notices in October 2026. Exact application dates and qualifications are not verified here. <a href="https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications">View official APPSC notifications</a>.</p></section>']
+ if key in ('home','latest','autonotices','updates'):
+  auto_items=jsdata['/data/auto-notices.json'].get('notices',[])
+  buf+=['<section class="section"><h2>Automatically detected official recruitment notice links</h2><p><strong>Unverified and not confirmed open vacancies.</strong> Application dates, eligibility and vacancy counts are not established by automatic link detection. Read each original official notice and all corrigenda before applying.</p>']
+  if auto_items:
+   buf+=['<div class="grid">']
+   for n in auto_items[:(40 if key=='autonotices' else 6)]:
+    buf.append('<article class="source-card"><p class="tag demo">AUTO-DETECTED · UNVERIFIED</p><h3>'+html.escape(str(n['title']))+'</h3><p>'+html.escape(str(n['organization']))+' · Detected '+html.escape(str(n['detectedDate']))+'</p><a href="'+html.escape(str(n['noticeUrl']),quote=True)+'" rel="noopener noreferrer">Original official notice ↗</a></article>')
+   buf+=['</div>']
+  else:
+   buf+=['<p>No new qualifying source links detected yet. The official sites may not be accessible to the checker.</p>']
+  buf+=['</section>']
  if key=='statesdir':
   buf+=['<h2>Indian states</h2><div class="region-grid">'+''.join(f'<a class="region" href="/job-search/?state={html.escape(n)}">{html.escape(n)} →</a>' for n in regions['states'])+'</div><h2>Union territories</h2><div class="region-grid">'+''.join(f'<a class="region" href="/job-search/?state={html.escape(n)}">{html.escape(n)} →</a>' for n in regions['unionTerritories'])+'</div>']
  if key=='sources':
