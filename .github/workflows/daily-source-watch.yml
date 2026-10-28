@@ -1,0 +1,49 @@
+name: Daily government-recruitment source watch
+
+on:
+  schedule:
+    # UTC time. 02:15 UTC = 07:45 India Standard Time (IST).
+    - cron: '15 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jobpath-source-watch
+  cancel-in-progress: false
+
+jobs:
+  review-official-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check official source pages (never create job posts automatically)
+        run: python3 scripts/daily_source_monitor.py
+      - name: Run project unit tests
+        run: npm test
+      - name: Validate verified-job records
+        run: npm run validate
+      - name: Test monitoring logic without network
+        run: python3 -m unittest discover -s tests -p 'test_monitor*.py'
+      - name: Commit review leads only when a source state changes
+        shell: bash
+        run: |
+          git add data/source-watch-state.json reports/source-watch-latest.md
+          if git diff --cached --quiet; then
+            echo "No meaningful monitoring changes; no new deploy needed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(monitor): update source-watch observations [skip ci]"
+          git push
