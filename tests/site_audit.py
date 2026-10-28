@@ -6,7 +6,7 @@ import json,re,sys
 root=Path(__file__).resolve().parent.parent
 pages=json.loads((root/'data/pages.json').read_text())
 basepaths={'/'+(o['path']+'/' if o['path'] else '') for o in pages.values()}
-problems=[];titles=set();noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates'}
+problems=[];titles=set();noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates','autonotices'}
 class Audit(HTMLParser):
  def __init__(self):super().__init__();self.tags=[]
  def handle_starttag(self,tag,attrs):self.tags.append((tag,dict(attrs)))
