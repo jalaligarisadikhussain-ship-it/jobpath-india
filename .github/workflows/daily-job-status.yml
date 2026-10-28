@@ -35,10 +35,10 @@ jobs:
         run: python3 scripts/sync_job_status.py
       - name: Verify status transitions and demo preservation
         run: python3 -m unittest discover -s tests -p 'test_job_status_sync.py' -v
-      - name: Validate website job records
-        run: npm run validate
       - name: Regenerate site for link and build checking
         run: python3 scripts/build_dist.py
+      - name: Validate website job records
+        run: npm run validate
       - name: Run website regression tests
         run: npm test
       - name: Commit only genuine status changes
