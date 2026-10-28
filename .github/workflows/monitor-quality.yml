@@ -11,6 +11,8 @@ on:
       - 'scripts/validate_review_queue.py'
       - 'scripts/publish_approved.py'
       - 'scripts/publish_detected_notices.py'
+      - 'scripts/sync_job_status.py'
+      - '.github/workflows/daily-job-status.yml'
       - 'data/auto-notices.json'
       - 'data/pages.json'
       - 'assets/js/app.mjs'
@@ -56,6 +58,8 @@ jobs:
         run: python3 scripts/validate_review_queue.py
       - name: Simulate approved-only publisher without committing
         run: python3 scripts/publish_approved.py
+      - name: Audit verified job status dates without mutating data
+        run: python3 scripts/sync_job_status.py --check
       - name: Ensure automatic public notice feed matches source evidence
         run: python3 scripts/publish_detected_notices.py --check
       - name: Check dynamic website JavaScript syntax
