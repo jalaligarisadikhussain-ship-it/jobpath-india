@@ -74,6 +74,16 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(second['sources']['ssc']['status'], 'reachable')
         self.assertNotIn('jobs', second)
 
+    def test_report_contains_diagnostic_and_counts(self):
+        def denied(_):
+            raise HTTPError('https://ssc.gov.in/', 403, 'Forbidden', None, None)
+        state, _ = monitor.monitor_sources(self.sources, {'sources': {}}, denied, self.today)
+        report = monitor.report_markdown(state)
+        self.assertIn('Unreachable:** 1', report)
+        self.assertIn('HTTP 403', report)
+        self.assertIn('not** proof', report)
+        self.assertNotIn('verified new vacancies', report.splitlines()[-1])
+
     def test_normalize_ignores_script_noise(self):
         first = monitor.canonical_content(b'<main>Hello India</main><script>var n=1</script>', 'text/html')
         second = monitor.canonical_content(b'<main> Hello India </main><script>var n=2</script>', 'text/html')
