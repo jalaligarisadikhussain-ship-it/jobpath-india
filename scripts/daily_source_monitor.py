@@ -66,6 +66,24 @@ def fetch_fingerprint(url: str):
         return hashlib.sha256(normalized).hexdigest()
 
 
+def describe_fetch_failure(exc: Exception) -> str:
+    """Stable diagnostics; never confuse inaccessible sources with closed jobs."""
+    if isinstance(exc, HTTPError):
+        return f"HTTP {exc.code} (remote server blocked or rejected request)"
+    if isinstance(exc, URLError):
+        return f"network/DNS/TLS error ({type(getattr(exc, 'reason', None)).__name__})"
+    if isinstance(exc, TimeoutError):
+        return "request timed out"
+    if isinstance(exc, ValueError):
+        message = str(exc)
+        if message.startswith("Unsupported response type:"):
+            return "unsupported website response type"
+        if "too short" in message:
+            return "unexpectedly short website response"
+        return "invalid website response"
+    return f"local I/O error ({type(exc).__name__})"
+
+
 def monitor_sources(sources, previous, fetcher, today):
     """Return (new_state, observations), no network access inside this function."""
     old_entries = previous.get("sources", {})
@@ -93,12 +111,15 @@ def monitor_sources(sources, previous, fetcher, today):
                          "fingerprint": digest, "last_change_or_status_date": today}
             # If unchanged, don't modify the file: avoids unnecessary daily deploys.
         except (URLError, HTTPError, TimeoutError, ValueError, OSError) as exc:
-            kind = "unreachable" if existing.get("status") != "unreachable" else "unchanged_unreachable"
-            if kind == "unreachable":
+            note = f"Could not check: {describe_fetch_failure(exc)}; not proof of a closed recruitment"
+            changed = (existing.get("status") != "unreachable"
+                       or existing.get("note") != note or existing.get("url") != url)
+            kind = "unreachable" if changed else "unchanged_unreachable"
+            if changed:
                 entry = {"name": src["name"], "url": url, "status": "unreachable",
                          "fingerprint": existing.get("fingerprint"),
                          "last_change_or_status_date": today,
-                         "note": f"Could not check: {type(exc).__name__} (not proof of a closed recruitment)"}
+                         "note": note}
         result["sources"][sid] = entry
         observations.append((src["name"], kind, url))
     return result, observations
