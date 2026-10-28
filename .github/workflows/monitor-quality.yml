@@ -10,6 +10,12 @@ on:
       - 'requirements-pdf.txt'
       - 'scripts/validate_review_queue.py'
       - 'scripts/publish_approved.py'
+      - 'scripts/publish_detected_notices.py'
+      - 'data/auto-notices.json'
+      - 'data/pages.json'
+      - 'assets/js/app.mjs'
+      - 'scripts/build_final.py'
+      - 'scripts/build_dist.py'
       - 'data/auto-publish-ledger.json'
       - '.github/workflows/auto-publish-approved-jobs.yml'
       - 'tests/**'
@@ -50,6 +56,12 @@ jobs:
         run: python3 scripts/validate_review_queue.py
       - name: Simulate approved-only publisher without committing
         run: python3 scripts/publish_approved.py
+      - name: Check dynamic website JavaScript syntax
+        run: node --check assets/js/app.mjs
+      - name: Build Netlify website output
+        run: python3 scripts/build_dist.py
+      - name: Audit site pages and SEO
+        run: python3 tests/site_audit.py
       - name: Test site logic
         run: npm test
       - name: Validate recruitment data
