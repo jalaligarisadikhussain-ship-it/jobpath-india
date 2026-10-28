@@ -29,16 +29,18 @@ jobs:
           node-version: '22'
       - name: Check official source pages (never create job posts automatically)
         run: python3 scripts/daily_source_monitor.py
+      - name: Discover official notice links for human review only
+        run: python3 scripts/discover_notice_leads.py
       - name: Run project unit tests
         run: npm test
       - name: Validate verified-job records
         run: npm run validate
-      - name: Test monitoring logic without network
-        run: python3 -m unittest discover -s tests -p 'test_monitor*.py'
+      - name: Test monitoring and review logic without network
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
       - name: Commit review leads only when a source state changes
         shell: bash
         run: |
-          git add data/source-watch-state.json reports/source-watch-latest.md
+          git add data/source-watch-state.json reports/source-watch-latest.md data/notice-review-queue.json reports/notice-review-queue.md
           if git diff --cached --quiet; then
             echo "No meaningful monitoring changes; no new deploy needed." >> "$GITHUB_STEP_SUMMARY"
             exit 0
