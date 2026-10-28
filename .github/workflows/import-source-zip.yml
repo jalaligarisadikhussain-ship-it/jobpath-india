@@ -1,0 +1,57 @@
+name: Import JobPath India website source from uploaded ZIP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Safely extract source files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          archive = Path("jobpath-india-github.zip")
+          if not archive.is_file():
+              raise SystemExit("Uploaded source archive was not found")
+          with ZipFile(archive) as z:
+              names = set(z.namelist())
+              required = {".github/workflows/daily-source-watch.yml",
+                          "scripts/build_dist.py", "scripts/daily_source_monitor.py",
+                          "assets/js/app.mjs", "data/jobs.json", "index.html"}
+              if not required <= names:
+                  raise SystemExit(f"Source ZIP missing: {sorted(required - names)}")
+              for entry in z.infolist():
+                  if entry.is_dir():
+                      continue
+                  name = PurePosixPath(entry.filename)
+                  if name.is_absolute() or ".." in name.parts or "\\" in entry.filename:
+                      raise SystemExit(f"Unsafe ZIP entry: {entry.filename}")
+                  target = Path(*name.parts)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_bytes(z.read(entry))
+          print("Extracted the complete JobPath India source tree")
+          PY
+      - name: Commit source folders and remove ZIP
+        shell: bash
+        run: |
+          git rm -f jobpath-india-github.zip
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to update."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Import full JobPath India source and daily monitoring workflow"
+          git push origin HEAD:main
