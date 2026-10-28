@@ -22,6 +22,21 @@ These reports are **not deployed to the public Netlify website** by the explicit
 - Blocked websites, JavaScript-rendered links and notices hosted on third-party domains can be missed.
 - A source page, application link and notification link can be valid at different times.
 
+## Phase 2: bounded PDF text evidence
+
+The daily workflow now optionally downloads **at most three new official PDF links per day** from the selected sources after strict same-site redirect checking. Each PDF is limited to **4 MiB**, and text extraction examines **no more than 12 pages**. The free, pinned `pypdf` library runs on GitHub Actions, with no paid credits or API keys.
+
+For each candidate, the repository review queue may hold:
+
+- `pdf_review.status`: `needs_manual_verification`, `requires_ocr_or_manual_read`, `download_failed`, or `extraction_failed`.
+- `pdf_review.evidence`: at most 12 short, page-numbered excerpts that mention recruitment or application terms.
+- `pdf_review.page_count`, `pages_scanned`, and `checked_on` for provenance.
+- `retry_after`: failed fetches are not retried daily; retry is deferred seven days.
+
+These are **unverified excerpts**, not validated application deadlines or vacancy counts. Multi-column tables, image-only PDFs, missing pages, notices updated after download, and OCR-dependent scans remain manual verification cases. Report snippets are not proof of the underlying source's current meaning. The daily script never writes to the public jobs database.
+
+The GitHub reviewer report is at `reports/notice-review-queue.md`. The raw review queue is in `data/notice-review-queue.json`. Neither is included in the static Netlify `dist/` output.
+
 ## Human review and safe publication
 
 1. Open the latest review report on GitHub and follow a pending link to its official issuing website.
@@ -35,6 +50,7 @@ These reports are **not deployed to the public Netlify website** by the explicit
 
 Run these commands at the repository root:
 
+    python3 -m pip install -r requirements-pdf.txt
     python3 -m unittest discover -s tests -p 'test_*.py'
     python3 scripts/validate_review_queue.py
     npm test
@@ -44,4 +60,4 @@ No paid APIs, credits, scraping services or deploy tokens are required for the c
 
 ## Current limitations and next development
 
-This is Phase 1: notification-link discovery + deduplication + provenance validation + review workflow. Later phases should include source-specific official PDF parsing, multi-source evidence matching, explicit freshness thresholds, improved support for inaccessible pages, and a carefully controlled publishing gate. **Do not enable unattended public publication until those source-specific verifications are demonstrated with real notices and tests.**
+Phase 1 and basic Phase 2 are implemented: notice-link detection, source-restricted PDF text snippets and human-review validation. Later phases should include source-specific PDF table parsing, multi-source evidence matching, explicit freshness thresholds, improved support for inaccessible pages, and a carefully controlled publishing gate. **Do not enable unattended public publication until those source-specific verifications are demonstrated with real notices and tests.**
