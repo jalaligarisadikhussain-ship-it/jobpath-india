@@ -40,6 +40,7 @@ def lead():
     return {
         "id": "test-notice-001", "source_id": "cwc",
         "source_name": SOURCE["name"], "source_page": SOURCE["url"],
+        "title": "Recruitment notice for Test Technical Officer",
         "notice_url": job["notificationUrl"],
         "first_seen": "2026-10-20", "status": "reviewed",
         "reviewed_by": "Test Editor", "reviewed_at": "2026-10-28",
