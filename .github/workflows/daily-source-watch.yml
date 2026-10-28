@@ -1,6 +1,10 @@
 name: Daily government-recruitment source watch
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/daily-source-watch.yml'
   schedule:
     # UTC time. 02:15 UTC = 07:45 India Standard Time (IST).
     - cron: '15 2 * * *'
