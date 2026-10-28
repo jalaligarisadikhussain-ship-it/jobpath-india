@@ -58,6 +58,38 @@ def validate_review_queue(queue: dict, sources: list[dict]) -> list[str]:
         if not isinstance(checklist, dict) or any(not isinstance(checklist.get(field), bool) for field in CHECKS):
             errors.append(f"{ref}: incomplete review checklist")
             checklist = {}
+        pdf_review = item.get("pdf_review")
+        if pdf_review is not None:
+            if not isinstance(pdf_review, dict):
+                errors.append(f"{ref}: invalid PDF review metadata")
+            else:
+                pdf_status = pdf_review.get("status")
+                allowed_pdf_states = ("needs_manual_verification",
+                                      "requires_ocr_or_manual_read",
+                                      "download_failed", "extraction_failed")
+                if pdf_status not in allowed_pdf_states:
+                    errors.append(f"{ref}: unsupported PDF review status")
+                try:
+                    date.fromisoformat(pdf_review.get("checked_on", ""))
+                except (TypeError, ValueError):
+                    errors.append(f"{ref}: invalid PDF checked_on date")
+                evidence = pdf_review.get("evidence", [])
+                if not isinstance(evidence, list) or len(evidence) > 12:
+                    errors.append(f"{ref}: invalid PDF evidence list")
+                else:
+                    for evidence_item in evidence:
+                        if (not isinstance(evidence_item, dict) or
+                            not isinstance(evidence_item.get("page"), int) or
+                            evidence_item["page"] < 1 or
+                            not isinstance(evidence_item.get("excerpt"), str) or
+                            len(evidence_item["excerpt"]) > 230):
+                            errors.append(f"{ref}: invalid PDF evidence excerpt")
+                            break
+                if pdf_status == "download_failed":
+                    try:
+                        date.fromisoformat(pdf_review.get("retry_after", ""))
+                    except (TypeError, ValueError):
+                        errors.append(f"{ref}: retry_after required for failed PDF fetch")
         if state == "reviewed":
             if any(checklist.get(field) is not True for field in CHECKS):
                 errors.append(f"{ref}: review must pass every checklist item")
