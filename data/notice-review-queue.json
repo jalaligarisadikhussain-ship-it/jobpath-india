@@ -1,4 +1,71 @@
 {
-    "version": 1,
-    "leads": []
+  "version": 1,
+  "leads": [
+    {
+      "id": "dd81d4bf22ea25eb0549",
+      "source_id": "cwc",
+      "source_name": "Central Warehousing Corporation — Careers",
+      "source_page": "https://cwceportal.com/careers",
+      "title": "Click here",
+      "notice_url": "https://cwceportal.com/Careers/Guidelines/45/45_Detailed Advertisement_7109fe46-7e18-4b68-84a5-8b6d6708e571.pdf",
+      "first_seen": "2026-10-28",
+      "status": "needs_human_review",
+      "review_checklist": {
+        "original_notice_checked": false,
+        "dates_checked": false,
+        "vacancies_checked": false,
+        "eligibility_checked": false,
+        "application_link_checked": false
+      },
+      "pdf_review": {
+        "status": "extraction_failed",
+        "checked_on": "2026-10-28",
+        "reason": "PDFParsingError"
+      }
+    },
+    {
+      "id": "5b06d4a9c64eeab83375",
+      "source_id": "cwc",
+      "source_name": "Central Warehousing Corporation — Careers",
+      "source_page": "https://cwceportal.com/careers",
+      "title": "Click here",
+      "notice_url": "https://cwceportal.com/Careers/Guidelines/44/44_Notice for Engagement of Consultant_482c03e5-ba5f-47ba-8a35-d40667a0c446.pdf",
+      "first_seen": "2026-10-28",
+      "status": "needs_human_review",
+      "review_checklist": {
+        "original_notice_checked": false,
+        "dates_checked": false,
+        "vacancies_checked": false,
+        "eligibility_checked": false,
+        "application_link_checked": false
+      },
+      "pdf_review": {
+        "status": "extraction_failed",
+        "checked_on": "2026-10-28",
+        "reason": "PDFParsingError"
+      }
+    },
+    {
+      "id": "c868d525692d9ac3de2f",
+      "source_id": "cwc",
+      "source_name": "Central Warehousing Corporation — Careers",
+      "source_page": "https://cwceportal.com/careers",
+      "title": "IMPORTANT NOTICE",
+      "notice_url": "https://cwceportal.com/Careers/Guidelines/45/IMPORTANT NOTICE.pdf",
+      "first_seen": "2026-10-28",
+      "status": "needs_human_review",
+      "review_checklist": {
+        "original_notice_checked": false,
+        "dates_checked": false,
+        "vacancies_checked": false,
+        "eligibility_checked": false,
+        "application_link_checked": false
+      },
+      "pdf_review": {
+        "status": "extraction_failed",
+        "checked_on": "2026-10-28",
+        "reason": "PDFParsingError"
+      }
+    }
+  ]
 }

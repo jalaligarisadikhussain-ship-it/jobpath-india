@@ -7,7 +7,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
     },
     "ssc": {
       "name": "Staff Selection Commission (SSC)",
@@ -15,7 +15,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: ValueError (not proof of a closed recruitment)"
+      "note": "Could not check: unexpectedly short website response; not proof of a closed recruitment"
     },
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
@@ -23,13 +23,13 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "07895c4d0052ba079bae884ab326ba0a2cec316217ab7ede6bb9776c67902cb8",
+      "fingerprint": "523326dc824ede94db499ccc9fd9c8c91cc64b1d7330d8e280769bd06952f1ac",
       "last_change_or_status_date": "2026-10-28"
     },
     "rrb": {
@@ -38,7 +38,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
     },
     "appsc": {
       "name": "Andhra Pradesh Public Service Commission",
@@ -46,7 +46,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "tgpsc": {
       "name": "Telangana Public Service Commission",
@@ -54,7 +54,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: HTTPError (not proof of a closed recruitment)"
+      "note": "Could not check: HTTP 403 (remote server blocked or rejected request); not proof of a closed recruitment"
     },
     "ctet": {
       "name": "Central Teacher Eligibility Test",
@@ -67,7 +67,7 @@
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "c1d8e0dc0a04b450789fdd3fbc803bc84231e7f71a3bcc4c4c42dd4e29afc6b8",
+      "fingerprint": "7c42a98d3cda7ee0a8785998f8d1bed7144928b4fdc93be41e4218ab5a7d3911",
       "last_change_or_status_date": "2026-10-28"
     },
     "nvs": {
@@ -76,7 +76,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
     },
     "employment-news": {
       "name": "Employment News",
@@ -84,7 +84,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: ValueError (not proof of a closed recruitment)"
+      "note": "Could not check: unexpectedly short website response; not proof of a closed recruitment"
     },
     "cwc": {
       "name": "Central Warehousing Corporation — Careers",
@@ -99,7 +99,7 @@
       "status": "unreachable",
       "fingerprint": null,
       "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: URLError (not proof of a closed recruitment)"
+      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
     }
   }
 }
