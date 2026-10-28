@@ -67,6 +67,26 @@ class AutomaticNoticePublishingTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             feed([bogus])
 
+    def test_generic_cwc_filename_generates_unverified_consultant_notice(self):
+        item = lead(title="Click here",
+                    notice_url="https://cwceportal.com/Careers/Guidelines/44/44_Notice for Engagement of Consultant_482c03e5-ba5f-47ba-8a35-d40667a0c446.pdf")
+        notices = feed([item])["notices"]
+        self.assertEqual(len(notices), 1)
+        self.assertEqual(notices[0]["title"], "Notice for Engagement of Consultant")
+        self.assertEqual(notices[0]["applicationStatus"], "unknown")
+
+    def test_generic_important_notice_has_no_job_claim(self):
+        item = lead(title="IMPORTANT NOTICE",
+                    notice_url="https://cwceportal.com/Careers/Guidelines/45/IMPORTANT NOTICE.pdf")
+        self.assertEqual(feed([item])["notices"], [])
+
+    def test_same_cwc_pdf_canonicalized_against_verified_job(self):
+        item = lead(title="Click here",
+                    notice_url="https://cwceportal.com/Careers/Guidelines/45/45_Detailed Advertisement_7109fe46-7e18-4b68-84a5-8b6d6708e571.pdf")
+        already = [{"notificationUrl": "https://www.cwceportal.com/Careers/Guidelines/45/45_Detailed%20Advertisement_7109fe46-7e18-4b68-84a5-8b6d6708e571.pdf",
+                    "verified": True, "isDemo": False}]
+        self.assertEqual(feed([item], already)["notices"], [])
+
     def test_html_snippets_remain_data_not_markup(self):
         xss = lead(title="<img src=x onerror=alert(1)> Recruitment 2026")
         published = feed([xss])["notices"]
