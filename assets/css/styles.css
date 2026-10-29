@@ -69,3 +69,16 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .ad-choices-dialog::backdrop{background:#07182c99}
 .ad-footer-choice{font:inherit;color:#c6d5e7;background:transparent;border:1px solid #59708a;border-radius:8px;padding:8px 12px;cursor:pointer}
 @media print{.ad-choices-dialog,.ad-footer-choice{display:none!important}}
+
+
+/* Optional Google Analytics consent; does not block normal navigation. */
+.analytics-consent{position:fixed;z-index:1100;bottom:12px;left:12px;right:12px;max-width:780px;margin:auto;background:#fff;color:#10233c;border:1px solid #9ab4ce;border-radius:14px;padding:16px 18px;box-shadow:0 5px 30px #07162950;display:flex;gap:18px;align-items:center}
+.analytics-consent strong{font-size:1rem}
+.analytics-consent p{font-size:.89rem;line-height:1.4;margin:5px 0 0}
+.analytics-consent a{color:#154da1}
+.analytics-consent-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.analytics-consent-actions .btn{white-space:nowrap}
+.analytics-choice-trigger{background:transparent;color:inherit;border:1px solid currentColor;border-radius:7px;padding:7px 12px;cursor:pointer;margin-top:12px}
+.analytics-choice-trigger:focus-visible,.analytics-consent button:focus-visible{outline:3px solid #5b9af2;outline-offset:2px}
+@media(max-width:650px){.analytics-consent{flex-direction:column;align-items:stretch}.analytics-consent-actions{flex-direction:column}.analytics-consent-actions .btn{width:100%;text-align:center}}
+@media print{.analytics-consent,.analytics-choice-trigger{display:none!important}}
