@@ -1,16 +1,16 @@
 /** Approved, project-specific tags. Third-party native ads require explicit opt-in. */
 const PUBLISHER=/^ca-pub-[0-9]{16}$/;
 const SLOT=/^[0-9]{8,12}$/;
-export const ADSTERRA_KEY='59088646af2816821f7d8b37df198113';
+export const ADSTERRA_KEY='84de856c9d01a37c08d4912fbf3df530';
 export const ADSTERRA_SCRIPT='https://bauval.org/21/'+ADSTERRA_KEY;
-export const ADSTERRA_HOST='jobpath-india.netlify.app';
+export const ADSTERRA_HOST='jobpath-india.pages.dev';
 export const AD_CONSENT_KEY='jp_advertising_consent';
-export const AD_CONSENT_VERSION='adsterra-2026-10-29';
+export const AD_CONSENT_VERSION='adsterra-cloudflare-2026-10-29';
 const CONSENT_AGE=180*24*60*60*1000;
 
 export function adsterraConfigured(config){
  const ad=config?.adsterra;
- return ad?.websiteId==='6159057'&&ad.adUnitId==='31978670'&&ad.format==='native'&&
+ return ad?.websiteHost===ADSTERRA_HOST&&ad.format==='native'&&
   ad.key===ADSTERRA_KEY&&ad.scriptUrl===ADSTERRA_SCRIPT&&
   ad.containerId==='container-'+ADSTERRA_KEY&&ad.adultAds===false;
 }
