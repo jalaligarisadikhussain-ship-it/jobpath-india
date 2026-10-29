@@ -11,6 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 from validate_ads_config import load_and_validate
+from adsense_identity import ADS_TXT_LINE
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / 'dist'
@@ -37,11 +38,8 @@ public_json = ('jobs.json', 'sources.json', 'pages.json', 'exam-updates.json',
 for filename in public_json:
     shutil.copyfile(ROOT / 'data' / filename, DIST / 'data' / filename)
 ads_config = load_and_validate()
-if ads_config['enabled'] and ads_config['provider'] == 'adsense':
-    # AdSense standard authorized seller line, using only the verified owner ID.
-    publisher = ads_config['publisherId'].removeprefix('ca-')
-    (DIST/'ads.txt').write_text(
-        f'google.com, {publisher}, DIRECT, f08c47fec0942fa0\n',
-        encoding='utf-8'
-    )
+# Public authorized-seller declaration supports AdSense ownership preparation,
+# independently of whether advertisements have been enabled or approved.
+# Do not load Google advertising scripts merely to publish ads.txt.
+(DIST/'ads.txt').write_text(ADS_TXT_LINE, encoding='utf-8')
 print(f'Generated dist/ with {len(page_data)} pages; automation and private review reports excluded.')

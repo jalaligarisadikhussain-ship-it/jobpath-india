@@ -1,5 +1,16 @@
 # JOBPATH INDIA — Advertising and revenue setup
 
+## 29 October 2026 — Google AdSense website verification readiness
+
+Google AdSense site: `jobpath-india.netlify.app`, status shown to owner: **Your site needs review**. Site ownership options visible: AdSense code snippet, ads.txt snippet, or meta tag. Use **Meta tag** to verify without loading third-party advertising before approval. Account ID `ca-pub-8073443569494348` is the genuine owner's ID from the AdSense dashboard and Google welcome email.
+
+The static build now emits `<meta name="google-adsense-account" content="ca-pub-8073443569494348">` in every page's head, and writes `dist/ads.txt` with `google.com, pub-8073443569494348, DIRECT, f08c47fec0942fa0`. These are **public ownership/seller signals only** and do **not** indicate that Google verified, reviewed, approved, or began serving advertising. The AdSense loader, paid ads and ad units remain OFF.
+
+**Hosting blocker:** Google AdSense site onboarding is for the existing Netlify hostname. The Cloudflare Workers and Render copies are different domains and do not establish ownership of Netlify. Since Netlify production deploys were paused for exhausted credits, confirm the real `https://jobpath-india.netlify.app/` source has the meta tag (or `/ads.txt`) before pressing **Verify** or requesting review. GitHub PR previews alone do not satisfy verification of the Netlify production URL. Google account displayed an action-required payment banner; complete any requested identity/address/phone/payment steps directly in AdSense.
+
+**Note:** Meta-tag method requires selecting **Meta tag** under Verify site ownership in AdSense. No new AdSense account should be created. Do not add a `workers.dev` subdomain that AdSense rejects as an invalid top-level domain.
+
+
 ## Current state — AdSense work paused on 28 October 2026
 
 The owner selected **Adsterra** as the current monetization provider. Continue with `ADSTERRA_MONETIZATION_SETUP.md`. Live advertising remains **OFF**. Adsterra subsequently approved JOBPATH INDIA and activated its native unit; the genuine tag and consent-gated integration are prepared, but Netlify deployment credits currently block release. See the Adsterra setup document for the confirmed IDs and deployment checkpoint.
