@@ -35,7 +35,7 @@ def validate_adsterra(ad):
 
 # A separate Cloudflare-specific unit is validated without altering Netlify's unit.
 CF_ADSTERRA_KEY = "84de856c9d01a37c08d4912fbf3df530"
-CF_ADSTERRA_SCRIPT = f"https://bauval.org/21/{CFKEY}"
+CF_ADSTERRA_SCRIPT = f"https://bauval.org/21/{CF_ADSTERRA_KEY}"
 
 def validate_cloudflare_adsterra(ad):
     if not isinstance(ad, dict):
