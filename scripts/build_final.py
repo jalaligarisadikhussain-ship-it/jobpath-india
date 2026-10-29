@@ -3,10 +3,11 @@
 from pathlib import Path
 import json,html,datetime,re
 from validate_ads_config import load_and_validate
-from site_config import site_origin
+from site_config import site_origin, search_primary_origin
 from xml.sax.saxutils import escape as xml_escape
 root=Path(__file__).resolve().parent.parent
 base=site_origin()
+seo_primary=search_primary_origin()
 pages=json.loads((root/'data/pages.json').read_text())
 source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
@@ -103,18 +104,19 @@ def fallback_content(key):
 for key,info in pages.items():
  urlpath='/'+(info['path']+'/' if info['path'] else '')
  url=base+urlpath
+ canonical_url=seo_primary+urlpath
  title=html.escape(info['title']+' | JobPath India')
  desc=html.escape(info['description'],quote=True)
  meta_status='noindex,follow' if key in noindex else 'index,follow'
- breadcrumb=[{'@type':'ListItem','position':1,'name':'Home','item':base+'/'}]
- if key!='home':breadcrumb.append({'@type':'ListItem','position':2,'name':info['title'],'item':url})
- schema={'@context':'https://schema.org','@graph':[{'@type':'WebSite','name':'JobPath India','url':base+'/','inLanguage':'en-IN','description':'Independent non-government recruitment research website.'},{'@type':'WebPage','name':info['title'],'url':url,'description':info['description'],'inLanguage':'en-IN','isPartOf':{'@id':base+'/'},'breadcrumb':{'@type':'BreadcrumbList','itemListElement':breadcrumb}}]}
+ breadcrumb=[{'@type':'ListItem','position':1,'name':'Home','item':seo_primary+'/'}]
+ if key!='home':breadcrumb.append({'@type':'ListItem','position':2,'name':info['title'],'item':canonical_url})
+ schema={'@context':'https://schema.org','@graph':[{'@type':'WebSite','name':'JobPath India','url':seo_primary+'/','inLanguage':'en-IN','description':'Independent non-government recruitment research website.'},{'@type':'WebPage','name':info['title'],'url':canonical_url,'description':info['description'],'inLanguage':'en-IN','isPartOf':{'@id':seo_primary+'/'},'breadcrumb':{'@type':'BreadcrumbList','itemListElement':breadcrumb}}]}
  static_nav=' '.join(f'<a href="{p}">{html.escape(t)}</a>' for t,p in nav)
  text=f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102e5f"><title>{title}</title><meta name="description" content="{desc}"><meta name="robots" content="{meta_status}"><link rel="canonical" href="{html.escape(url,quote=True)}"><meta property="og:type" content="website"><meta property="og:site_name" content="JobPath India"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:url" content="{html.escape(url,quote=True)}"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="{title}"><meta name="twitter:description" content="{desc}"><link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg"><link rel="stylesheet" href="/assets/css/styles.css?v=release-3-0"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(',',':'))}</script><script id="jobpath-data" type="application/json">{inline_json}</script>{adsense_loader}<script type="module" src="/assets/js/app.mjs?v=release-3-0"></script><script type="module" src="/assets/js/analytics.mjs?v=ga4-2026-10-29"></script></head><body data-page="{key}"><a class="skip" href="#main">Skip to main content</a><div id="app"><header class="site-header"><div class="wrap"><nav aria-label="Navigation" class="nav-wrap">{static_nav}</nav></div></header><div class="info-banner"><div class="wrap"><strong>Independent information website.</strong> Not affiliated with any government agency. Refer to official source notices and check last verification dates.</div></div><main id="main"><div class="wrap"><section class="page-intro">{fallback_content(key)}</section></div></main><footer class="footer"><div class="wrap">JobPath India · Independent recruitment information · <a href="/disclaimer/">Disclaimer</a> · <button type="button" class="analytics-choice-trigger" data-analytics-choices>Analytics choices</button></div></footer></div></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102e5f"><title>{title}</title><meta name="description" content="{desc}"><meta name="robots" content="{meta_status}"><link rel="canonical" href="{html.escape(canonical_url,quote=True)}"><meta property="og:type" content="website"><meta property="og:site_name" content="JobPath India"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:url" content="{html.escape(canonical_url,quote=True)}"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="{title}"><meta name="twitter:description" content="{desc}"><link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg"><link rel="stylesheet" href="/assets/css/styles.css?v=release-3-0"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(',',':'))}</script><script id="jobpath-data" type="application/json">{inline_json}</script>{adsense_loader}<script type="module" src="/assets/js/app.mjs?v=release-3-0"></script><script type="module" src="/assets/js/analytics.mjs?v=ga4-2026-10-29"></script></head><body data-page="{key}"><a class="skip" href="#main">Skip to main content</a><div id="app"><header class="site-header"><div class="wrap"><nav aria-label="Navigation" class="nav-wrap">{static_nav}</nav></div></header><div class="info-banner"><div class="wrap"><strong>Independent information website.</strong> Not affiliated with any government agency. Refer to official source notices and check last verification dates.</div></div><main id="main"><div class="wrap"><section class="page-intro">{fallback_content(key)}</section></div></main><footer class="footer"><div class="wrap">JobPath India · Independent recruitment information · <a href="/disclaimer/">Disclaimer</a> · <button type="button" class="analytics-choice-trigger" data-analytics-choices>Analytics choices</button></div></footer></div></body></html>
 '''
  target=root/info['path']/'index.html';target.parent.mkdir(parents=True,exist_ok=True);target.write_text(text)
-urls=[base+'/'+(v['path']+'/' if v['path'] else '') for k,v in pages.items() if k not in noindex]
+urls=[base+'/'+(v['path']+'/' if v['path'] else '') for k,v in pages.items() if k not in noindex] if base==seo_primary else []
 sitemap='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{xml_escape(url)}</loc></url>\n' for url in urls)+'</urlset>\n'
 (root/'sitemap.xml').write_text(sitemap)
 (root/'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n')

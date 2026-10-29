@@ -1,3 +1,5 @@
+> **Status update — 29 October 2026:** Render Static Site `jobpath-india` deployed successfully at https://jobpath-india.onrender.com/ in `My Workspace`. Deployment `dep-dbhgj5ijnfac739v6lqg` is live and GA4 Realtime displayed one active user. Existing Netlify https://jobpath-india.netlify.app/ remains the Google-indexed primary. Follow-up SEO builds set Render page canonicals to Netlify and leave Render's sitemap empty to avoid proposing two URLs for the same content. Switching primary later requires updating `JOBPATH_PRIMARY_SEARCH_URL`, Search Console, and redirecting the former URL when available. Cost was $0.00 at the user-supplied billing screenshot; continued free use depends on usage limits.
+
 # JOBPATH INDIA — Render Static Site preparation
 
 Updated 29 October 2026. The owner authorized a separate Render Static Site in

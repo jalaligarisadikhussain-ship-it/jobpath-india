@@ -29,3 +29,13 @@ def site_origin(environ=None):
     if not valid:
         raise ValueError("Site URL must be a public HTTPS origin without credentials or a path")
     return "https://" + host
+
+def search_primary_origin(environ=None):
+    """Return the preferred Google canonical origin, independent of the active host.
+
+    Netlify remains the indexed primary while Render is a separately hosted copy.
+    If the primary host changes later, explicitly set JOBPATH_PRIMARY_SEARCH_URL
+    to the confirmed replacement origin during the migration.
+    """
+    env = os.environ if environ is None else environ
+    return site_origin({"JOBPATH_SITE_URL": env.get("JOBPATH_PRIMARY_SEARCH_URL", DEFAULT_SITE_URL)})
