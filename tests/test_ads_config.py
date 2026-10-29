@@ -27,6 +27,7 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def native_config(self):
         config=copy.deepcopy(load_and_validate())
         config.update(enabled=True,provider="adsterra")
+        config["adsterra"]["siteStatus"]="approved"
         return config
 
     def test_approved_native_code_and_consent_are_required(self):
@@ -40,10 +41,10 @@ class AdvertisingConfigurationTests(unittest.TestCase):
 
     def test_adsterra_script_cannot_be_replaced_or_injected(self):
         for value in ["https://example.com/invoke.js","javascript:alert(1)",
-                      "https://bauval.org/21/59088646af2816821f7d8b37df198113?track=1"]:
+                      "https://bauval.org/21/84de856c9d01a37c08d4912fbf3df530?track=1"]:
             bad=self.native_config();bad["adsterra"]["scriptUrl"]=value
             self.assertTrue(validate(bad))
-        bad=self.native_config();bad["adsterra"]["websiteId"]="6156497"
+        bad=self.native_config();bad["adsterra"]["websiteHost"]="example.com"
         self.assertTrue(validate(bad))
 
     def test_malformed_native_config_fails_closed(self):
