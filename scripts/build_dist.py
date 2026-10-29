@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build only the public static web output into dist/ for Netlify.
+"""Build only the public static web output into dist/ for static hosting.
 
 The repo also contains automation, tests and review reports that must not be
 published with the public site. Run: python3 scripts/build_dist.py

@@ -1,0 +1,81 @@
+"""Exercise complete static releases for existing and additional hosting origins."""
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import unittest
+import xml.etree.ElementTree as ET
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from site_config import DEFAULT_SITE_URL, site_origin
+
+
+class HostingBuildTests(unittest.TestCase):
+    def test_existing_host_is_default_and_render_metadata_is_scoped(self):
+        self.assertEqual(site_origin({}), DEFAULT_SITE_URL)
+        self.assertEqual(site_origin({"RENDER_EXTERNAL_URL": "https://other.invalid"}), DEFAULT_SITE_URL)
+
+    def test_explicit_verified_domain_can_override_render_origin(self):
+        self.assertEqual(site_origin({"JOBPATH_SITE_URL": "https://jobs.example/", "RENDER": "true",
+                                      "RENDER_EXTERNAL_URL": "https://render-test.invalid"}),
+                         "https://jobs.example")
+
+    def test_unsafe_or_non_origin_values_fail_before_generating_pages(self):
+        for value in ["http://jobs.example", "//jobs.example", "https://user:pass@jobs.example",
+                      "https://jobs.example/path", "https://jobs.example?x=1", "https://jobs.example#",
+                      "https://jobs.example:443", "https://jobs.example\n", "https://jobs.example/<script>",
+                      "https://jobs.example\\other", "https://localhost", "https://-jobs.example"]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                site_origin({"JOBPATH_SITE_URL": value})
+
+    def check_release(self, env_settings, origin):
+        with tempfile.TemporaryDirectory(prefix="jobpath-hosting-") as tmp:
+            work = Path(tmp)
+            for folder in ("scripts", "data", "assets"):
+                shutil.copytree(ROOT / folder, work / folder, ignore=shutil.ignore_patterns("__pycache__"))
+            shutil.copyfile(ROOT / "googlefcd24aba957dc07b.html", work / "googlefcd24aba957dc07b.html")
+            env = dict(os.environ)
+            for key in ("JOBPATH_SITE_URL", "RENDER", "RENDER_EXTERNAL_URL"):
+                env.pop(key, None)
+            env.update(env_settings)
+            subprocess.run([sys.executable, "scripts/build_dist.py"], cwd=work, env=env,
+                           check=True, capture_output=True, text=True)
+            dist = work / "dist"
+            pages = json.loads((ROOT / "data/pages.json").read_text())
+            for page in pages.values():
+                route = "/" + (page["path"] + "/" if page["path"] else "")
+                text = (dist / page["path"] / "index.html").read_text()
+                self.assertIn(f'<link rel="canonical" href="{origin}{route}">', text)
+                self.assertIn(f'<meta property="og:url" content="{origin}{route}">', text)
+                graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', text)[1])
+                self.assertEqual(graph["@graph"][0]["url"], origin + "/")
+                self.assertEqual(graph["@graph"][1]["url"], origin + route)
+                self.assertNotRegex(text, r'<script[^>]+src="https://(?:bauval\.org|pagead2\.googlesyndication\.com)')
+            sitemap = ET.parse(dist / "sitemap.xml")
+            locations = [node.text for node in sitemap.findall(".//{*}loc")]
+            self.assertEqual(len(locations), 25)
+            self.assertTrue(all(url.startswith(origin + "/") for url in locations))
+            self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
+            self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
+            for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
+                self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
+            self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
+            for private in ("scripts", "reports", "tests", ".github", "RENDER_DEPLOYMENT_SETUP.md"):
+                self.assertFalse((dist / private).exists())
+            self.assertFalse((dist / "ads.txt").exists())
+
+    def test_complete_release_preserves_existing_netlify_metadata_and_public_data(self):
+        self.check_release({}, DEFAULT_SITE_URL)
+
+    def test_complete_render_release_uses_actual_service_origin_without_activating_ads(self):
+        self.check_release({"RENDER": "true", "RENDER_EXTERNAL_URL": "https://jobpath-render-test.invalid"},
+                           "https://jobpath-render-test.invalid")
+
+
+if __name__ == "__main__":
+    unittest.main()

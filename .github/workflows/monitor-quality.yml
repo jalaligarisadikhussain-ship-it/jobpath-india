@@ -17,6 +17,7 @@ on:
       - 'data/pages.json'
       - 'assets/js/app.mjs'
       - 'scripts/build_final.py'
+      - 'scripts/site_config.py'
       - 'scripts/build_dist.py'
       - 'scripts/validate_ads_config.py'
       - 'data/ads-config.json'

@@ -3,9 +3,10 @@
 from pathlib import Path
 import json,html,datetime,re
 from validate_ads_config import load_and_validate
+from site_config import site_origin
 from xml.sax.saxutils import escape as xml_escape
 root=Path(__file__).resolve().parent.parent
-base='https://jobpath-india.netlify.app'
+base=site_origin()
 pages=json.loads((root/'data/pages.json').read_text())
 source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
@@ -114,7 +115,7 @@ for key,info in pages.items():
 urls=[base+'/'+(v['path']+'/' if v['path'] else '') for k,v in pages.items() if k not in noindex]
 sitemap='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{xml_escape(url)}</loc></url>\n' for url in urls)+'</urlset>\n'
 (root/'sitemap.xml').write_text(sitemap)
-(root/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://jobpath-india.netlify.app/sitemap.xml\n')
+(root/'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n')
 (root/'netlify.toml').write_text('''[build]
   command = "python3 scripts/build_dist.py"
   publish = "dist"

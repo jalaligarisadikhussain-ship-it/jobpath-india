@@ -2,6 +2,14 @@
 
 **Live project to update after manual review:** https://jobpath-india.netlify.app/
 
+**Render preparation (29 October 2026):** A separate Static Site is authorized,
+with `main`, build command `python3 scripts/build_dist.py`, and publish directory
+`dist`. The build now uses Render's actual service origin for canonical URLs,
+structured data, sitemap and robots metadata, while ordinary Netlify builds keep
+the existing origin. Billing allowance verification requires dashboard sign-in;
+no Render service has been created and all advertising remains disabled. See
+[RENDER_DEPLOYMENT_SETUP.md](RENDER_DEPLOYMENT_SETUP.md) for the exact checkpoint.
+
 An independent static-first government recruitment information portal covering central, state, defence, banking, railway, teaching and SSC/UPSC resources. **Not a government website.** No paid backend, API key, website account login, or user registration is required.
 
 
