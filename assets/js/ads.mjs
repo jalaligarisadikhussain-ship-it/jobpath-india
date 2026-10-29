@@ -4,19 +4,39 @@ const SLOT=/^[0-9]{8,12}$/;
 export const ADSTERRA_KEY='59088646af2816821f7d8b37df198113';
 export const ADSTERRA_SCRIPT='https://bauval.org/21/'+ADSTERRA_KEY;
 export const ADSTERRA_HOST='jobpath-india.netlify.app';
+export const CLOUDFLARE_ADSTERRA_HOST='jobpath-india.pages.dev';
+export const CLOUDFLARE_ADSTERRA_KEY='84de856c9d01a37c08d4912fbf3df530';
+export const CLOUDFLARE_ADSTERRA_SCRIPT='https://bauval.org/21/'+CLOUDFLARE_ADSTERRA_KEY;
 export const AD_CONSENT_KEY='jp_advertising_consent';
 export const AD_CONSENT_VERSION='adsterra-2026-10-29';
 const CONSENT_AGE=180*24*60*60*1000;
 
+// Hosting-specific config: never change the existing Netlify/Render advertising state.
+export function resolveAdvertisingConfig(config,hostname=''){
+ if(hostname!==CLOUDFLARE_ADSTERRA_HOST)return config;
+ const ad=config?.cloudflareAdsterra;
+ if(ad?.enabled!==true)return {...config,enabled:false,provider:'none'};
+ return {...config,enabled:true,provider:'adsterra',adsterra:ad,
+  consent:{required:true,version:AD_CONSENT_VERSION}};
+}
+
 export function adsterraConfigured(config){
  const ad=config?.adsterra;
+ if(ad?.websiteHost===CLOUDFLARE_ADSTERRA_HOST){
+  return ad.format==='native'&&ad.key===CLOUDFLARE_ADSTERRA_KEY&&
+   ad.scriptUrl===CLOUDFLARE_ADSTERRA_SCRIPT&&
+   ad.containerId==='container-'+CLOUDFLARE_ADSTERRA_KEY&&
+   ad.adultAds===false&&ad.adUnitStatus==='active';
+ }
  return ad?.websiteId==='6159057'&&ad.adUnitId==='31978670'&&ad.format==='native'&&
   ad.key===ADSTERRA_KEY&&ad.scriptUrl===ADSTERRA_SCRIPT&&
   ad.containerId==='container-'+ADSTERRA_KEY&&ad.adultAds===false;
 }
 export function adsterraReady(config){
  return config?.enabled===true&&config.provider==='adsterra'&&adsterraConfigured(config)&&
-  config.adsterra.siteStatus==='approved'&&config.adsterra.adUnitStatus==='active'&&
+  (config.adsterra.websiteHost===CLOUDFLARE_ADSTERRA_HOST
+   ? config.adsterra.siteStatus==='unverified' // Active unit confirmed; website approval not independently checked.
+   : config.adsterra.siteStatus==='approved')&&config.adsterra.adUnitStatus==='active'&&
   config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
 }
 export function adSenseReady(config){
@@ -75,15 +95,18 @@ export function startAdUnits(config){
  if(typeof document==='undefined'||typeof window==='undefined')return 0;
  if(adsterraReady(config)){
   syncNativePlacements();
-  if(window.location.hostname!==ADSTERRA_HOST||privacySignal()||readAdvertisingConsent()!=='allow')return 0;
+  const ad=config.adsterra;
+  const allowedHost=ad.websiteHost===CLOUDFLARE_ADSTERRA_HOST?CLOUDFLARE_ADSTERRA_HOST:ADSTERRA_HOST;
+  const scriptUrl=ad.scriptUrl; // Exact pinned URL, validated by adsterraReady.
+  if(window.location.hostname!==allowedHost||privacySignal()||readAdvertisingConsent()!=='allow')return 0;
   for(const unit of document.querySelectorAll('[data-jobpath-native]')){
    if(unit.id!==config.adsterra.containerId||unit.dataset.jobpathInitialized==='true')continue;
-   if(document.querySelector('script[src="'+ADSTERRA_SCRIPT+'"]'))return 0;
+   if(document.querySelector('script[src="'+scriptUrl+'"]'))return 0;
    const script=document.createElement('script');
    // Reproduce the exact account-supplied native tag; do not use an iframe,
    // change its URL, add tracking parameters, or run it before consent.
    script.setAttribute('async','async');script.setAttribute('data-cfasync','false');
-   script.src=ADSTERRA_SCRIPT;
+   script.src=scriptUrl;
    const status=unit.parentNode.querySelector('[data-ad-status]');
    script.addEventListener('error',()=>{if(status)status.textContent='Advertisement unavailable.'},{once:true});
    unit.dataset.jobpathInitialized='true';
@@ -130,7 +153,7 @@ export function closeAdvertisingChoices(){
 export function chooseAdvertising(config,choice){
  if(!adsterraReady(config)||(choice==='allow'&&privacySignal())||!saveAdvertisingConsent(choice))return false;
  closeAdvertisingChoices();
- if(choice==='deny'&&document.querySelector('script[src="'+ADSTERRA_SCRIPT+'"]')){
+ if(choice==='deny'&&document.querySelector('script[src="'+config.adsterra.scriptUrl+'"]')){
   // Reload removes the already-running third-party script and its timers.
   window.location.reload();return true;
  }
