@@ -7,7 +7,7 @@ import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
-const active={...current,enabled:true,provider:'adsterra'};
+const active={...current,enabled:true,provider:'adsterra',adsterra:{...current.adsterra,siteStatus:'approved'}};
 function memoryStorage(){
  const values=new Map();
  return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};
@@ -19,7 +19,7 @@ function browserFixture(run){
  const unit={id:'container-'+ADSTERRA_KEY,dataset:{},parentNode:parent,hidden:true};
  const host={querySelector:selector=>selector==='[data-ad-consent-notice]'?notice:selector==='[data-jobpath-native]'?unit:status};
  globalThis.localStorage=storage;
- globalThis.window={navigator:{globalPrivacyControl:false},location:{hostname:'jobpath-india.netlify.app',reload:()=>reloads++}};
+ globalThis.window={navigator:{globalPrivacyControl:false},location:{hostname:'jobpath-india.pages.dev',reload:()=>reloads++}};
  globalThis.document={
   querySelectorAll:selector=>selector==='[data-jobpath-native-placement]'?[host]:selector==='[data-jobpath-native]'?[unit]:[],
   querySelector:selector=>selector==='script[src="'+ADSTERRA_SCRIPT+'"]'?scripts[0]??null:null,
@@ -41,7 +41,7 @@ test('another project, altered script URL and unapproved unit cannot activate',(
  for(const scriptUrl of ['https://example.com/ad.js',ADSTERRA_SCRIPT+'?track=1',ADSTERRA_SCRIPT+'"><script>']){
   assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,scriptUrl}}),false);
  }
- assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,websiteId:'6156497'}}),false);
+ assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,websiteHost:'example.com'}}),false);
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,siteStatus:'pending'}}),false);
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,adUnitStatus:'inactive'}}),false);
  assert.equal(adsterraReady({...active,consent:{required:false,version:AD_CONSENT_VERSION}}),false);
