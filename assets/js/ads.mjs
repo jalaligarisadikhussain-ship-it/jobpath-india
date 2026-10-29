@@ -3,6 +3,7 @@ const PUBLISHER=/^ca-pub-[0-9]{16}$/;
 const SLOT=/^[0-9]{8,12}$/;
 export const ADSTERRA_KEY='59088646af2816821f7d8b37df198113';
 export const ADSTERRA_SCRIPT='https://bauval.org/21/'+ADSTERRA_KEY;
+export const ADSTERRA_HOST='jobpath-india.netlify.app';
 export const AD_CONSENT_KEY='jp_advertising_consent';
 export const AD_CONSENT_VERSION='adsterra-2026-10-29';
 const CONSENT_AGE=180*24*60*60*1000;
@@ -74,7 +75,7 @@ export function startAdUnits(config){
  if(typeof document==='undefined'||typeof window==='undefined')return 0;
  if(adsterraReady(config)){
   syncNativePlacements();
-  if(privacySignal()||readAdvertisingConsent()!=='allow')return 0;
+  if(window.location.hostname!==ADSTERRA_HOST||privacySignal()||readAdvertisingConsent()!=='allow')return 0;
   for(const unit of document.querySelectorAll('[data-jobpath-native]')){
    if(unit.id!==config.adsterra.containerId||unit.dataset.jobpathInitialized==='true')continue;
    if(document.querySelector('script[src="'+ADSTERRA_SCRIPT+'"]'))return 0;

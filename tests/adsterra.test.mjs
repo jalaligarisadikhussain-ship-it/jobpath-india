@@ -19,7 +19,7 @@ function browserFixture(run){
  const unit={id:'container-'+ADSTERRA_KEY,dataset:{},parentNode:parent,hidden:true};
  const host={querySelector:selector=>selector==='[data-ad-consent-notice]'?notice:selector==='[data-jobpath-native]'?unit:status};
  globalThis.localStorage=storage;
- globalThis.window={navigator:{globalPrivacyControl:false},location:{reload:()=>reloads++}};
+ globalThis.window={navigator:{globalPrivacyControl:false},location:{hostname:'jobpath-india.netlify.app',reload:()=>reloads++}};
  globalThis.document={
   querySelectorAll:selector=>selector==='[data-jobpath-native-placement]'?[host]:selector==='[data-jobpath-native]'?[unit]:[],
   querySelector:selector=>selector==='script[src="'+ADSTERRA_SCRIPT+'"]'?scripts[0]??null:null,
@@ -87,6 +87,13 @@ test('Global Privacy Control overrides a stored opt-in',()=>browserFixture(({sto
  saveAdvertisingConsent('allow',storage);window.navigator.globalPrivacyControl=true;
  assert.equal(startAdUnits(active),0);
  assert.equal(chooseAdvertising(active,'allow'),false);
+ assert.equal(scripts.length,0);
+}));
+test('the tag cannot request ads from another website or a local test page',()=>browserFixture(({storage,scripts})=>{
+ saveAdvertisingConsent('allow',storage);
+ for(const hostname of ['localhost','bytebright-converter.netlify.app','example.com']){
+  window.location.hostname=hostname;assert.equal(startAdUnits(active),0);
+ }
  assert.equal(scripts.length,0);
 }));
 test('unavailable storage cannot silently grant consent',()=>browserFixture(({scripts})=>{

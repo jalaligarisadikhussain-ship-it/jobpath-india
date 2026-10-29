@@ -28,7 +28,7 @@ The account supplied this exact tag for JOBPATH INDIA:
 <div id="container-59088646af2816821f7d8b37df198113"></div>
 ```
 
-This is public installation code, not a password or API secret. The Python validator and browser module pin this website, unit, script URL and container. A new key, host or path requires a reviewed code change. Do not add tracking parameters or use another publisher's code.
+This is public installation code, not a password or API secret. The Python validator and browser module pin this website, unit, script URL and container. The runtime also refuses native ad requests outside the approved `jobpath-india.netlify.app` hostname, including localhost and unrelated projects. A new key, host or path requires a reviewed code change. Do not add tracking parameters or use another publisher's code.
 
 `assets/js/ads.mjs` reproduces the supplied script attributes and adjacent container only after opt-in. The tag is not placed in an iframe. Only native unit `31978670` is included in this implementation. The dashboard also shows Popunder and Social Bar units for this site; their tags were not copied, installed or executed by this integration. No Smartlink or fake application link was added. Placements remain below content on the homepage and the existing eligible job-category pages; job details, application actions and unverified automatic notices have no ad placements.
 
@@ -64,7 +64,7 @@ No Adsterra seller line was supplied by the website registration or Get Code int
 ## Checks completed
 
 - Netlify production build: **39 routes**, **25 sitemap URLs**.
-- JavaScript tests: **40 passed**, including opt-in, refusal, expiry, withdrawal, Global Privacy Control, duplicate-load protection, storage errors and exact approved tag restrictions.
+- JavaScript tests: **41 passed**, including opt-in, refusal, expiry, withdrawal, Global Privacy Control, duplicate-load protection, storage errors, approved-domain restrictions and exact approved tag restrictions.
 - Python tests: **102 passed**, including provider validation and recruitment automation.
 - Recruitment data validation, static link/metadata audit and syntax checks passed.
 - No government listing data or publication workflow was changed.
