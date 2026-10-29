@@ -13,13 +13,13 @@ An unreachable source is **not** proof that a recruitment is closed.
 | Union Public Service Commission (UPSC) | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment | [Visit source](https://upsc.gov.in/) |
 | Railway Recruitment Board Chandigarh | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment | [Visit source](https://www.rrbcdg.gov.in/) |
 | Institute of Banking Personnel Selection (IBPS) | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment | [Visit source](https://www.ibps.in/) |
-| State Bank of India Careers | reachable | 2026-10-28 | — | [Visit source](https://sbi.co.in/web/careers) |
-| Andhra Pradesh Public Service Commission | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment | [Visit source](https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications) |
+| State Bank of India Careers | reachable | 2026-10-29 | — | [Visit source](https://sbi.co.in/web/careers) |
+| Andhra Pradesh Public Service Commission | unreachable | 2026-10-29 | Could not check: network/DNS/TLS error (gaierror); not proof of a closed recruitment | [Visit source](https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications) |
 | Telangana Public Service Commission | unreachable | 2026-10-28 | Could not check: HTTP 403 (remote server blocked or rejected request); not proof of a closed recruitment | [Visit source](https://www.tgpsc.gov.in/) |
 | Central Warehousing Corporation — Careers | reachable | 2026-10-28 | — | [Visit source](https://cwceportal.com/careers) |
 | National Insurance Company — Recruitment | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment | [Visit source](https://nationalinsurance.nic.co.in/recruitment) |
 | Central Teacher Eligibility Test | reachable | 2026-10-28 | — | [Visit source](https://ctet.nic.in/) |
-| Kendriya Vidyalaya Sangathan | reachable | 2026-10-28 | — | [Visit source](https://kvsangathan.nic.in/) |
+| Kendriya Vidyalaya Sangathan | reachable | 2026-10-29 | — | [Visit source](https://kvsangathan.nic.in/) |
 | Navodaya Vidyalaya Samiti | unreachable | 2026-10-28 | Could not check: network/DNS/TLS error (OSError); not proof of a closed recruitment | [Visit source](https://navodaya.gov.in/) |
 | Employment News | unreachable | 2026-10-28 | Could not check: unexpectedly short website response; not proof of a closed recruitment | [Visit source](https://employmentnews.gov.in/) |
 
