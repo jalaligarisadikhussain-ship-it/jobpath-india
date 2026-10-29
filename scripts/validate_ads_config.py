@@ -12,14 +12,14 @@ PUBLISHER_RE = re.compile(r"ca-pub-[0-9]{16}\Z")
 SLOT_RE = re.compile(r"[0-9]{8,12}\Z")
 # Exact public tag observed in JOBPATH INDIA's authenticated Adsterra account.
 # A new provider host or ad unit requires an explicit code review, not a URL edit.
-ADSTERRA_KEY = "59088646af2816821f7d8b37df198113"
+ADSTERRA_KEY = "84de856c9d01a37c08d4912fbf3df530"
 ADSTERRA_SCRIPT = f"https://bauval.org/21/{ADSTERRA_KEY}"
 
 
 def validate_adsterra(ad):
     if not isinstance(ad, dict):
         return ["adsterra must be an object"]
-    expected = {"websiteId": "6159057", "adUnitId": "31978670", "format": "native",
+    expected = {"websiteHost": "jobpath-india.pages.dev", "format": "native",
                 "key": ADSTERRA_KEY, "scriptUrl": ADSTERRA_SCRIPT,
                 "containerId": f"container-{ADSTERRA_KEY}", "adultAds": False}
     errors = [f"Adsterra {key} must match the verified JOBPATH INDIA tag"
@@ -63,7 +63,7 @@ def validate(config):
                 errors.append("Adsterra website approval and active unit are required")
             consent = config.get("consent", {})
             if (not isinstance(consent, dict) or consent.get("required") is not True
-                    or consent.get("version") != "adsterra-2026-10-29"):
+                    or consent.get("version") != "adsterra-cloudflare-2026-10-29"):
                 errors.append("Versioned opt-in advertising consent is required")
             if publisher not in (None, "") or any(value not in (None, "") for value in slots.values()):
                 errors.append("Adsterra must not use Google publisher or slot identifiers")
