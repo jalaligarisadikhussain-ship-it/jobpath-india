@@ -13,6 +13,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from site_config import DEFAULT_SITE_URL, site_origin
+from adsense_identity import ADSENSE_META_TAG, ADS_TXT_LINE
 
 
 class HostingBuildTests(unittest.TestCase):
@@ -50,16 +51,17 @@ class HostingBuildTests(unittest.TestCase):
             for page in pages.values():
                 route = "/" + (page["path"] + "/" if page["path"] else "")
                 text = (dist / page["path"] / "index.html").read_text()
-                self.assertIn(f'<link rel="canonical" href="{origin}{route}">', text)
-                self.assertIn(f'<meta property="og:url" content="{origin}{route}">', text)
+                self.assertIn(f'<link rel="canonical" href="{DEFAULT_SITE_URL}{route}">', text)
+                self.assertIn(f'<meta property="og:url" content="{DEFAULT_SITE_URL}{route}">', text)
                 graph = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>', text)[1])
-                self.assertEqual(graph["@graph"][0]["url"], origin + "/")
-                self.assertEqual(graph["@graph"][1]["url"], origin + route)
+                self.assertEqual(graph["@graph"][0]["url"], DEFAULT_SITE_URL + "/")
+                self.assertEqual(graph["@graph"][1]["url"], DEFAULT_SITE_URL + route)
+                self.assertIn(ADSENSE_META_TAG, text)
                 self.assertNotRegex(text, r'<script[^>]+src="https://(?:bauval\.org|pagead2\.googlesyndication\.com)')
             sitemap = ET.parse(dist / "sitemap.xml")
             locations = [node.text for node in sitemap.findall(".//{*}loc")]
-            self.assertEqual(len(locations), 25)
-            self.assertTrue(all(url.startswith(origin + "/") for url in locations))
+            self.assertEqual(len(locations), 25 if origin == DEFAULT_SITE_URL else 0)
+            self.assertTrue(all(url.startswith(DEFAULT_SITE_URL + "/") for url in locations))
             self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
             self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
             for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
@@ -67,12 +69,12 @@ class HostingBuildTests(unittest.TestCase):
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
             for private in ("scripts", "reports", "tests", ".github", "RENDER_DEPLOYMENT_SETUP.md"):
                 self.assertFalse((dist / private).exists())
-            self.assertFalse((dist / "ads.txt").exists())
+            self.assertEqual((dist / "ads.txt").read_text(), ADS_TXT_LINE)
 
     def test_complete_release_preserves_existing_netlify_metadata_and_public_data(self):
         self.check_release({}, DEFAULT_SITE_URL)
 
-    def test_complete_render_release_uses_actual_service_origin_without_activating_ads(self):
+    def test_complete_render_release_uses_netlify_primary_canonical_without_activating_ads(self):
         self.check_release({"RENDER": "true", "RENDER_EXTERNAL_URL": "https://jobpath-render-test.invalid"},
                            "https://jobpath-render-test.invalid")
 
