@@ -127,7 +127,7 @@
   "privacy": {
     "path": "privacy-policy",
     "title": "Privacy Policy",
-    "description": "How JobPath India uses local browser storage and protects privacy."
+    "description": "How JobPath India uses local storage and consent-controlled Google Analytics."
   },
   "terms": {
     "path": "terms",

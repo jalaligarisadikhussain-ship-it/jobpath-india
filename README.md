@@ -103,3 +103,14 @@ Days 1–5: recheck official-domain references; days 6–10: review original rec
 This build includes 25 automated Node tests, including actual execution of all 38 page renderers with external JSON fetch deliberately denied, plus static metadata/asset/route audits. Chromium browser navigation was denied by the execution environment (`ERR_BLOCKED_BY_ADMINISTRATOR`), so true visual desktop/mobile browser QA and real-device compatibility have **not** been verified. Deployment itself is not performed in this deliverable.
 
 For release quality evidence, read `RELEASE_QA.md`.
+
+
+## Optional Google Analytics 4 integration (29 October 2026)
+
+- Web stream: JOBPATH INDIA Website; Measurement ID: G-HFKPWNKDBY.
+- assets/js/analytics.mjs uses visitor opt-in: no Google tag request is made until Allow analytics is selected. Visitors can decline or change their choice through Analytics choices in the footer.
+- Analytics helps measure page views and engagement for consenting visitors only. Tracking blockers or a declined preference prevent collection.
+- The generated 38-page site includes the analytics module through scripts/build_final.py, and scripts/build_dist.py includes the asset in the published directory.
+- Privacy notices were updated; advertising remains disabled and separate from analytics consent.
+- To activate on the live site, deploy the latest main build to the existing hosting project. If Netlify deploys are paused because credits are exhausted, the repository change alone does not activate live collection.
+- Test by visiting the published site, allowing analytics, and checking Google Analytics Reports > Realtime. Realtime reporting can be delayed.
