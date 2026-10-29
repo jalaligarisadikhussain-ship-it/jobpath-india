@@ -51,6 +51,17 @@ class AdvertisingConfigurationTests(unittest.TestCase):
             bad=self.native_config();bad["adsterra"]=value
             self.assertTrue(validate(bad))
 
+    def test_cloudflare_native_unit_is_distinct_and_validated(self):
+        cfg=copy.deepcopy(load_and_validate())
+        self.assertFalse(cfg["enabled"])
+        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertEqual(validate(cfg),[])
+        for key,value in [("websiteHost","example.com"),("scriptUrl","https://example.com/x"),
+                          ("key","malicious"),("adultAds",True),("adUnitStatus","inactive")]:
+            bad=copy.deepcopy(cfg)
+            bad["cloudflareAdsterra"][key]=value
+            self.assertTrue(validate(bad))
+
     def test_native_provider_cannot_mix_google_ids(self):
         bad=self.native_config();bad["publisherId"]="ca-pub-8073443569494348"
         self.assertTrue(validate(bad))

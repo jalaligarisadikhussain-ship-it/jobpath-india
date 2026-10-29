@@ -33,6 +33,27 @@ def validate_adsterra(ad):
     return errors
 
 
+# A separate Cloudflare-specific unit is validated without altering Netlify's unit.
+CF_ADSTERRA_KEY = "84de856c9d01a37c08d4912fbf3df530"
+CF_ADSTERRA_SCRIPT = f"https://bauval.org/21/{CF_ADSTERRA_KEY}"
+
+def validate_cloudflare_adsterra(ad):
+    if not isinstance(ad, dict):
+        return ["cloudflareAdsterra must be an object"]
+    expected = {
+        "enabled": True,
+        "websiteHost": "jobpath-india.pages.dev",
+        "format": "native",
+        "key": CF_ADSTERRA_KEY,
+        "scriptUrl": CF_ADSTERRA_SCRIPT,
+        "containerId": f"container-{CF_ADSTERRA_KEY}",
+        "siteStatus": "unverified",
+        "adUnitStatus": "active",
+        "adultAds": False,
+    }
+    return [f"Cloudflare Adsterra {key} must match the active website-specific tag"
+            for key,value in expected.items() if ad.get(key) != value]
+
 def validate(config):
     errors = []
     if not isinstance(config, dict):
@@ -48,6 +69,8 @@ def validate(config):
         return ["slots must be an object"]
     if "adsterra" in config:
         errors.extend(validate_adsterra(config["adsterra"]))
+    if "cloudflareAdsterra" in config:
+        errors.extend(validate_cloudflare_adsterra(config["cloudflareAdsterra"]))
     if enabled:
         if provider == "adsense":
             if not isinstance(publisher, str) or not PUBLISHER_RE.fullmatch(publisher):
