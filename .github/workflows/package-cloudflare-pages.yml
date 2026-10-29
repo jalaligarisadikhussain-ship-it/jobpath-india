@@ -1,0 +1,66 @@
+name: Package updated JOBPATH INDIA for Cloudflare Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build_final.py'
+      - 'scripts/build_dist.py'
+      - 'scripts/site_config.py'
+      - 'scripts/validate_ads_config.py'
+      - 'data/**'
+      - 'assets/**'
+      - 'googlefcd24aba957dc07b.html'
+      - '.github/workflows/package-cloudflare-pages.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cloudflare-zip:
+    name: Build safe public website ZIP
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate ad configuration (ads remain disabled until approval)
+        run: python3 scripts/validate_ads_config.py
+      - name: Build public static website
+        run: python3 scripts/build_dist.py
+      - name: Check ZIP essentials
+        run: |
+          test -f dist/index.html
+          test -f dist/sitemap.xml
+          test -f dist/robots.txt
+          test -f dist/assets/js/analytics.mjs
+          test -f dist/googlefcd24aba957dc07b.html
+          test -f dist/data/jobs.json
+      - name: Create ZIP with website files at archive root
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile, ZIP_DEFLATED
+          root = Path('dist')
+          out = Path('JOBPATH_INDIA_CLOUDFLARE_PRODUCTION.zip')
+          with ZipFile(out, 'w', ZIP_DEFLATED, compresslevel=9) as z:
+              for f in sorted(root.rglob('*')):
+                  if f.is_file():
+                      z.write(f, f.relative_to(root).as_posix())
+          with ZipFile(out) as z:
+              assert z.testzip() is None
+              assert 'index.html' in z.namelist()
+              assert 'assets/js/analytics.mjs' in z.namelist()
+              assert 'data/jobs.json' in z.namelist()
+              print(f'{len(z.namelist())} public website files, {out.stat().st_size} bytes')
+          PY
+      - name: Upload ZIP for optional manual Cloudflare Direct Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: JOBPATH_INDIA_CLOUDFLARE_PRODUCTION
+          path: JOBPATH_INDIA_CLOUDFLARE_PRODUCTION.zip
+          if-no-files-found: error
+          retention-days: 14
