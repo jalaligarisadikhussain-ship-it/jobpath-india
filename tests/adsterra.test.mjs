@@ -91,7 +91,7 @@ test('Global Privacy Control overrides a stored opt-in',()=>browserFixture(({sto
 }));
 test('the tag cannot request ads from another website or a local test page',()=>browserFixture(({storage,scripts})=>{
  saveAdvertisingConsent('allow',storage);
- for(const hostname of ['localhost','bytebright-converter.netlify.app','example.com']){
+ for(const hostname of ['localhost','bytebright-converter.netlify.app','jobpath-india.netlify.app','jobpath-india.onrender.com','example.com']){
   window.location.hostname=hostname;assert.equal(startAdUnits(active),0);
  }
  assert.equal(scripts.length,0);
