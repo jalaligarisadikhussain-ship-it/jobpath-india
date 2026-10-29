@@ -2,7 +2,7 @@
 
 ## Current state — AdSense work paused on 28 October 2026
 
-The owner selected **Adsterra** as the current monetization provider. Continue with `ADSTERRA_MONETIZATION_SETUP.md`. Live advertising remains **OFF**.
+The owner selected **Adsterra** as the current monetization provider. Continue with `ADSTERRA_MONETIZATION_SETUP.md`. Live advertising remains **OFF**. Adsterra subsequently approved JOBPATH INDIA and activated its native unit; the genuine tag and consent-gated integration are prepared, but Netlify deployment credits currently block release. See the Adsterra setup document for the confirmed IDs and deployment checkpoint.
 
 Before that change, the authenticated Google account confirmed publisher ID `pub-8073443569494348`, an open account, and AdMob as its existing active product. Google's documented existing-account upgrade flow accepted `jobpath-india.netlify.app` and opened website onboarding with **Connect your site** still required. This establishes registration, **not** site verification, review completion, approval, ad serving, or earnings. No Google display ad unit was obtained. Further AdSense setup is paused.
 

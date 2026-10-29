@@ -11,7 +11,7 @@ source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
 exams=json.loads((root/'data/exam-updates.json').read_text())
 ads_config=load_and_validate()
-adsense_loader=(f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ads_config["publisherId"]}" crossorigin="anonymous"></script>' if ads_config['enabled'] else '')
+adsense_loader=(f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ads_config["publisherId"]}" crossorigin="anonymous"></script>' if ads_config['enabled'] and ads_config['provider']=='adsense' else '')
 jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json','/data/auto-notices.json','/data/ads-config.json']}
 inline_json=json.dumps(jsdata,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
 noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates','autonotices'}
@@ -42,7 +42,7 @@ seo_text={
 'sources':('Official Recruitment Source Directory','Use references to SSC, UPSC, IBPS, railway, state, teaching and defence organizations. Selected issuer references were checked on 28 October 2026; recheck URLs before applying.'),
 'about':('About This Independent Portal','JobPath India is a separate independent informational project, not a government website and not an application-processing service.'),
 'contact':('Corrections and Contact Information','A public contact inbox has not been configured, so this static site avoids an unusable contact form or invented email address.'),
-'privacy':('Privacy and Advertising','Theme and saved job IDs are stored locally. Google AdSense advertising is inactive until a verified publisher account and ad units are configured. If activated, third-party ad technologies may collect data subject to applicable privacy and consent requirements.'),
+'privacy':('Privacy and Advertising','Theme and saved job IDs are stored locally. Adsterra advertising is currently disabled. If enabled, optional third-party ads require your choice before any ad request. Adsterra and its advertising partners may process cookies, IP address, browser/device information and ad interactions. Read the full privacy policy and advertising choices on this page.'),
 'terms':('Terms and Conditions','Check official recruitment notices before applying or paying official fees. Information provided by this website is not hiring advice.'),
 'disclaimer':('No Government Affiliation','JobPath India is an independent informational service. It is not an official Government of India or state recruitment website.'),
 'examupdates':('SSC 2026 Revised Proposed Exam Dates','Reader-supplied SSC corrigendum dated 26 October 2026: Junior Engineer Paper I and Sub-Inspector in Delhi Police/CAPFs. Date notice listed on official SSC board; the complete official PDF still awaits comparison.'),

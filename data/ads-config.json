@@ -6,5 +6,23 @@
     "content": ""
   },
   "requestedProvider": "adsterra",
-  "note": "Owner selected Adsterra on 2026-10-28. Live advertising remains disabled pending publisher sign-in, JOBPATH INDIA site approval, genuine ad code, and privacy/consent setup. No Adsterra integration or approval is claimed."
+  "adsterra": {
+    "websiteId": "6159057",
+    "adUnitId": "31978670",
+    "format": "native",
+    "key": "59088646af2816821f7d8b37df198113",
+    "scriptUrl": "https://bauval.org/21/59088646af2816821f7d8b37df198113",
+    "containerId": "container-59088646af2816821f7d8b37df198113",
+    "siteStatus": "approved",
+    "adUnitStatus": "active",
+    "verifiedOn": "2026-10-29",
+    "adultAds": false,
+    "layout": "2:1",
+    "gamblingExclusionConfirmed": false
+  },
+  "consent": {
+    "required": true,
+    "version": "adsterra-2026-10-29"
+  },
+  "note": "Adsterra website Approved and native unit Active were verified in the authenticated account on 2026-10-29. Live advertising stays disabled: Netlify production deploys are paused after free credit exhaustion. Gambling-category exclusion has not been confirmed. Preserve the exact account-supplied native tag; never substitute another site's code."
 }

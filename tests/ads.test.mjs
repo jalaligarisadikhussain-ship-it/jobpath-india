@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {renderAdPlacement,adSenseReady} from '../assets/js/ads.mjs';
+import {renderAdPlacement,adSenseReady,advertisingReady} from '../assets/js/ads.mjs';
 import fs from 'node:fs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json', import.meta.url),'utf8'));
@@ -8,7 +8,7 @@ const enabled={enabled:true,provider:'adsense',publisherId:'ca-pub-1234567890123
 
 test('Ads are absent while configuration is disabled and only render with valid IDs',()=>{
  if(current.enabled){
-  assert.equal(adSenseReady(current),true);
+  assert.equal(advertisingReady(current),true);
   assert.match(renderAdPlacement(current),/aria-label="Advertisement"/);
  }else{
   assert.equal(adSenseReady(current),false);

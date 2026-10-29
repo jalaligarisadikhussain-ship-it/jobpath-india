@@ -22,6 +22,7 @@ An independent static-first government recruitment information portal covering c
 - **Zero independently verified live vacancies in this package.** Only fictional examples are available via explicitly selected `/job-search/?demo=1`, labeled training data and excluded from the public default list and Google indexing. These are not job advertisements.
 - **Original SSC corrigendum screenshots** supplied by the owner are summarized with the exact 26 October 2026 document wording. These are *revised proposed* examination dates, not a live recruitment notification. Direct official SSC PDF URL remains unverified, so `/exam-updates/` is `noindex,follow`.
 - **Google Search Console ownership file** `googlefcd24aba957dc07b.html` is preserved at the website root. Never delete it from later deployments.
+- **Adsterra prepared, advertising disabled**: JOBPATH INDIA is approved with an active native unit; its authentic code is pinned and protected by opt-in consent. Netlify production deploys are currently paused after free-credit exhaustion. See `ADSTERRA_MONETIZATION_SETUP.md`.
 - **No active ads**: advertising spaces are marked for later approval, and no invented ad codes, account logins, external tracking pixels, email registration or fake apply buttons are included.
 - **No automatic job alert delivery** in this static release. Theme and saved jobs are browser-local.
 - **No changes** to the separate ByteBright Converter project, repository, domain or Search Console property.

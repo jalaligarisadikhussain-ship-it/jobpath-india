@@ -37,7 +37,7 @@ public_json = ('jobs.json', 'sources.json', 'pages.json', 'exam-updates.json',
 for filename in public_json:
     shutil.copyfile(ROOT / 'data' / filename, DIST / 'data' / filename)
 ads_config = load_and_validate()
-if ads_config['enabled']:
+if ads_config['enabled'] and ads_config['provider'] == 'adsense':
     # AdSense standard authorized seller line, using only the verified owner ID.
     publisher = ads_config['publisherId'].removeprefix('ca-')
     (DIST/'ads.txt').write_text(
