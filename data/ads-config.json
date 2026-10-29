@@ -7,22 +7,20 @@
   },
   "requestedProvider": "adsterra",
   "adsterra": {
-    "websiteId": "6159057",
-    "adUnitId": "31978670",
+    "websiteHost": "jobpath-india.pages.dev",
     "format": "native",
-    "key": "59088646af2816821f7d8b37df198113",
-    "scriptUrl": "https://bauval.org/21/59088646af2816821f7d8b37df198113",
-    "containerId": "container-59088646af2816821f7d8b37df198113",
-    "siteStatus": "approved",
+    "key": "84de856c9d01a37c08d4912fbf3df530",
+    "scriptUrl": "https://bauval.org/21/84de856c9d01a37c08d4912fbf3df530",
+    "containerId": "container-84de856c9d01a37c08d4912fbf3df530",
+    "siteStatus": "pending",
     "adUnitStatus": "active",
     "verifiedOn": "2026-10-29",
     "adultAds": false,
-    "layout": "2:1",
     "gamblingExclusionConfirmed": false
   },
   "consent": {
     "required": true,
-    "version": "adsterra-2026-10-29"
+    "version": "adsterra-cloudflare-2026-10-29"
   },
-  "note": "Adsterra website Approved and native unit Active were verified in the authenticated account on 2026-10-29. Live advertising stays disabled: Netlify production deploys are paused after free credit exhaustion. Gambling-category exclusion has not been confirmed. Preserve the exact account-supplied native tag; never substitute another site's code."
+  "note": "Cloudflare Pages native unit marked Active in publisher dashboard on 2026-10-29. Exact tag supplied by owner. Website-specific approval and gambling/betting exclusion not yet confirmed. Ads remain OFF until cleared. This branch is staging only and must not replace the live main production branch prematurely."
 }
