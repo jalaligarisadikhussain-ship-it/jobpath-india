@@ -162,7 +162,7 @@ async function init(){
  readData('/data/auto-notices.json',{version:1,notices:[]},x=>x&&x.version===1&&Array.isArray(x.notices)),
  readData('/data/ads-config.json',{enabled:false,provider:'none',publisherId:'',slots:{content:''}},x=>x&&typeof x.enabled==='boolean'&&typeof x.provider==='string')
  ]);
- adsConfig=resolveAdvertisingConfig(adsConfig,window.location.hostname);
+ adsConfig=resolveAdvertisingConfig(adsConfig,globalThis.window?.location?.hostname||globalThis.location?.hostname||'');
  // Even if all network JSON reads fail, the site shell and verified-by-document transcription remain visible.
  if(!examUpdatesData.length)examUpdatesData=BUILTIN_EXAM_UPDATES;
  app.innerHTML=header()+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
