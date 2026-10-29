@@ -24,5 +24,19 @@
     "required": true,
     "version": "adsterra-2026-10-29"
   },
-  "note": "Adsterra website Approved and native unit Active were verified in the authenticated account on 2026-10-29. Live advertising stays disabled: Netlify production deploys are paused after free credit exhaustion. Gambling-category exclusion has not been confirmed. Preserve the exact account-supplied native tag; never substitute another site's code."
+  "note": "Adsterra website Approved and native unit Active were verified in the authenticated account on 2026-10-29. Live advertising stays disabled: Netlify production deploys are paused after free credit exhaustion. Gambling-category exclusion has not been confirmed. Preserve the exact account-supplied native tag; never substitute another site's code.",
+  "cloudflareAdsterra": {
+    "enabled": true,
+    "websiteHost": "jobpath-india.pages.dev",
+    "format": "native",
+    "key": "84de856c9d01a37c08d4912fbf3df530",
+    "scriptUrl": "https://bauval.org/21/84de856c9d01a37c08d4912fbf3df530",
+    "containerId": "container-84de856c9d01a37c08d4912fbf3df530",
+    "siteStatus": "unverified",
+    "adUnitStatus": "active",
+    "verifiedOn": "2026-10-29",
+    "adultAds": false,
+    "gamblingExclusionConfirmed": false,
+    "note": "Owner confirmed active Cloudflare Native Banner and supplied exact tag. Website-level approval unverified. Explicit visitor opt-in required. Gambling exclusion postponed per owner request."
+  }
 }
