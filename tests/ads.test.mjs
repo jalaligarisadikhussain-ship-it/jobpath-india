@@ -30,6 +30,17 @@ test('script injection and malformed account IDs cannot turn ads on',()=>{
  assert.equal(adSenseReady({...enabled,slots:{content:'12" onload="alert(1)'}}),false);
  assert.equal(adSenseReady({...enabled,provider:'other'}),false);
 });
+test('top ads use a labeled in-flow slot, but disabled campaigns create no blank header space',()=>{
+ assert.equal(renderAdPlacement(current,'top'),'');
+ const top=renderAdPlacement(enabled,'top');
+ assert.match(top,/ad-placement-top/);
+ assert.match(top,/aria-label="Advertisement"/);
+ assert.match(top,/data-jobpath-ad="content"/);
+ assert.doesNotMatch(top,/<script|<iframe/);
+ const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
+ assert.match(app,/header\(\)\+topAd\(\)/);
+ assert.match(app,/function ad\(\)\{return ''\}/);
+});
 test('only legitimate content positions have ad placements',()=>{
  assert.equal(renderAdPlacement(enabled,'jobDetail'),'');
  assert.equal(renderAdPlacement(enabled,'application'),'');
