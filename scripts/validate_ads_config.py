@@ -41,18 +41,26 @@ def validate_cloudflare_adsterra(ad):
     if not isinstance(ad, dict):
         return ["cloudflareAdsterra must be an object"]
     expected = {
-        "enabled": True,
         "websiteHost": "jobpath-india.pages.dev",
         "format": "native",
         "key": CF_ADSTERRA_KEY,
         "scriptUrl": CF_ADSTERRA_SCRIPT,
         "containerId": f"container-{CF_ADSTERRA_KEY}",
-        "siteStatus": "unverified",
         "adUnitStatus": "active",
         "adultAds": False,
     }
-    return [f"Cloudflare Adsterra {key} must match the active website-specific tag"
-            for key,value in expected.items() if ad.get(key) != value]
+    errors = [f"Cloudflare Adsterra {key} must match the website-specific tag"
+              for key,value in expected.items() if ad.get(key) != value]
+    if type(ad.get("enabled")) is not bool:
+        errors.append("Cloudflare Adsterra enabled must be a boolean")
+    if ad.get("siteStatus") not in ("unverified", "pending", "approved", "rejected"):
+        errors.append("Unknown Cloudflare Adsterra website status")
+    if ad.get("enabled") is True:
+        if ad.get("siteStatus") != "approved":
+            errors.append("Cloudflare Adsterra website approval is required before serving ads")
+        if ad.get("gamblingExclusionConfirmed") is not True:
+            errors.append("Cloudflare Adsterra gambling/betting/casino exclusion must be confirmed")
+    return errors
 
 def validate(config):
     errors = []

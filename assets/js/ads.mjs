@@ -15,7 +15,8 @@ const CONSENT_AGE=180*24*60*60*1000;
 export function resolveAdvertisingConfig(config,hostname=''){
  if(hostname!==CLOUDFLARE_ADSTERRA_HOST)return config;
  const ad=config?.cloudflareAdsterra;
- if(ad?.enabled!==true)return {...config,enabled:false,provider:'none'};
+ if(ad?.enabled!==true||ad.gamblingExclusionConfirmed!==true||ad.siteStatus!=='approved')
+  return {...config,enabled:false,provider:'none'};
  return {...config,enabled:true,provider:'adsterra',adsterra:ad,
   consent:{required:true,version:AD_CONSENT_VERSION}};
 }
@@ -34,9 +35,8 @@ export function adsterraConfigured(config){
 }
 export function adsterraReady(config){
  return config?.enabled===true&&config.provider==='adsterra'&&adsterraConfigured(config)&&
-  (config.adsterra.websiteHost===CLOUDFLARE_ADSTERRA_HOST
-   ? config.adsterra.siteStatus==='unverified' // Active unit confirmed; website approval not independently checked.
-   : config.adsterra.siteStatus==='approved')&&config.adsterra.adUnitStatus==='active'&&
+  config.adsterra.gamblingExclusionConfirmed===true&&
+  config.adsterra.siteStatus==='approved'&&config.adsterra.adUnitStatus==='active'&&
   config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
 }
 export function adSenseReady(config){
@@ -67,9 +67,7 @@ const consentText='Optional Adsterra advertising uses cookies and device/browser
 function consentButtons(){return '<div class="ad-consent-actions"><button type="button" class="btn btn-secondary" data-ad-choice="allow">Allow advertising</button><button type="button" class="btn btn-secondary" data-ad-choice="deny">Continue without ads</button></div>'}
 export function renderAdPlacement(config,place='content'){
  if(place!=='content')return '';
- if(!advertisingReady(config)){
-  return '<aside class="ad-placeholder" aria-label="Future advertising placement">Advertisement space · No ads are active</aside>';
- }
+ if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
  if(adsterraReady(config))return '<aside class="ad-placement" aria-label="Advertisement" data-jobpath-native-placement>'+
   '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><p>'+consentText+
   ' <a href="/privacy-policy/">Privacy policy</a></p>'+consentButtons()+'</div>'+
