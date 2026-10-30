@@ -44,32 +44,30 @@
   },
   "plannedPlacements": [
     {
-      "id": "after-hero",
+      "id": "homepage-top",
       "type": "responsive-banner",
+      "enabled": true,
       "desktop": "728x90",
       "mobile": "320x50",
-      "enabled": true,
+      "position": "before hero",
       "requiresVisitorOptIn": true
     },
     {
-      "id": "after-latest-jobs",
-      "type": "300x250-banner",
+      "id": "homepage-middle",
+      "type": "banner-300x250",
       "enabled": true,
+      "position": "after career-path category tiles",
       "requiresVisitorOptIn": true
     },
     {
-      "id": "after-official-sources",
+      "id": "homepage-bottom",
       "type": "native-banner",
       "enabled": true,
+      "position": "after examination resources, before footer",
       "requiresVisitorOptIn": true
-    },
-    {
-      "id": "before-footer",
-      "type": "unused",
-      "enabled": false
     }
   ],
-  "layoutNote": "3 paid placements per device: one responsive banner, one 300x250 rectangle, one native. Distinct Adsterra codes. All only after visitor advertising consent on exact Cloudflare host; publisher-side dating restrictions not guaranteed; full banner URLs require provider verification.",
+  "layoutNote": "Three well-separated in-flow advertising zones, not clustered: responsive 728x90 desktop / 320x50 mobile near top of homepage, 300x250 after career-path categories, one Native Banner at bottom after exam resources. Each has distinct code. Never duplicate tags; all remain host-limited and opt-in. Full banner script URL validation and provider dating-category controls remain pending.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": true,

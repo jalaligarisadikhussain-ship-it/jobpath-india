@@ -175,3 +175,16 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .top-ad-region{max-width:880px;margin:25px auto}
 @media(max-width:760px){.jp-banner--desktop{display:none}.jp-banner--mobile{display:flex}.jp-banner{margin:13px auto 22px;padding:9px;max-width:100%}.top-ad-region{margin:17px auto}}
 @media print{.jp-banner{display:none!important}}
+
+/* Three separated homepage ad slots: top, middle and footer, never stacked.
+   All placements remain in natural flow, visibly labeled, non-sticky. */
+.jp-banner{clear:both;position:relative}
+.jp-banner--desktop,.jp-banner--mobile{margin-top:16px;margin-bottom:25px}
+.jp-banner--rectangle{margin-top:26px;margin-bottom:32px}
+.top-ad-region{clear:both;margin:34px auto 16px}
+.top-ad-region .ad-placement{max-width:860px}
+@media(max-width:760px){
+ .jp-banner--mobile{margin:10px auto 20px}
+ .jp-banner--rectangle{margin:23px auto 28px}
+ .top-ad-region{margin:28px auto 12px}
+}

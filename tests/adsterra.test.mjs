@@ -188,17 +188,26 @@ test('Native sponsorship notice is compact, clearly marked and not an applicatio
  assert.match(css,/\.analytics-consent\{width:min\(375px/);
 });
 
-test('professional layout has three actual positions and no blank fourth position',()=>{
+test('home ad placements occur once each in top, middle and bottom order',()=>{
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
- assert.match(app,/readAdvertisingConsent\(\)!=='allow'/);
- assert.match(app,/siteBanner\('rectangle'\)/);
- assert.match(app,/siteBanner\("responsive"\)/);
- assert.match(app,/\$\{topAd\(\)\}/);
- assert.match(app,/futureAdPosition\('before-footer'\)/);
+ const homepage=app.slice(app.indexOf('function home()'),app.indexOf('function options('));
+ const first=homepage.indexOf('siteBanner("responsive")');
+ const hero=homepage.indexOf('<section class="hero">');
+ const categories=homepage.indexOf("Explore by career path");
+ const middle=homepage.indexOf("siteBanner('rectangle')");
+ const vacancies=homepage.indexOf("Latest reviewed vacancies");
+ const exams=homepage.indexOf("Examination resources");
+ const last=homepage.indexOf('topAd()');
+ assert.ok(first>=0&&first<hero);
+ assert.ok(categories<middle&&middle<vacancies);
+ assert.ok(exams<last&&last>middle);
+ assert.equal(homepage.split('siteBanner("responsive")').length-1,1);
+ assert.equal(homepage.split("siteBanner('rectangle')").length-1,1);
+ assert.equal(homepage.split('topAd()').length-1,1);
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
- assert.equal(cfg.plannedPlacements.length,4);
- assert.equal(cfg.plannedPlacements.filter(x=>x.enabled===true).length,3);
- assert.equal(cfg.plannedPlacements.filter(x=>x.enabled===false).length,1);
+ assert.deepEqual(cfg.plannedPlacements.map(x=>x.id),
+ ['homepage-top','homepage-middle','homepage-bottom']);
+ assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,3);
  assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
 });
 
@@ -208,7 +217,8 @@ test('homepage offers a compact in-flow consent choice and never auto-loads ads'
  assert.match(app,/readAdvertisingConsent\(\)!=='allow'/);
  assert.match(app,/data-ad-choice="allow"/);
  assert.match(app,/data-ad-choice="deny"/);
- assert.match(app,/\$\{siteBanner\("responsive"\)\}\$\{adQuickAccess\(\)\}/);
+ assert.match(app,/return `\$\{siteBanner\("responsive"\)\}<section class="hero">/);
+ assert.match(app,/<\/section>\$\{adQuickAccess\(\)\}<div class="stats">/);
  assert.match(app,/PAGE==="home"\?"":topAd\(\)/);
  assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
 });

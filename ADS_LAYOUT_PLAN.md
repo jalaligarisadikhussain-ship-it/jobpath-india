@@ -7,7 +7,7 @@ Owner screenshots (31 October 2026) identify three separate banners belonging to
 - 300x250 Rectangle: 58623b07e46a924f55b4d5d4895086c0
 - Existing Native Banner: 84de856c9d01a37c08d4912fb3df530
 
-Layout: after homepage hero, one responsive banner (desktop 728x90 OR mobile 320x50); after latest vacancies, 300x250; after official sources, the single native banner. No duplicated native container and no fourth intrusive slot.
+Layout: top immediately before hero = responsive 728x90 desktop OR 320x50 mobile; middle after Explore by career path tiles = 300x250; bottom immediately after Examination resources and before footer = existing Native Banner. No ad stacks or fixed overlays.
 
 Privacy: all banner iframes and native tags are embedded only for an explicitly opted-in visitor on the exact Cloudflare host. The footer lets people withdraw. Other sites and AdSense are unchanged.
 
