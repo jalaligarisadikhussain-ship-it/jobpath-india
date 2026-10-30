@@ -167,5 +167,9 @@ export function chooseAdvertising(config,choice){
   // Reload removes the already-running third-party script and its timers.
   window.location.reload();return true;
  }
+ // A first-time visitor may have no ad container until they opt in.
+ if(choice==='allow'&&typeof document!=='undefined'&&!document.querySelector('[data-jobpath-native]')){
+  window.location.reload();return true;
+ }
  startAdUnits(config);return true;
 }

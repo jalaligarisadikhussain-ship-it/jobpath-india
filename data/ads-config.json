@@ -41,5 +41,32 @@
     "allowUnfilteredCategories": true,
     "datingExclusionConfirmed": false,
     "userAuthorizedTrial": true
-  }
+  },
+  "plannedPlacements": [
+    {
+      "id": "top",
+      "type": "existing-cloudflare-adsterra-native",
+      "status": "configured",
+      "requiresVisitorOptIn": true
+    },
+    {
+      "id": "after-latest-jobs",
+      "type": "professional-display",
+      "enabled": false,
+      "status": "requires-independent-approved-code"
+    },
+    {
+      "id": "after-official-sources",
+      "type": "professional-display",
+      "enabled": false,
+      "status": "requires-independent-approved-code"
+    },
+    {
+      "id": "before-footer",
+      "type": "professional-display",
+      "enabled": false,
+      "status": "requires-independent-approved-code"
+    }
+  ],
+  "layoutNote": "4 locations; only ONE existing monetization unit available. Future placements are hidden until unique approved ad tags are supplied. Dating creatives cannot be selectively removed in a third-party network response; Adsterra category restrictions remain unverified. No third-party ad request before visitor opt-in."
 }

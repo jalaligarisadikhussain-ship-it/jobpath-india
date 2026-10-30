@@ -146,3 +146,10 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .career-highlight-links .btn{white-space:nowrap}
 @media(max-width:730px){.career-highlight{flex-direction:column;align-items:stretch;padding:16px 17px;margin:18px 0 6px;gap:13px}.career-highlight-links{flex-wrap:wrap}.career-highlight-links .btn{flex:1 1 140px;white-space:normal}}
 @media print{.career-highlight{display:none}}
+
+/* Professional ad locations: invisible until independently approved ad codes exist.
+   Avoid blank ad cards and large advertising consent banners above the hero. */
+.ad-ready-position[hidden]{display:none!important}
+.top-ad-region{padding:10px 0 3px}
+.top-ad-region .ad-placement{max-width:860px;margin:0 auto}
+@media(max-width:700px){.top-ad-region{padding:9px 0 3px}.top-ad-region .ad-placement{max-width:100%;padding:11px 13px}}

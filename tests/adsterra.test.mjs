@@ -187,3 +187,15 @@ test('Native sponsorship notice is compact, clearly marked and not an applicatio
  assert.match(css,/\.top-ad-region \.ad-placement\[hidden\]/);
  assert.match(css,/\.analytics-consent\{width:min\(375px/);
 });
+
+test('Professional four-position design avoids consent banner on first load',()=>{
+ const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
+ assert.match(app,/readAdvertisingConsent\(\)!=='allow'/);
+ assert.match(app,/futureAdPosition\('after-latest-jobs'\)/);
+ assert.match(app,/futureAdPosition\('after-official-sources'\)/);
+ assert.match(app,/futureAdPosition\('before-footer'\)/);
+ const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
+ assert.equal(cfg.plannedPlacements.length,4);
+ assert.equal(cfg.plannedPlacements.filter(x=>x.enabled===false).length,3);
+ assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
+});
