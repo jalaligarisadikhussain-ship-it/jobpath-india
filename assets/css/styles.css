@@ -132,3 +132,17 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
  .analytics-consent-actions .btn{flex:1 1 0;min-width:0}
 }
 @media print{.top-ad-region,.analytics-consent,.ad-choices-dialog{display:none!important}}
+
+/* Career-only editorial promotion while third-party ad categories are paused.
+   Not labeled as paid advertising because no sponsor or ad impression is involved. */
+.career-highlight{display:flex;align-items:center;justify-content:space-between;gap:16px 24px;
+  margin:22px 0 8px;padding:19px 22px;border:1px solid var(--line);border-radius:16px;
+  background:var(--surface);box-shadow:0 6px 22px rgba(14,35,68,.045)}
+.career-highlight-copy{min-width:0;flex:1}
+.career-highlight-tag{display:block;font-size:.68rem;color:var(--accent);font-weight:800;letter-spacing:.09em;margin-bottom:6px}
+.career-highlight-copy strong{display:block;color:var(--ink);font-size:1.06rem;line-height:1.45}
+.career-highlight-copy p{font-size:.85rem;line-height:1.55;color:var(--muted);margin:6px 0 0}
+.career-highlight-links{display:flex;align-items:center;gap:9px;flex-wrap:wrap;flex:none}
+.career-highlight-links .btn{white-space:nowrap}
+@media(max-width:730px){.career-highlight{flex-direction:column;align-items:stretch;padding:16px 17px;margin:18px 0 6px;gap:13px}.career-highlight-links{flex-wrap:wrap}.career-highlight-links .btn{flex:1 1 140px;white-space:normal}}
+@media print{.career-highlight{display:none}}

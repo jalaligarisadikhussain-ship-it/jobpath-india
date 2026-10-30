@@ -66,28 +66,31 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def test_cloudflare_native_unit_is_distinct_and_validated(self):
         cfg=copy.deepcopy(load_and_validate())
         self.assertFalse(cfg["enabled"])  # other hosts remain OFF
-        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
         self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "unverified")
-        self.assertTrue(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])  # explicit owner instruction
+        self.assertFalse(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["datingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["gamblingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["adultAds"])
         self.assertEqual(validate(cfg), [])
         for key,value in [("websiteHost","example.com"),("scriptUrl","https://example.com/x"),
                           ("key","malicious"),("adultAds",True),("adUnitStatus","inactive"),
-                          ("allowUnfilteredCategories","yes"),("siteStatus","rejected")]:
+                          ("allowUnfilteredCategories","yes"),("datingExclusionConfirmed","not-bool")]:
             bad=copy.deepcopy(cfg)
             bad["cloudflareAdsterra"][key]=value
             self.assertTrue(validate(bad), key)
 
-    def test_unfiltered_category_trial_must_be_explicit_and_host_bound(self):
+    def test_cloudflare_unsafe_category_inventory_cannot_activate(self):
         cfg=copy.deepcopy(load_and_validate())
-        bad=copy.deepcopy(cfg)
-        bad["cloudflareAdsterra"]["allowUnfilteredCategories"]=False
-        self.assertTrue(any("acceptance" in err for err in validate(bad)))
-        approved_and_filtered=copy.deepcopy(bad)
-        approved_and_filtered["cloudflareAdsterra"]["siteStatus"]="approved"
-        approved_and_filtered["cloudflareAdsterra"]["gamblingExclusionConfirmed"]=True
-        self.assertEqual(validate(approved_and_filtered),[])
+        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
+        unsafe=copy.deepcopy(cfg)
+        unsafe["cloudflareAdsterra"].update(enabled=True,allowUnfilteredCategories=True)
+        self.assertTrue(validate(unsafe))
+        restricted=copy.deepcopy(cfg)
+        restricted["cloudflareAdsterra"].update(enabled=True,siteStatus="approved",gamblingExclusionConfirmed=True,datingExclusionConfirmed=True)
+        self.assertEqual(validate(restricted),[])
+        restricted["cloudflareAdsterra"]["datingExclusionConfirmed"]=False
+        self.assertTrue(validate(restricted))
         self.assertFalse(cfg["enabled"])
         self.assertEqual(cfg["provider"],"none")
 

@@ -15,11 +15,13 @@ const CONSENT_AGE=180*24*60*60*1000;
 export function resolveAdvertisingConfig(config,hostname=''){
  if(hostname!==CLOUDFLARE_ADSTERRA_HOST)return config;
  const ad=config?.cloudflareAdsterra;
- // Only the exact Cloudflare host may trial its active ad unit. The publisher
- // accepts unfiltered categories; this does NOT assert website approval.
+ // No unfiltered ad-network inventory is permitted on this recruitment website.
+ // Publisher dashboard safeguards must be verified before an external unit can run.
  if(ad?.enabled!==true||
-    !(ad.gamblingExclusionConfirmed===true||ad.allowUnfilteredCategories===true)||
-    !['approved','unverified'].includes(ad.siteStatus))
+    ad.allowUnfilteredCategories===true||
+    ad.gamblingExclusionConfirmed!==true||
+    ad.datingExclusionConfirmed!==true||
+    ad.siteStatus!=='approved')
   return {...config,enabled:false,provider:'none'};
  return {...config,enabled:true,provider:'adsterra',adsterra:ad,
   consent:{required:true,version:AD_CONSENT_VERSION}};
@@ -41,8 +43,9 @@ export function adsterraReady(config){
  const ad=config?.adsterra;
  const isCloudflare=ad?.websiteHost===CLOUDFLARE_ADSTERRA_HOST;
  return config?.enabled===true&&config.provider==='adsterra'&&adsterraConfigured(config)&&
-  (ad.gamblingExclusionConfirmed===true||(isCloudflare&&ad.allowUnfilteredCategories===true))&&
-  (ad.siteStatus==='approved'||(isCloudflare&&ad.siteStatus==='unverified'))&&
+  ad.gamblingExclusionConfirmed===true&&
+  (!isCloudflare||(ad.datingExclusionConfirmed===true&&ad.allowUnfilteredCategories!==true))&&
+  ad.siteStatus==='approved'&&
   ad.adUnitStatus==='active'&&
   config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
 }

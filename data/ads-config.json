@@ -24,9 +24,9 @@
     "required": true,
     "version": "adsterra-2026-10-29"
   },
-  "note": "Netlify and Render advertising remain OFF. On Cloudflare Pages, the owner explicitly requested a trial of the existing active Adsterra Native Banner, without verified gambling category restrictions; adult ads remain OFF. Third-party script loads only with affirmative visitor consent; actual network fill/approval not guaranteed.",
+  "note": "All third-party ad units are paused while unsuitable dating-style ads are addressed. Cloudflare ad container is not rendered and no Adsterra script runs, even when a visitor previously opted in. Existing tags are retained for reference; no ad income while disabled.",
   "cloudflareAdsterra": {
-    "enabled": true,
+    "enabled": false,
     "websiteHost": "jobpath-india.pages.dev",
     "format": "native",
     "key": "84de856c9d01a37c08d4912fbf3df530",
@@ -37,7 +37,8 @@
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Publisher requested trial activation of this exact Cloudflare-hosted Native Banner on 2026-10-30 and explicitly accepted that gambling/betting/casino categories may appear temporarily. Adult ads remain OFF. Unit reported active; website-level approval is still unverified, so the provider may serve no impressions. The exact tag loads only on this host after explicit visitor consent; do not duplicate the container or assume any earnings.",
-    "allowUnfilteredCategories": true
+    "note": "Paused on 2026-10-30 after a dating-style creative appeared on the jobs website. No broad-category native ads are allowed. Resume only after independent site approval, verified provider-side gambling AND dating category restrictions, and a manual suitability review; this does not guarantee jobs-only inventory.",
+    "allowUnfilteredCategories": false,
+    "datingExclusionConfirmed": false
   }
 }
