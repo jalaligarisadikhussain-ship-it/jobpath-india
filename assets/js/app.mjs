@@ -1,5 +1,5 @@
 import {safeUrl,escapeHTML as e,daysUntil,effectiveStatus,sampleStatus,filterJobs,publicJobs,QUALIFICATIONS} from './utils.mjs';
-import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,bannerReady,renderBannerPlacement,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs';
+import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,bannerReady,renderBannerPlacement,monitorBannerFill,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs';
 
 const PAGE= document.body.dataset.page || 'home';
 const h=(s)=>e(s); const app=document.getElementById('app');
@@ -188,7 +188,7 @@ async function init(){
  // Even if all network JSON reads fail, the site shell and verified-by-document transcription remain visible.
  if(!examUpdatesData.length)examUpdatesData=BUILTIN_EXAM_UPDATES;
  app.innerHTML=header()+(PAGE==="home"?"":topAd())+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
- if(advertisingReady(adsConfig))startAdUnits(adsConfig);
+ if(advertisingReady(adsConfig)){startAdUnits(adsConfig);monitorBannerFill();}
  try{setTheme(localStorage.getItem('jp_theme')==='dark'?'dark':'light')}catch{setTheme('light')}
  attach();
  }catch(err){console.error('Website display failed',err);

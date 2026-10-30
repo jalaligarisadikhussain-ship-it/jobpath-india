@@ -188,3 +188,11 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
  .jp-banner--rectangle{margin:23px auto 28px}
  .top-ad-region{margin:28px auto 12px}
 }
+
+/* The provider may return no inventory. In that case, collapse the whole
+   banner instead of leaving permanent white rectangles between job sections. */
+.jp-banner[hidden],.jp-banner[data-jp-banner-state="empty"]{display:none!important}
+.jp-banner[data-jp-banner-state="pending"]{
+ background:transparent;border-color:transparent;box-shadow:none;
+}
+.jp-banner[data-jp-banner-state="pending"] iframe{background:transparent}

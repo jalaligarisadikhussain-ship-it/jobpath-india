@@ -53,9 +53,13 @@ if ads_config.get('cloudflareBanners', {}).get('enabled') is True:
                    'height': unit['height'], 'width': unit['width'], 'params': {}}
         script = '<script>var atOptions = '+json.dumps(options, separators=(',',':'))+';</script>'
         script += '<script src="'+unit['scriptUrl']+'"></script>'
+        # The banner must report genuine creative markup, not merely that the
+        # empty wrapper document loaded. No filled markup => collapse in parent.
+        probe = "<script>(function(){var unitName=UNIT_NAME,done=false;function report(state){if(done)return;done=true;window.parent.postMessage({type:'jobpath-banner-fill',unit:unitName,status:state},'https://jobpath-india.pages.dev');}function creative(){var nodes=document.body.querySelectorAll('iframe,img,ins,canvas,video');for(var i=0;i<nodes.length;i++){var el=nodes[i],rect=el.getBoundingClientRect();if(rect.width<90||rect.height<32)continue;if(el.tagName==='IFRAME'&&((el.getAttribute('src')||'').indexOf('about:blank')!==0)&&  (el.getAttribute('src')||el.getAttribute('srcdoc')))return true;if(el.tagName==='IMG'&&el.complete&&el.naturalWidth>0)return true;if(el.tagName==='CANVAS'&&el.width>90&&el.height>32)return true;if(el.tagName==='VIDEO'&&el.readyState>1)return true;}return false;}function check(){if(!done&&creative())report('filled');}var obs=new MutationObserver(check);obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['src','srcdoc','style','class']});window.addEventListener('load',check);setTimeout(check,400);setTimeout(check,1400);setTimeout(check,3000);setTimeout(function(){if(!done){check();if(!done)report('empty');obs.disconnect();}},6800);})();</script>"
+        probe = probe.replace('UNIT_NAME', json.dumps(name))
         page = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
                 '<meta name="robots" content="noindex,nofollow">'
                 '<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>'
-                '</head><body>') + script + '</body></html>'
+                '</head><body>') + script + probe + '</body></html>'
         (ad_dir/(name+'.html')).write_text(page, encoding='utf-8')
 print(f'Generated dist/ with {len(page_data)} pages; automation and private review reports excluded.')

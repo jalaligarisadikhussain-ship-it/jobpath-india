@@ -64,11 +64,43 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(!['responsive','rectangle'].includes(location)||hostname!==CLOUDFLARE_ADSTERRA_HOST||consent!=='allow'||!bannerReady(config))return '';
  if(typeof navigator!=='undefined'&&navigator.globalPrivacyControl===true)return '';
  const unit=name=>{const u=config.cloudflareBanners.units[name];
-  return '<aside class="jp-banner jp-banner--'+name+'" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-   '<iframe loading="lazy" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html"></iframe></aside>';};
+  return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
+   '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html"></iframe></aside>';};
  // Never request an impression for a hidden responsive format.
  const mobile=typeof window!=='undefined'&&window.matchMedia?.('(max-width:760px)')?.matches===true;
  return location==='responsive'?unit(mobile?'mobile':'desktop'):unit('rectangle');
+}
+// Blank ad inventory must not strand white cards on the job portal.
+// Ad content comes from a sandboxed, site-hosted iframe. The iframe reports
+// when a rendered creative exists; only a matching frame may update its slot.
+export function monitorBannerFill(root=globalThis.document,win=globalThis.window){
+ if(!root?.querySelectorAll||!win?.addEventListener)return 0;
+ const slots=[...root.querySelectorAll('.jp-banner[data-jp-banner-unit]')];
+ if(!slots.length)return 0;
+ const timers=new Map();
+ const collapse=slot=>{if(slot.dataset.jpBannerState==='filled')return;slot.dataset.jpBannerState='empty';slot.hidden=true;};
+ const handler=event=>{
+  const data=event.data;
+  if(data?.type!=='jobpath-banner-fill'||!['filled','empty'].includes(data.status))return;
+  const slot=slots.find(node=>node.dataset.jpBannerUnit===data.unit&&
+   node.querySelector('iframe[data-jp-banner-frame]')?.contentWindow===event.source);
+  if(!slot||slot.hidden)return;
+  if(timers.has(slot)){clearTimeout(timers.get(slot));timers.delete(slot);}
+  if(data.status==='filled'){slot.dataset.jpBannerState='filled';return;}
+  collapse(slot);
+ };
+ win.addEventListener('message',handler);
+ const watch=slot=>{if(slot.dataset.jpBannerWatching==='true')return;
+  slot.dataset.jpBannerWatching='true';
+  timers.set(slot,setTimeout(()=>{timers.delete(slot);collapse(slot);},8000));
+ };
+ if(typeof win.IntersectionObserver==='function'){
+  const observer=new win.IntersectionObserver(entries=>{for(const entry of entries){
+   if(entry.isIntersecting){watch(entry.target);observer.unobserve(entry.target);}
+  }},{rootMargin:'260px'});
+  slots.forEach(slot=>observer.observe(slot));
+ } else slots.forEach(watch);
+ return slots.length;
 }
 export function adSenseReady(config){
  return config?.enabled===true&&config.provider==='adsense'&&

@@ -16,3 +16,7 @@ LIMITATION: screenshots show exact atOptions keys and mobile banner script prefi
 Adsterra support has filtered advertisers involved in a dating-ad complaint, but comprehensive exclusions are not confirmed. Ads may still contain inappropriate creatives. Verify network-side settings before declaring the site dating-free.
 
 Static build: scripts/build_dist.py creates dist/ad-units/mobile.html, desktop.html and rectangle.html from strictly validated configuration. The third-party atOptions scripts are each isolated in a sandboxed iframe. These wrappers are not referenced without opt-in.
+
+
+## Empty inventory handling
+The mobile, desktop and rectangle iframe banners now report actual rendered creative markup to the parent. The parent validates the report's iframe window identity and collapses an empty/error unit after its viewport-visible timeout. A provider script that returns no creative must not leave a permanent white 320x50/300x250/728x90 slot. This is a best-effort indicator, not independent live ad-delivery verification. The working Native Banner is unchanged.

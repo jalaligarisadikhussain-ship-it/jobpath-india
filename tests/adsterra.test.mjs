@@ -242,3 +242,16 @@ test('three independently keyed iframe ads are host and consent gated',()=>{
  const bad={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,units:{...resolved.cloudflareBanners.units,mobile:{...resolved.cloudflareBanners.units.mobile,key:'fake'}}}};
  assert.equal(bannerReady(bad),false);
 });
+
+test('unfilled display inventory collapses rather than leaving white ad boxes',()=>{
+ const s=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ const builder=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
+ assert.match(s,/export function monitorBannerFill\(/);
+ assert.match(s,/node\.querySelector\('iframe\[data-jp-banner-frame\]'\)\?\.contentWindow===event\.source/);
+ assert.match(s,/slot\.hidden=true/);
+ assert.match(s,/IntersectionObserver/);
+ assert.match(css,/\.jp-banner\[hidden\]/);
+ assert.match(builder,/jobpath-banner-fill/);
+ assert.match(builder,/creative\(\)/);
+});
