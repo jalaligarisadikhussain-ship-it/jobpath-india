@@ -199,3 +199,14 @@ test('Professional four-position design avoids consent banner on first load',()=
  assert.equal(cfg.plannedPlacements.filter(x=>x.enabled===false).length,3);
  assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
 });
+
+test('homepage offers a compact in-flow consent choice and never auto-loads ads',()=>{
+ const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
+ assert.match(app,/function adQuickAccess\(\)/);
+ assert.match(app,/readAdvertisingConsent\(\)!=='allow'/);
+ assert.match(app,/data-ad-choice="allow"/);
+ assert.match(app,/data-ad-choice="deny"/);
+ assert.match(app,/\$\{topAd\(\)\}\$\{adQuickAccess\(\)\}/);
+ assert.match(app,/PAGE==="home"\?"":topAd\(\)/);
+ assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
+});

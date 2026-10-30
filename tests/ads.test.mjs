@@ -38,7 +38,7 @@ test('top ads use a labeled in-flow slot, but disabled campaigns create no blank
  assert.match(top,/data-jobpath-ad="content"/);
  assert.doesNotMatch(top,/<script|<iframe/);
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
- assert.match(app,/header\(\)\+topAd\(\)/);
+ assert.match(app,/header\(\)\+\(PAGE===/);
  assert.match(app,/function ad\(\)\{return ''\}/);
 });
 test('only legitimate content positions have ad placements',()=>{
