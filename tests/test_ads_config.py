@@ -27,6 +27,7 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def native_config(self):
         config=copy.deepcopy(load_and_validate())
         config.update(enabled=True,provider="adsterra")
+        config["adsterra"]["gamblingExclusionConfirmed"] = True  # simulated network confirmation for activation tests only
         return config
 
     def test_approved_native_code_and_consent_are_required(self):
@@ -37,6 +38,17 @@ class AdvertisingConfigurationTests(unittest.TestCase):
             self.assertTrue(validate(bad))
         config["consent"]["required"]=False
         self.assertTrue(validate(config))
+
+    def test_gambling_exclusion_is_mandatory_before_adsterra_activation(self):
+        config=self.native_config()
+        self.assertEqual(validate(config), [])
+        for unconfirmed in (False, None, "true"):
+            config["adsterra"]["gamblingExclusionConfirmed"]=unconfirmed
+            self.assertTrue(any("gambling" in error for error in validate(config)))
+        # Real production config stays disabled because exclusion is not confirmed.
+        live=load_and_validate()
+        self.assertFalse(live["enabled"])
+        self.assertIs(live["adsterra"]["gamblingExclusionConfirmed"], False)
 
     def test_adsterra_script_cannot_be_replaced_or_injected(self):
         for value in ["https://example.com/invoke.js","javascript:alert(1)",
