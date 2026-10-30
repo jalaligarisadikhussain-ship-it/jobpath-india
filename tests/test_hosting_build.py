@@ -12,12 +12,12 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from site_config import DEFAULT_SITE_URL, site_origin
+from site_config import DEFAULT_SITE_URL, LEGACY_NETLIFY_URL, site_origin
 from adsense_identity import ADSENSE_META_TAG, ADS_TXT_LINE
 
 
 class HostingBuildTests(unittest.TestCase):
-    def test_existing_host_is_default_and_render_metadata_is_scoped(self):
+    def test_cloudflare_is_default_and_render_metadata_is_scoped(self):
         self.assertEqual(site_origin({}), DEFAULT_SITE_URL)
         self.assertEqual(site_origin({"RENDER_EXTERNAL_URL": "https://other.invalid"}), DEFAULT_SITE_URL)
 
@@ -41,7 +41,7 @@ class HostingBuildTests(unittest.TestCase):
                 shutil.copytree(ROOT / folder, work / folder, ignore=shutil.ignore_patterns("__pycache__"))
             shutil.copyfile(ROOT / "googlefcd24aba957dc07b.html", work / "googlefcd24aba957dc07b.html")
             env = dict(os.environ)
-            for key in ("JOBPATH_SITE_URL", "RENDER", "RENDER_EXTERNAL_URL"):
+            for key in ("JOBPATH_SITE_URL", "JOBPATH_PRIMARY_SEARCH_URL", "RENDER", "RENDER_EXTERNAL_URL"):
                 env.pop(key, None)
             env.update(env_settings)
             subprocess.run([sys.executable, "scripts/build_dist.py"], cwd=work, env=env,
@@ -71,10 +71,13 @@ class HostingBuildTests(unittest.TestCase):
                 self.assertFalse((dist / private).exists())
             self.assertEqual((dist / "ads.txt").read_text(), ADS_TXT_LINE)
 
-    def test_complete_release_preserves_existing_netlify_metadata_and_public_data(self):
+    def test_cloudflare_primary_has_indexable_sitemap_and_self_canonical(self):
         self.check_release({}, DEFAULT_SITE_URL)
 
-    def test_complete_render_release_uses_netlify_primary_canonical_without_activating_ads(self):
+    def test_legacy_netlify_origin_is_preserved_as_duplicate_with_cloudflare_canonical(self):
+        self.check_release({"JOBPATH_SITE_URL": LEGACY_NETLIFY_URL}, LEGACY_NETLIFY_URL)
+
+    def test_complete_render_release_uses_cloudflare_primary_canonical_without_activating_ads(self):
         self.check_release({"RENDER": "true", "RENDER_EXTERNAL_URL": "https://jobpath-render-test.invalid"},
                            "https://jobpath-render-test.invalid")
 
