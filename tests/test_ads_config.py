@@ -96,6 +96,15 @@ class AdvertisingConfigurationTests(unittest.TestCase):
              siteStatus="approved",gamblingExclusionConfirmed=True,datingExclusionConfirmed=True)
         self.assertEqual(validate(restricted),[])
 
+    def test_three_site_specific_banner_codes_are_validated(self):
+        config=copy.deepcopy(load_and_validate())
+        self.assertEqual(validate(config),[])
+        self.assertEqual(set(config['cloudflareBanners']['units']), {'mobile','desktop','rectangle'})
+        for name in ('mobile','desktop','rectangle'):
+            bad=copy.deepcopy(config)
+            bad['cloudflareBanners']['units'][name]['scriptUrl']='https://example.com/malicious.js'
+            self.assertTrue(validate(bad),name)
+
     def test_native_provider_cannot_mix_google_ids(self):
         bad=self.native_config();bad["publisherId"]="ca-pub-8073443569494348"
         self.assertTrue(validate(bad))

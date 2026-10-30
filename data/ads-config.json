@@ -44,29 +44,62 @@
   },
   "plannedPlacements": [
     {
-      "id": "top",
-      "type": "existing-cloudflare-adsterra-native",
-      "status": "configured",
+      "id": "after-hero",
+      "type": "responsive-banner",
+      "desktop": "728x90",
+      "mobile": "320x50",
+      "enabled": true,
       "requiresVisitorOptIn": true
     },
     {
       "id": "after-latest-jobs",
-      "type": "professional-display",
-      "enabled": false,
-      "status": "requires-independent-approved-code"
+      "type": "300x250-banner",
+      "enabled": true,
+      "requiresVisitorOptIn": true
     },
     {
       "id": "after-official-sources",
-      "type": "professional-display",
-      "enabled": false,
-      "status": "requires-independent-approved-code"
+      "type": "native-banner",
+      "enabled": true,
+      "requiresVisitorOptIn": true
     },
     {
       "id": "before-footer",
-      "type": "professional-display",
-      "enabled": false,
-      "status": "requires-independent-approved-code"
+      "type": "unused",
+      "enabled": false
     }
   ],
-  "layoutNote": "4 locations; only ONE existing monetization unit available. Future placements are hidden until unique approved ad tags are supplied. Dating creatives cannot be selectively removed in a third-party network response; Adsterra category restrictions remain unverified. No third-party ad request before visitor opt-in."
+  "layoutNote": "3 paid placements per device: one responsive banner, one 300x250 rectangle, one native. Distinct Adsterra codes. All only after visitor advertising consent on exact Cloudflare host; publisher-side dating restrictions not guaranteed; full banner URLs require provider verification.",
+  "cloudflareBanners": {
+    "websiteHost": "jobpath-india.pages.dev",
+    "enabled": true,
+    "source": "Owner screenshots of Adsterra site-specific Get Code dialogs (2026-10-31)",
+    "verificationNote": "Exact full script src cropped in screenshots; URL is reconstructed using visible bauval.org/22/ path and provided keys; live Adsterra delivery unverified.",
+    "units": {
+      "mobile": {
+        "key": "22d5d7312497a4575a8261d0d18522ea",
+        "width": 320,
+        "height": 50,
+        "format": "iframe",
+        "scriptUrl": "https://bauval.org/22/22d5d7312497a4575a8261d0d18522ea",
+        "enabled": true
+      },
+      "desktop": {
+        "key": "5b1925f1b2ab32ef7b6d207bde9e0fa1",
+        "width": 728,
+        "height": 90,
+        "format": "iframe",
+        "scriptUrl": "https://bauval.org/22/5b1925f1b2ab32ef7b6d207bde9e0fa1",
+        "enabled": true
+      },
+      "rectangle": {
+        "key": "58623b07e46a924f55b4d5d4895086c0",
+        "width": 300,
+        "height": 250,
+        "format": "iframe",
+        "scriptUrl": "https://bauval.org/22/58623b07e46a924f55b4d5d4895086c0",
+        "enabled": true
+      }
+    }
+  }
 }

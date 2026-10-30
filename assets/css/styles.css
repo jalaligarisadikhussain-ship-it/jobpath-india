@@ -165,3 +165,13 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 @media(max-width:710px){.ad-quick-choice{flex-direction:column;align-items:stretch;margin:12px 0 8px;padding:11px 12px;gap:9px}
 .ad-quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ad-quick-actions .btn{min-width:0;white-space:normal;line-height:1.25}}
 @media print{.ad-quick-choice{display:none!important}}
+
+/* Professional Adsterra display banners: three in-flow placements per device. */
+.jp-banner{display:flex;align-items:center;flex-direction:column;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:11px;margin:18px auto 25px;width:max-content;max-width:100%;box-shadow:0 5px 17px rgba(20,55,90,.045)}
+.jp-banner-label{font-size:.64rem;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.jp-banner iframe{display:block;border:0;max-width:100%;overflow:hidden}
+.jp-banner--mobile{display:none}
+.jp-banner--rectangle{max-width:calc(100% - 12px)}
+.top-ad-region{max-width:880px;margin:25px auto}
+@media(max-width:760px){.jp-banner--desktop{display:none}.jp-banner--mobile{display:flex}.jp-banner{margin:13px auto 22px;padding:9px;max-width:100%}.top-ad-region{margin:17px auto}}
+@media print{.jp-banner{display:none!important}}

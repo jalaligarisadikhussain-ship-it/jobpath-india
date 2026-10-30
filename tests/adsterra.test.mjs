@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
  adsterraConfigured,adsterraReady,advertisingReady,renderAdPlacement,
  readAdvertisingConsent,saveAdvertisingConsent,startAdUnits,chooseAdvertising,
- resolveAdvertisingConfig,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
+ resolveAdvertisingConfig,bannerReady,renderBannerPlacement,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
@@ -209,4 +209,24 @@ test('homepage offers a compact in-flow consent choice and never auto-loads ads'
  assert.match(app,/\$\{topAd\(\)\}\$\{adQuickAccess\(\)\}/);
  assert.match(app,/PAGE==="home"\?"":topAd\(\)/);
  assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
+});
+
+test('three independently keyed iframe ads are host and consent gated',()=>{
+ const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
+ const resolved=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
+ assert.equal(bannerReady(resolved),true);
+ assert.equal(renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,''),'');
+ assert.equal(renderBannerPlacement(resolved,'responsive','jobpath-india.netlify.app','allow'),'');
+ const desktop=renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
+ assert.match(desktop,/ad-units\/desktop\.html/);
+ assert.doesNotMatch(desktop,/ad-units\/mobile\.html/);
+ const prior=globalThis.window;
+ try {globalThis.window={matchMedia:()=>({matches:true})};
+  const mobile=renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
+  assert.match(mobile,/ad-units\/mobile\.html/);
+  assert.doesNotMatch(mobile,/ad-units\/desktop\.html/);
+ } finally { if(prior===undefined)delete globalThis.window;else globalThis.window=prior;}
+ assert.match(renderBannerPlacement(resolved,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\/rectangle\.html/);
+ const bad={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,units:{...resolved.cloudflareBanners.units,mobile:{...resolved.cloudflareBanners.units.mobile,key:'fake'}}}};
+ assert.equal(bannerReady(bad),false);
 });

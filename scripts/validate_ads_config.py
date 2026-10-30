@@ -73,6 +73,35 @@ def validate_cloudflare_adsterra(ad):
             errors.append("Cloudflare native requires verified category exclusions OR explicit documented unfiltered trial authorization")
     return errors
 
+# Exact site-specific 320x50, 728x90, 300x250 Adsterra keys supplied by owner.
+CLOUDFLARE_BANNERS = {
+    'mobile': ('22d5d7312497a4575a8261d0d18522ea', 320, 50),
+    'desktop': ('5b1925f1b2ab32ef7b6d207bde9e0fa1', 728, 90),
+    'rectangle': ('58623b07e46a924f55b4d5d4895086c0', 300, 250),
+}
+
+def validate_cloudflare_banners(banners):
+    if not isinstance(banners, dict):
+        return ['cloudflareBanners must be an object']
+    errors=[]
+    if banners.get('websiteHost')!='jobpath-india.pages.dev':
+        errors.append('Banner code must remain limited to the Cloudflare domain')
+    if banners.get('enabled') is not True:
+        errors.append('Banner placements must be explicitly enabled')
+    units=banners.get('units')
+    if not isinstance(units, dict) or set(units)!=set(CLOUDFLARE_BANNERS):
+        return errors+['Expected exactly three distinct banner units']
+    for name,(key,width,height) in CLOUDFLARE_BANNERS.items():
+        u=units[name]
+        if not isinstance(u,dict):
+            errors.append(name+' must be a banner object')
+            continue
+        expected={'key':key,'width':width,'height':height,'format':'iframe','enabled':True,'scriptUrl':'https://bauval.org/22/'+key}
+        for field,value in expected.items():
+            if type(u.get(field)) is not type(value) or u.get(field)!=value:
+                errors.append(name+' '+field+' differs from documented banner snippet')
+    return errors
+
 def validate(config):
     errors = []
     if not isinstance(config, dict):
@@ -90,6 +119,8 @@ def validate(config):
         errors.extend(validate_adsterra(config["adsterra"]))
     if "cloudflareAdsterra" in config:
         errors.extend(validate_cloudflare_adsterra(config["cloudflareAdsterra"]))
+    if "cloudflareBanners" in config:
+        errors.extend(validate_cloudflare_banners(config["cloudflareBanners"]))
     if enabled:
         if provider == "adsense":
             if not isinstance(publisher, str) or not PUBLISHER_RE.fullmatch(publisher):

@@ -49,6 +49,27 @@ export function adsterraReady(config){
   (filtered||trial)&&ad.adUnitStatus==='active'&&
   config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
 }
+// Exact jobpath-india.pages.dev banner codes supplied by the publisher.
+const BANNER_KEYS=Object.freeze({"mobile":"22d5d7312497a4575a8261d0d18522ea","desktop":"5b1925f1b2ab32ef7b6d207bde9e0fa1","rectangle":"58623b07e46a924f55b4d5d4895086c0"});
+export function bannerReady(config){
+ const b=config?.cloudflareBanners;
+ if(!adsterraReady(config)||b?.enabled!==true||b.websiteHost!==CLOUDFLARE_ADSTERRA_HOST)return false;
+ for(const [name,key] of Object.entries(BANNER_KEYS)){
+  const u=b.units?.[name],d={mobile:[320,50],desktop:[728,90],rectangle:[300,250]}[name];
+  if(u?.enabled!==true||u.key!==key||u.format!=='iframe'||u.width!==d[0]||u.height!==d[1]||u.scriptUrl!=='https://bauval.org/22/'+key)return false;
+ }
+ return true;
+}
+export function renderBannerPlacement(config,location,hostname='',consent=''){
+ if(!['responsive','rectangle'].includes(location)||hostname!==CLOUDFLARE_ADSTERRA_HOST||consent!=='allow'||!bannerReady(config))return '';
+ if(typeof navigator!=='undefined'&&navigator.globalPrivacyControl===true)return '';
+ const unit=name=>{const u=config.cloudflareBanners.units[name];
+  return '<aside class="jp-banner jp-banner--'+name+'" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
+   '<iframe loading="lazy" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html"></iframe></aside>';};
+ // Never request an impression for a hidden responsive format.
+ const mobile=typeof window!=='undefined'&&window.matchMedia?.('(max-width:760px)')?.matches===true;
+ return location==='responsive'?unit(mobile?'mobile':'desktop'):unit('rectangle');
+}
 export function adSenseReady(config){
  return config?.enabled===true&&config.provider==='adsense'&&
    typeof config.publisherId==='string'&&PUBLISHER.test(config.publisherId)&&

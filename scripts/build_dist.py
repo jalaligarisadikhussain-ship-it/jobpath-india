@@ -42,4 +42,20 @@ ads_config = load_and_validate()
 # independently of whether advertisements have been enabled or approved.
 # Do not load Google advertising scripts merely to publish ads.txt.
 (DIST/'ads.txt').write_text(ADS_TXT_LINE, encoding='utf-8')
+
+# Render each format inside its own ad-document so atOptions cannot collide.
+# A visitor-facing iframe is inserted only after they opt into advertising.
+if ads_config.get('cloudflareBanners', {}).get('enabled') is True:
+    ad_dir = DIST / 'ad-units'
+    ad_dir.mkdir()
+    for name, unit in ads_config['cloudflareBanners']['units'].items():
+        options = {'key': unit['key'], 'format': 'iframe',
+                   'height': unit['height'], 'width': unit['width'], 'params': {}}
+        script = '<script>var atOptions = '+json.dumps(options, separators=(',',':'))+';</script>'
+        script += '<script src="'+unit['scriptUrl']+'"></script>'
+        page = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
+                '<meta name="robots" content="noindex,nofollow">'
+                '<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>'
+                '</head><body>') + script + '</body></html>'
+        (ad_dir/(name+'.html')).write_text(page, encoding='utf-8')
 print(f'Generated dist/ with {len(page_data)} pages; automation and private review reports excluded.')
