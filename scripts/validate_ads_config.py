@@ -59,13 +59,18 @@ def validate_cloudflare_adsterra(ad):
         errors.append("Cloudflare Adsterra unfiltered-category acceptance must be a boolean")
     if "datingExclusionConfirmed" in ad and type(ad["datingExclusionConfirmed"]) is not bool:
         errors.append("Cloudflare dating-category exclusion confirmation must be a boolean")
+    if "userAuthorizedTrial" in ad and type(ad["userAuthorizedTrial"]) is not bool:
+        errors.append("Cloudflare explicit trial authorization must be a boolean")
     if ad.get("enabled") is True:
-        if ad.get("siteStatus") != "approved":
-            errors.append("Cloudflare Adsterra requires site approval before reactivation")
-        if ad.get("allowUnfilteredCategories") is True:
-            errors.append("Unfiltered dating/gambling advertising is prohibited")
-        if ad.get("gamblingExclusionConfirmed") is not True or ad.get("datingExclusionConfirmed") is not True:
-            errors.append("Both dating and gambling category restrictions must be verified by publisher")
+        filtered = (ad.get("siteStatus") == "approved" and
+                    ad.get("allowUnfilteredCategories") is not True and
+                    ad.get("gamblingExclusionConfirmed") is True and
+                    ad.get("datingExclusionConfirmed") is True)
+        trial = (ad.get("userAuthorizedTrial") is True and
+                 ad.get("allowUnfilteredCategories") is True and
+                 ad.get("siteStatus") in ("approved", "unverified"))
+        if not (filtered or trial):
+            errors.append("Cloudflare native requires verified category exclusions OR explicit documented unfiltered trial authorization")
     return errors
 
 def validate(config):
@@ -105,7 +110,7 @@ def validate(config):
                 errors.append("Adsterra gambling/betting/casino exclusion must be confirmed before enabling ads")
             consent = config.get("consent", {})
             if (not isinstance(consent, dict) or consent.get("required") is not True
-                    or consent.get("version") != "adsterra-2026-10-29"):
+                    or consent.get("version") != "adsterra-2026-10-30-trial"):
                 errors.append("Versioned opt-in advertising consent is required")
             if publisher not in (None, "") or any(value not in (None, "") for value in slots.values()):
                 errors.append("Adsterra must not use Google publisher or slot identifiers")

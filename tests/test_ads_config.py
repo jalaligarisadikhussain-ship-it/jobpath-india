@@ -66,9 +66,10 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def test_cloudflare_native_unit_is_distinct_and_validated(self):
         cfg=copy.deepcopy(load_and_validate())
         self.assertFalse(cfg["enabled"])  # other hosts remain OFF
-        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
         self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "unverified")
-        self.assertFalse(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
+        self.assertTrue(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
+        self.assertTrue(cfg["cloudflareAdsterra"]["userAuthorizedTrial"])
         self.assertFalse(cfg["cloudflareAdsterra"]["datingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["gamblingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["adultAds"])
@@ -80,19 +81,20 @@ class AdvertisingConfigurationTests(unittest.TestCase):
             bad["cloudflareAdsterra"][key]=value
             self.assertTrue(validate(bad), key)
 
-    def test_cloudflare_unsafe_category_inventory_cannot_activate(self):
+    def test_unfiltered_category_trial_is_explicit_and_host_bound(self):
         cfg=copy.deepcopy(load_and_validate())
-        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
-        unsafe=copy.deepcopy(cfg)
-        unsafe["cloudflareAdsterra"].update(enabled=True,allowUnfilteredCategories=True)
-        self.assertTrue(validate(unsafe))
+        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["enabled"])  # Netlify/Render stay disabled
+        self.assertEqual(validate(cfg),[])
+        for patch in ({"userAuthorizedTrial":False},{"allowUnfilteredCategories":False},
+                      {"siteStatus":"pending"},{"adUnitStatus":"inactive"}):
+            bad=copy.deepcopy(cfg)
+            bad["cloudflareAdsterra"].update(patch)
+            self.assertTrue(validate(bad),patch)
         restricted=copy.deepcopy(cfg)
-        restricted["cloudflareAdsterra"].update(enabled=True,siteStatus="approved",gamblingExclusionConfirmed=True,datingExclusionConfirmed=True)
+        restricted["cloudflareAdsterra"].update(userAuthorizedTrial=False,allowUnfilteredCategories=False,
+             siteStatus="approved",gamblingExclusionConfirmed=True,datingExclusionConfirmed=True)
         self.assertEqual(validate(restricted),[])
-        restricted["cloudflareAdsterra"]["datingExclusionConfirmed"]=False
-        self.assertTrue(validate(restricted))
-        self.assertFalse(cfg["enabled"])
-        self.assertEqual(cfg["provider"],"none")
 
     def test_native_provider_cannot_mix_google_ids(self):
         bad=self.native_config();bad["publisherId"]="ca-pub-8073443569494348"

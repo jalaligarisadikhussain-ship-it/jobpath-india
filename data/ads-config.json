@@ -22,11 +22,11 @@
   },
   "consent": {
     "required": true,
-    "version": "adsterra-2026-10-29"
+    "version": "adsterra-2026-10-30-trial"
   },
-  "note": "All third-party ad units are paused while unsuitable dating-style ads are addressed. Cloudflare ad container is not rendered and no Adsterra script runs, even when a visitor previously opted in. Existing tags are retained for reference; no ad income while disabled.",
+  "note": "Cloudflare-only Adsterra native banner reactivated as a visitor-opt-in trial on 2026-10-30 at publisher request. Previously seen dating adverts may recur; provider-side exclusions have NOT been confirmed. Netlify and Render remain OFF. Ads do not load until visitor explicitly opts into updated 2026-10-30 trial consent.",
   "cloudflareAdsterra": {
-    "enabled": false,
+    "enabled": true,
     "websiteHost": "jobpath-india.pages.dev",
     "format": "native",
     "key": "84de856c9d01a37c08d4912fbf3df530",
@@ -37,8 +37,9 @@
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Paused on 2026-10-30 after a dating-style creative appeared on the jobs website. No broad-category native ads are allowed. Resume only after independent site approval, verified provider-side gambling AND dating category restrictions, and a manual suitability review; this does not guarantee jobs-only inventory.",
-    "allowUnfilteredCategories": false,
-    "datingExclusionConfirmed": false
+    "note": "Publisher explicitly requested Adsterra to resume on 2026-10-30 after being warned that dating/gambling and other unwanted creatives can recur until the network confirms exclusions. Existing approved-domain native tag is used on Cloudflare only, and scripts require new visitor opt-in. Provider site status remains unverified; no network category restrictions are claimed.",
+    "allowUnfilteredCategories": true,
+    "datingExclusionConfirmed": false,
+    "userAuthorizedTrial": true
   }
 }

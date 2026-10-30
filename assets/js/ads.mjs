@@ -8,21 +8,20 @@ export const CLOUDFLARE_ADSTERRA_HOST='jobpath-india.pages.dev';
 export const CLOUDFLARE_ADSTERRA_KEY='84de856c9d01a37c08d4912fbf3df530';
 export const CLOUDFLARE_ADSTERRA_SCRIPT='https://bauval.org/21/'+CLOUDFLARE_ADSTERRA_KEY;
 export const AD_CONSENT_KEY='jp_advertising_consent';
-export const AD_CONSENT_VERSION='adsterra-2026-10-29';
+export const AD_CONSENT_VERSION='adsterra-2026-10-30-trial';
 const CONSENT_AGE=180*24*60*60*1000;
 
 // Hosting-specific config: never change the existing Netlify/Render advertising state.
 export function resolveAdvertisingConfig(config,hostname=''){
  if(hostname!==CLOUDFLARE_ADSTERRA_HOST)return config;
  const ad=config?.cloudflareAdsterra;
- // No unfiltered ad-network inventory is permitted on this recruitment website.
- // Publisher dashboard safeguards must be verified before an external unit can run.
- if(ad?.enabled!==true||
-    ad.allowUnfilteredCategories===true||
-    ad.gamblingExclusionConfirmed!==true||
-    ad.datingExclusionConfirmed!==true||
-    ad.siteStatus!=='approved')
-  return {...config,enabled:false,provider:'none'};
+ // Publisher explicitly requested this opt-in trial even though provider-side
+ // dating/gambling exclusions are unconfirmed. Do not claim category safety.
+ const filtered=ad?.gamblingExclusionConfirmed===true&&ad.datingExclusionConfirmed===true&&
+   ad.allowUnfilteredCategories!==true&&ad.siteStatus==='approved';
+ const trial=ad?.userAuthorizedTrial===true&&ad.allowUnfilteredCategories===true&&
+   ['approved','unverified'].includes(ad.siteStatus);
+ if(ad?.enabled!==true||!(filtered||trial))return {...config,enabled:false,provider:'none'};
  return {...config,enabled:true,provider:'adsterra',adsterra:ad,
   consent:{required:true,version:AD_CONSENT_VERSION}};
 }
@@ -42,11 +41,12 @@ export function adsterraConfigured(config){
 export function adsterraReady(config){
  const ad=config?.adsterra;
  const isCloudflare=ad?.websiteHost===CLOUDFLARE_ADSTERRA_HOST;
+ const filtered=ad?.gamblingExclusionConfirmed===true&&ad.siteStatus==='approved'&&
+  (!isCloudflare||(ad.datingExclusionConfirmed===true&&ad.allowUnfilteredCategories!==true));
+ const trial=isCloudflare&&ad?.userAuthorizedTrial===true&&ad.allowUnfilteredCategories===true&&
+  ['approved','unverified'].includes(ad.siteStatus);
  return config?.enabled===true&&config.provider==='adsterra'&&adsterraConfigured(config)&&
-  ad.gamblingExclusionConfirmed===true&&
-  (!isCloudflare||(ad.datingExclusionConfirmed===true&&ad.allowUnfilteredCategories!==true))&&
-  ad.siteStatus==='approved'&&
-  ad.adUnitStatus==='active'&&
+  (filtered||trial)&&ad.adUnitStatus==='active'&&
   config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
 }
 export function adSenseReady(config){
@@ -73,13 +73,13 @@ export function saveAdvertisingConsent(choice,storage,now=Date.now()){
  }catch{return false}
 }
 function privacySignal(){return typeof window!=='undefined'&&window.navigator?.globalPrivacyControl===true}
-const consentText='Optional Adsterra advertising uses cookies and device/browser information, such as IP address and ad interactions. Allowing ads shares this information with Adsterra and its advertising partners. You can change your choice at any time.';
+const consentText='Adsterra ads are optional and may use cookies and device/browser information. The ad network has not confirmed restrictions on dating or other unwanted content, so such ads may reappear. You can decline and still use all job information.';
 function consentButtons(){return '<div class="ad-consent-actions"><button type="button" class="btn btn-secondary" data-ad-choice="allow">Allow advertising</button><button type="button" class="btn btn-secondary" data-ad-choice="deny">Continue without ads</button></div>'}
 export function renderAdPlacement(config,place='content'){
  if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
  if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement>'+
-  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><div class="ad-consent-summary"><strong>Optional sponsored content</strong><p>Ads may use cookies and device data. Jobs remain free. <a href="/privacy-policy/">Privacy details</a>.</p></div>'+consentButtons()+'</div>'+
+  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><div class="ad-consent-summary"><strong>Optional sponsored content</strong><p>Third-party ads may still contain unrelated or dating-style content until the ad network applies restrictions. Jobs remain free. <a href="/privacy-policy/">Privacy details</a>.</p></div>'+consentButtons()+'</div>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
   '<p class="tiny muted" data-ad-status role="status"></p><button type="button" class="btn btn-ghost btn-sm" data-ad-choices>Advertising choices</button></aside>';
  // User-provided identifiers must pass strict numeric allowlists; no HTML interpolation of untrusted strings.

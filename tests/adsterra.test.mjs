@@ -125,40 +125,48 @@ test('native banners remain labeled, optional and outside application positions'
  assert.equal(renderAdPlacement(active,'jobDetail'),'');
 });
 
-test('Cloudflare native advertising is disabled after unsuitable dating creative',()=>{
+test('Cloudflare trial requires explicit publisher authorization and renewed visitor consent',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(current.cloudflareAdsterra.enabled,false);
- assert.equal(current.cloudflareAdsterra.allowUnfilteredCategories,false);
- assert.equal(cloud.enabled,false);
- assert.equal(cloud.provider,'none');
- assert.equal(adsterraReady(cloud),false);
- assert.equal(renderAdPlacement(cloud,'top'),'');
+ assert.equal(current.cloudflareAdsterra.enabled,true);
+ assert.equal(current.cloudflareAdsterra.userAuthorizedTrial,true);
+ assert.equal(current.cloudflareAdsterra.datingExclusionConfirmed,false);
+ assert.equal(current.cloudflareAdsterra.gamblingExclusionConfirmed,false);
+ assert.equal(cloud.enabled,true);
+ assert.equal(cloud.provider,'adsterra');
+ assert.equal(adsterraReady(cloud),true);
+ assert.match(renderAdPlacement(cloud,'top'),/Advertisement/);
+ assert.match(renderAdPlacement(cloud,'top'),/dating-style content/);
  const other=resolveAdvertisingConfig(current,'jobpath-india.netlify.app');
  assert.equal(other.enabled,false);
 });
-test('Cloudflare ad unit may not run with unfiltered inventory or unverified provider settings',()=>{
- const mock={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true,datingExclusionConfirmed:true,allowUnfilteredCategories:false}};
- const valid=resolveAdvertisingConfig(mock,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(adsterraReady(valid),true); // Simulated prerequisites, not real-world approval.
+test('Cloudflare trial rejects missing authorization, wrong host, tampered code and inactive units',()=>{
  for(const patch of [
-  {allowUnfilteredCategories:true},
-  {datingExclusionConfirmed:false},
-  {gamblingExclusionConfirmed:false},
-  {siteStatus:'unverified'},
-  {adUnitStatus:'inactive'},
-  {scriptUrl:'https://example.com/inject.js'}
+  {enabled:false},{userAuthorizedTrial:false},{allowUnfilteredCategories:false},
+  {siteStatus:'rejected'},{adUnitStatus:'inactive'},{adultAds:true},
+  {scriptUrl:'https://example.com/inject.js'},{websiteHost:'example.com'}
  ]){
-  const blocked=resolveAdvertisingConfig({...mock,cloudflareAdsterra:{...mock.cloudflareAdsterra,...patch}},CLOUDFLARE_ADSTERRA_HOST);
-  assert.equal(adsterraReady(blocked),false);
+  const altered={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,...patch}};
+  const resolved=resolveAdvertisingConfig(altered,CLOUDFLARE_ADSTERRA_HOST);
+  assert.equal(adsterraReady(resolved),false);
  }
 });
-test('Previously saved opt-in cannot load disabled Cloudflare ads',()=>browserFixture(({storage,scripts,unit})=>{
- const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+test('Previously saved opt-in from earlier version cannot load ads',()=>browserFixture(({storage,scripts,unit})=>{
  window.location.hostname=CLOUDFLARE_ADSTERRA_HOST;
- saveAdvertisingConsent('allow',storage);
+ storage.setItem(AD_CONSENT_KEY,JSON.stringify({version:'adsterra-2026-10-29',choice:'allow',timestamp:Date.now()}));
+ const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,0);
  assert.equal(unit.hidden,true);
+},{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
+test('Cloudflare opt-in trial injects only the pinned ad tag on its exact domain',()=>browserFixture(({storage,scripts,unit})=>{
+ const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+ assert.equal(startAdUnits(cloud),0);
+ saveAdvertisingConsent('allow',storage);
+ assert.equal(startAdUnits(cloud),1);
+ assert.equal(unit.hidden,false);
+ assert.equal(scripts[0].src,CLOUDFLARE_ADSTERRA_SCRIPT);
+ assert.equal(startAdUnits(cloud),0);
+ assert.equal(scripts.length,1);
 },{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
 test('Even configured ads fail closed without actual gambling exclusion',()=>{
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,gamblingExclusionConfirmed:false}}),false);
