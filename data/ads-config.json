@@ -24,9 +24,9 @@
     "required": true,
     "version": "adsterra-2026-10-29"
   },
-  "note": "Adsterra website Approved and native unit Active were verified in the authenticated account on 2026-10-29. Live advertising stays disabled: Netlify production deploys are paused after free credit exhaustion. Gambling-category exclusion has not been confirmed. Preserve the exact account-supplied native tag; never substitute another site's code.",
+  "note": "Default Netlify/Render advertising remains OFF. Cloudflare ads also OFF pending verified gambling, betting and casino category exclusion and website approval. Monetization can only resume after provider-level restrictions are confirmed.",
   "cloudflareAdsterra": {
-    "enabled": true,
+    "enabled": false,
     "websiteHost": "jobpath-india.pages.dev",
     "format": "native",
     "key": "84de856c9d01a37c08d4912fbf3df530",
@@ -37,6 +37,6 @@
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Owner confirmed active Cloudflare Native Banner and supplied exact tag. Website-level approval unverified. Explicit visitor opt-in required. Gambling exclusion postponed per owner request."
+    "note": "Cloudflare Native Banner has an active unit but gambling/betting/casino exclusions and site-level approval are not confirmed. Keep ads disabled until provider confirms category blocks. Preserve tag for later review; do not display consent prompt while disabled."
   }
 }
