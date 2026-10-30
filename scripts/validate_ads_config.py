@@ -86,8 +86,12 @@ def validate_cloudflare_banners(banners):
     errors=[]
     if banners.get('websiteHost')!='jobpath-india.pages.dev':
         errors.append('Banner code must remain limited to the Cloudflare domain')
-    if banners.get('enabled') is not True:
-        errors.append('Banner placements must be explicitly enabled')
+    if type(banners.get('enabled')) is not bool:
+        errors.append('Banner enabled flag must be a boolean')
+    if type(banners.get('deliveryVerified')) is not bool:
+        errors.append('Banner source verification flag must be boolean')
+    if banners.get('deliveryVerified') is True and banners.get('enabled') is not True:
+        errors.append('Unenabled banners cannot claim verified delivery')
     units=banners.get('units')
     if not isinstance(units, dict) or set(units)!=set(CLOUDFLARE_BANNERS):
         return errors+['Expected exactly three distinct banner units']

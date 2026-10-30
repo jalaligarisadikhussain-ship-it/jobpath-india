@@ -64,11 +64,9 @@ class HostingBuildTests(unittest.TestCase):
             self.assertTrue(all(url.startswith(DEFAULT_SITE_URL + "/") for url in locations))
             self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
             self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
-            for banner in ('mobile','desktop','rectangle'):
-                banner_page=dist/'ad-units'/(banner+'.html')
-                self.assertTrue(banner_page.is_file())
-                self.assertIn('var atOptions',banner_page.read_text())
-                self.assertIn('https://bauval.org/22/',banner_page.read_text())
+            # Cropped/incomplete Adsterra banner tags must not ship live wrappers.
+            # This prevents blank ad placeholders while native ads stay active.
+            self.assertFalse((dist/'ad-units').exists())
             for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
                 self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])

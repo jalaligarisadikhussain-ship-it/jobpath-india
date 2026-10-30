@@ -46,33 +46,36 @@
     {
       "id": "homepage-top",
       "type": "responsive-banner",
-      "enabled": true,
+      "enabled": false,
       "desktop": "728x90",
       "mobile": "320x50",
       "position": "before hero",
-      "requiresVisitorOptIn": true
+      "requiresVisitorOptIn": true,
+      "status": "paused-unverified-script-source"
     },
     {
       "id": "homepage-middle",
       "type": "banner-300x250",
-      "enabled": true,
+      "enabled": false,
       "position": "after career-path category tiles",
-      "requiresVisitorOptIn": true
+      "requiresVisitorOptIn": true,
+      "status": "paused-unverified-script-source"
     },
     {
       "id": "homepage-bottom",
       "type": "native-banner",
       "enabled": true,
       "position": "after examination resources, before footer",
-      "requiresVisitorOptIn": true
+      "requiresVisitorOptIn": true,
+      "status": "existing-native-trial"
     }
   ],
-  "layoutNote": "Three well-separated in-flow advertising zones, not clustered: responsive 728x90 desktop / 320x50 mobile near top of homepage, 300x250 after career-path categories, one Native Banner at bottom after exam resources. Each has distinct code. Never duplicate tags; all remain host-limited and opt-in. Full banner script URL validation and provider dating-category controls remain pending.",
+  "layoutNote": "Unverified fixed-size banners on TOP/MIDDLE are temporarily disabled (not loaded and no blank cards) because the full script src URLs are unknown. Existing bottom native ad remains running with visitor opt-in. After exact Adsterra codes are verified, add banners back in top/middle in their original positions.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": true,
     "source": "Owner screenshots of Adsterra site-specific Get Code dialogs (2026-10-31)",
-    "verificationNote": "Exact full script src cropped in screenshots; URL is reconstructed using visible bauval.org/22/ path and provided keys; live Adsterra delivery unverified.",
+    "verificationNote": "Full Adsterra <script src> URLs for 320x50, 728x90 and 300x250 were cropped from screenshots. Previous reconstructed /22/<key> URLs have not delivered verified creatives and have created blank placeholders. Banner delivery is paused pending exact original tags from the publisher account.",
     "units": {
       "mobile": {
         "key": "22d5d7312497a4575a8261d0d18522ea",
@@ -98,6 +101,7 @@
         "scriptUrl": "https://bauval.org/22/58623b07e46a924f55b4d5d4895086c0",
         "enabled": true
       }
-    }
+    },
+    "deliveryVerified": false
   }
 }

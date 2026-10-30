@@ -188,7 +188,7 @@ test('Native sponsorship notice is compact, clearly marked and not an applicatio
  assert.match(css,/\.analytics-consent\{width:min\(375px/);
 });
 
-test('home ad placements occur once each in top, middle and bottom order',()=>{
+test('ad positions stay ordered while unverified top and middle banners are hidden',()=>{
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const homepage=app.slice(app.indexOf('function home()'),app.indexOf('function options('));
  const first=homepage.indexOf('siteBanner("responsive")');
@@ -207,7 +207,8 @@ test('home ad placements occur once each in top, middle and bottom order',()=>{
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
  assert.deepEqual(cfg.plannedPlacements.map(x=>x.id),
  ['homepage-top','homepage-middle','homepage-bottom']);
- assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,3);
+ assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,1);
+ assert.equal(cfg.cloudflareBanners.deliveryVerified,false);
  assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
 });
 
@@ -223,24 +224,28 @@ test('homepage offers a compact in-flow consent choice and never auto-loads ads'
  assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
 });
 
-test('three independently keyed iframe ads are host and consent gated',()=>{
+test('unverified fixed banners do not render white ad placeholders or request impressions',()=>{
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
  const resolved=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(bannerReady(resolved),true);
+ assert.equal(cfg.cloudflareBanners.deliveryVerified,false);
+ assert.equal(bannerReady(resolved),false);
+ assert.equal(renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
+ assert.equal(renderBannerPlacement(resolved,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
  assert.equal(renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,''),'');
- assert.equal(renderBannerPlacement(resolved,'responsive','jobpath-india.netlify.app','allow'),'');
- const desktop=renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
- assert.match(desktop,/ad-units\/desktop\.html/);
- assert.doesNotMatch(desktop,/ad-units\/mobile\.html/);
+ assert.equal(renderBannerPlacement(resolved,'rectangle','jobpath-india.netlify.app','allow'),'');
+ // Provider-code validation remains available for a future manual verification.
+ const simulated={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,deliveryVerified:true}};
+ assert.equal(bannerReady(simulated),true);
+ const wide=renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
+ assert.match(wide,/ad-units\\/desktop\\.html/);
+ assert.doesNotMatch(wide,/ad-units\\/mobile\\.html/);
  const prior=globalThis.window;
- try {globalThis.window={matchMedia:()=>({matches:true})};
-  const mobile=renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
-  assert.match(mobile,/ad-units\/mobile\.html/);
-  assert.doesNotMatch(mobile,/ad-units\/desktop\.html/);
- } finally { if(prior===undefined)delete globalThis.window;else globalThis.window=prior;}
- assert.match(renderBannerPlacement(resolved,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\/rectangle\.html/);
- const bad={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,units:{...resolved.cloudflareBanners.units,mobile:{...resolved.cloudflareBanners.units.mobile,key:'fake'}}}};
- assert.equal(bannerReady(bad),false);
+ try{globalThis.window={matchMedia:()=>({matches:true})};
+  assert.match(renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\\/mobile\\.html/);
+ }finally{if(prior===undefined)delete globalThis.window;else globalThis.window=prior}
+ assert.match(renderBannerPlacement(simulated,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\\/rectangle\\.html/);
+ const tampered={...simulated,cloudflareBanners:{...simulated.cloudflareBanners,units:{...simulated.cloudflareBanners.units,mobile:{...simulated.cloudflareBanners.units.mobile,key:'tampered'}}}};
+ assert.equal(bannerReady(tampered),false);
 });
 
 test('unfilled display inventory collapses rather than leaving white ad boxes',()=>{

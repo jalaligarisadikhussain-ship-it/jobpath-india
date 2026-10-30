@@ -200,3 +200,6 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 /* Minimize the visual footprint while awaiting a real nonblank creative. */
 .jp-banner[data-jp-banner-state="pending"]{box-shadow:none!important;border-color:transparent!important;background:transparent!important}
 .jp-banner[data-jp-banner-state="empty"],.jp-banner[hidden]{display:none!important;margin:0!important;padding:0!important}
+
+/* Never display advertising placeholders if the unit has not been verified or filled. */
+.jp-banner[hidden],.jp-banner[data-jp-banner-state="empty"]{display:none!important}

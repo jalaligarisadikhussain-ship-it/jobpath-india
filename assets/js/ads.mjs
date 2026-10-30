@@ -53,7 +53,7 @@ export function adsterraReady(config){
 const BANNER_KEYS=Object.freeze({"mobile":"22d5d7312497a4575a8261d0d18522ea","desktop":"5b1925f1b2ab32ef7b6d207bde9e0fa1","rectangle":"58623b07e46a924f55b4d5d4895086c0"});
 export function bannerReady(config){
  const b=config?.cloudflareBanners;
- if(!adsterraReady(config)||b?.enabled!==true||b.websiteHost!==CLOUDFLARE_ADSTERRA_HOST)return false;
+ if(!adsterraReady(config)||b?.enabled!==true||b.deliveryVerified!==true||b.websiteHost!==CLOUDFLARE_ADSTERRA_HOST)return false;
  for(const [name,key] of Object.entries(BANNER_KEYS)){
   const u=b.units?.[name],d={mobile:[320,50],desktop:[728,90],rectangle:[300,250]}[name];
   if(u?.enabled!==true||u.key!==key||u.format!=='iframe'||u.width!==d[0]||u.height!==d[1]||u.scriptUrl!=='https://bauval.org/22/'+key)return false;

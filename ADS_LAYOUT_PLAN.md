@@ -24,3 +24,7 @@ The mobile, desktop and rectangle iframe banners now report actual rendered crea
 
 ### White ad-frame corrective patch
 The previous fill checker incorrectly treated any nested iframe as a successful ad. A cross-origin iframe can be completely white or unfilled. That shortcut is removed. Only positively visible images, canvas/video creatives or substantial visible text can make the parent keep the banner; otherwise the slot collapses within about 5–6 seconds after entering the viewport. This conservatively hides iframe-only ad formats that cannot be inspected; it prioritizes removing blank placements over maximizing impressions. Full publisher script code and real delivery still need verification for the top/middle formats; the known working native slot is not changed.
+
+
+## 31 October 2026: fail-closed correction for the screenshot's empty advertisement
+Both fixed banner regions are paused until original **complete** Adsterra script sources can be read from the publisher's Copy Code dialogs. This prevents ad iframe requests to reconstructed URLs and entirely removes the resulting blank top/middle boxes on all future deployed builds. The working Cloudflare-specific Native Banner remains at the bottom, subject to the same visitor consent. The codes remain recorded; they have not been discarded. To restore three positions, verify the exact full `<script src>` tags, then explicitly set `cloudflareBanners.deliveryVerified=true` only after testing that those exact URLs render. Do not claim top/middle ad revenue is active while the units are paused.
