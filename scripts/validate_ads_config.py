@@ -84,6 +84,11 @@ def validate(config):
                 errors.extend(validate_adsterra(ad))
             if ad.get("siteStatus") != "approved" or ad.get("adUnitStatus") != "active":
                 errors.append("Adsterra website approval and active unit are required")
+            # Fail closed until the publisher has verified gambling/betting/casino
+            # exclusion in the actual ad network account. A local config flag
+            # alone does not prove that the network honors category filtering.
+            if ad.get("gamblingExclusionConfirmed") is not True:
+                errors.append("Adsterra gambling/betting/casino exclusion must be confirmed before enabling ads")
             consent = config.get("consent", {})
             if (not isinstance(consent, dict) or consent.get("required") is not True
                     or consent.get("version") != "adsterra-2026-10-29"):
