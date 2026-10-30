@@ -20,3 +20,7 @@ Static build: scripts/build_dist.py creates dist/ad-units/mobile.html, desktop.h
 
 ## Empty inventory handling
 The mobile, desktop and rectangle iframe banners now report actual rendered creative markup to the parent. The parent validates the report's iframe window identity and collapses an empty/error unit after its viewport-visible timeout. A provider script that returns no creative must not leave a permanent white 320x50/300x250/728x90 slot. This is a best-effort indicator, not independent live ad-delivery verification. The working Native Banner is unchanged.
+
+
+### White ad-frame corrective patch
+The previous fill checker incorrectly treated any nested iframe as a successful ad. A cross-origin iframe can be completely white or unfilled. That shortcut is removed. Only positively visible images, canvas/video creatives or substantial visible text can make the parent keep the banner; otherwise the slot collapses within about 5–6 seconds after entering the viewport. This conservatively hides iframe-only ad formats that cannot be inspected; it prioritizes removing blank placements over maximizing impressions. Full publisher script code and real delivery still need verification for the top/middle formats; the known working native slot is not changed.

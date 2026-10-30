@@ -196,3 +196,7 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
  background:transparent;border-color:transparent;box-shadow:none;
 }
 .jp-banner[data-jp-banner-state="pending"] iframe{background:transparent}
+
+/* Minimize the visual footprint while awaiting a real nonblank creative. */
+.jp-banner[data-jp-banner-state="pending"]{box-shadow:none!important;border-color:transparent!important;background:transparent!important}
+.jp-banner[data-jp-banner-state="empty"],.jp-banner[hidden]{display:none!important;margin:0!important;padding:0!important}

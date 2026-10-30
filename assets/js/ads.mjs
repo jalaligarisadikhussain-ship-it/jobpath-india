@@ -78,7 +78,7 @@ export function monitorBannerFill(root=globalThis.document,win=globalThis.window
  const slots=[...root.querySelectorAll('.jp-banner[data-jp-banner-unit]')];
  if(!slots.length)return 0;
  const timers=new Map();
- const collapse=slot=>{if(slot.dataset.jpBannerState==='filled')return;slot.dataset.jpBannerState='empty';slot.hidden=true;};
+ const collapse=slot=>{if(slot.dataset.jpBannerState==='filled')return;slot.dataset.jpBannerState='empty';slot.hidden=true;slot.setAttribute('aria-hidden','true');};
  const handler=event=>{
   const data=event.data;
   if(data?.type!=='jobpath-banner-fill'||!['filled','empty'].includes(data.status))return;
@@ -86,13 +86,13 @@ export function monitorBannerFill(root=globalThis.document,win=globalThis.window
    node.querySelector('iframe[data-jp-banner-frame]')?.contentWindow===event.source);
   if(!slot||slot.hidden)return;
   if(timers.has(slot)){clearTimeout(timers.get(slot));timers.delete(slot);}
-  if(data.status==='filled'){slot.dataset.jpBannerState='filled';return;}
+  if(data.status==='filled'){slot.dataset.jpBannerState='filled';slot.setAttribute('aria-busy','false');return;}
   collapse(slot);
  };
  win.addEventListener('message',handler);
  const watch=slot=>{if(slot.dataset.jpBannerWatching==='true')return;
   slot.dataset.jpBannerWatching='true';
-  timers.set(slot,setTimeout(()=>{timers.delete(slot);collapse(slot);},8000));
+  timers.set(slot,setTimeout(()=>{timers.delete(slot);collapse(slot);},5700));
  };
  if(typeof win.IntersectionObserver==='function'){
   const observer=new win.IntersectionObserver(entries=>{for(const entry of entries){

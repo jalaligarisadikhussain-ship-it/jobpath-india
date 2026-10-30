@@ -255,3 +255,16 @@ test('unfilled display inventory collapses rather than leaving white ad boxes',(
  assert.match(builder,/jobpath-banner-fill/);
  assert.match(builder,/creative\(\)/);
 });
+
+test('blank iframe-only markup is not treated as a filled advertisement',()=>{
+ const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
+ const runtime=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ assert.match(build,/An iframe existing is NOT proof/);
+ assert.doesNotMatch(build,/el\.tagName==='IFRAME'.*return true/);
+ assert.match(build,/naturalWidth>=90/);
+ assert.match(build,/report\('empty'\)/);
+ assert.match(runtime,/slot\.dataset\.jpBannerState='empty';slot\.hidden=true/);
+ assert.match(runtime,/5700/);
+ assert.match(css,/\.jp-banner\[data-jp-banner-state="empty"\]/);
+});
