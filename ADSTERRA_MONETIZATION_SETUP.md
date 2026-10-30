@@ -1,3 +1,9 @@
+## Gambling / betting / casino advertising safety gate — 30 October 2026
+
+The owner does **not** want gambling, betting, casino or adult-category advertisements on JobPath India. The site is presently configured with `"enabled": false` and no third-party ad-loading script. Gambling exclusion has **not** yet been confirmed by the Adsterra account, despite the Adsterra site and native unit previously showing approved/active.
+
+To avoid accidental activation, the build now rejects `provider=adsterra` with `enabled=true` unless `adsterra.gamblingExclusionConfirmed` is explicitly `true`. The flag must **never** be set based on assumption: first request category blocking/exclusion for all placements in the actual Adsterra account or through support, confirm whether the network guarantees filtering, and verify with live testing. If category blocking cannot be enforced, leave the ads **off** or switch providers only after independent review. A repository flag cannot disable categories in the ad network by itself.
+
 # JOBPATH INDIA — Adsterra monetization setup
 
 ## Current status — 29 October 2026
