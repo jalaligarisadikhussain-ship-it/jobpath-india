@@ -237,13 +237,13 @@ test('unverified fixed banners do not render white ad placeholders or request im
  const simulated={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,deliveryVerified:true}};
  assert.equal(bannerReady(simulated),true);
  const wide=renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
- assert.match(wide,/ad-units\\/desktop\\.html/);
- assert.doesNotMatch(wide,/ad-units\\/mobile\\.html/);
+ assert.ok(wide.includes('ad-units/desktop.html'));
+ assert.ok(!wide.includes('ad-units/mobile.html'));
  const prior=globalThis.window;
  try{globalThis.window={matchMedia:()=>({matches:true})};
-  assert.match(renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\\/mobile\\.html/);
+  assert.ok(renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/mobile.html'));
  }finally{if(prior===undefined)delete globalThis.window;else globalThis.window=prior}
- assert.match(renderBannerPlacement(simulated,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),/ad-units\\/rectangle\\.html/);
+ assert.ok(renderBannerPlacement(simulated,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/rectangle.html'));
  const tampered={...simulated,cloudflareBanners:{...simulated.cloudflareBanners,units:{...simulated.cloudflareBanners.units,mobile:{...simulated.cloudflareBanners.units.mobile,key:'tampered'}}}};
  assert.equal(bannerReady(tampered),false);
 });
