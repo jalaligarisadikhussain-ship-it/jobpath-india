@@ -44,7 +44,7 @@ for url in set(re.findall(r"(?<![\w])/(?:[a-z][a-z-]*/)+",app)):
   problems.append(f'Unknown dynamic site route: {url}')
 ET.parse(root/'sitemap.xml')
 sm=(root/'sitemap.xml').read_text()
-if '<loc>https://jobpath-india.netlify.app/job/' in sm:problems.append('Demo job pages incorrectly in sitemap')
+if re.search(r'<loc>https://[^<]+/job/', sm):problems.append('Demo job pages incorrectly in sitemap')
 if len(re.findall('<loc>',sm))!=len(pages)-len(noindex):problems.append('Sitemap entry count mismatch')
 if 'Sitemap:' not in (root/'robots.txt').read_text():problems.append('Missing sitemap robots directive')
 if 'eval(' in app or 'innerHTML = user' in app:problems.append('Unsafe dynamic JS pattern')

@@ -3,7 +3,8 @@ import os
 import re
 from urllib.parse import urlsplit
 
-DEFAULT_SITE_URL = "https://jobpath-india.netlify.app"
+DEFAULT_SITE_URL = "https://jobpath-india.pages.dev"
+LEGACY_NETLIFY_URL = "https://jobpath-india.netlify.app"
 
 
 def site_origin(environ=None):
@@ -33,9 +34,10 @@ def site_origin(environ=None):
 def search_primary_origin(environ=None):
     """Return the preferred Google canonical origin, independent of the active host.
 
-    Netlify remains the indexed primary while Render is a separately hosted copy.
-    If the primary host changes later, explicitly set JOBPATH_PRIMARY_SEARCH_URL
-    to the confirmed replacement origin during the migration.
+    Cloudflare Pages is the preferred search hostname, now registered in
+    Search Console. Existing Netlify and Render copies remain untouched; their
+    future builds should point canonical references at the Cloudflare primary.
+    JOBPATH_PRIMARY_SEARCH_URL can explicitly override this if needed.
     """
     env = os.environ if environ is None else environ
     return site_origin({"JOBPATH_SITE_URL": env.get("JOBPATH_PRIMARY_SEARCH_URL", DEFAULT_SITE_URL)})

@@ -24,7 +24,7 @@ class AdSenseOwnershipTests(unittest.TestCase):
         self.assertIn(ADSENSE_META_TAG, homepage)
         self.assertEqual((ROOT / "dist" / "ads.txt").read_text(encoding="utf-8"), ADS_TXT_LINE)
         self.assertNotIn("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", homepage)
-        self.assertIn("https://jobpath-india.netlify.app/", homepage)
+        self.assertIn("https://jobpath-india.pages.dev/", homepage)
 
 
 if __name__ == "__main__":
