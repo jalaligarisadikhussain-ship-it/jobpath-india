@@ -8,7 +8,7 @@ import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
-const active={...current,enabled:true,provider:'adsterra'};
+const active={...current,enabled:true,provider:'adsterra',adsterra:{...current.adsterra,gamblingExclusionConfirmed:true}};
 function memoryStorage(){
  const values=new Map();
  return {getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};
@@ -125,28 +125,40 @@ test('native banners remain labeled, optional and outside application positions'
  assert.equal(renderAdPlacement(active,'jobDetail'),'');
 });
 
-test('Cloudflare gets only its own active native unit, other hosts remain disabled',()=>{
+test('Cloudflare ads remain off until website approval and casino/betting exclusion are confirmed',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(cloud.enabled,true);assert.equal(cloud.provider,'adsterra');
- assert.equal(cloud.adsterra.scriptUrl,CLOUDFLARE_ADSTERRA_SCRIPT);
- assert.equal(cloud.adsterra.key,CLOUDFLARE_ADSTERRA_KEY);
- assert.equal(cloud.adsterra.siteStatus,'unverified');
- assert.equal(adsterraReady(cloud),true);
+ assert.equal(cloud.enabled,false);
+ assert.equal(cloud.provider,'none');
+ assert.equal(adsterraReady(cloud),false);
+ assert.equal(renderAdPlacement(cloud),'');
+ assert.equal(cloud.adsterra.key,ADSTERRA_KEY); // disabled fallback stays unchanged
+ const example={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
+ const approved=resolveAdvertisingConfig(example,CLOUDFLARE_ADSTERRA_HOST);
+ assert.equal(approved.enabled,true);
+ assert.equal(approved.adsterra.key,CLOUDFLARE_ADSTERRA_KEY);
+ assert.equal(approved.adsterra.scriptUrl,CLOUDFLARE_ADSTERRA_SCRIPT);
+ assert.equal(adsterraReady(approved),true);
+ for(const unsafe of [
+  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,gamblingExclusionConfirmed:false}},
+  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,siteStatus:'unverified'}},
+  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,adUnitStatus:'inactive'}}
+ ]){
+  assert.equal(adsterraReady(resolveAdvertisingConfig(unsafe,CLOUDFLARE_ADSTERRA_HOST)),false);
+ }
  for(const hostname of ['jobpath-india.netlify.app','jobpath-india.onrender.com','bytebright-converter.netlify.app','localhost']){
   const unchanged=resolveAdvertisingConfig(current,hostname);
   assert.equal(unchanged,current);
   assert.equal(advertisingReady(unchanged),false);
  }
 });
-test('Cloudflare ad tag runs once only after explicit opt-in and never on other hosts',()=>browserFixture(({storage,scripts,unit})=>{
- const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+test('Cloudflare script can run after explicit opt-in ONLY when network restrictions confirmed',()=>browserFixture(({storage,scripts,unit})=>{
+ const draft={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
+ const cloud=resolveAdvertisingConfig(draft,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(startAdUnits(cloud),0);
  saveAdvertisingConsent('deny',storage);
  assert.equal(startAdUnits(cloud),0);
  saveAdvertisingConsent('allow',storage);
  window.location.hostname='jobpath-india.netlify.app';
- assert.equal(startAdUnits(cloud),0);
- window.location.hostname='jobpath-india.onrender.com';
  assert.equal(startAdUnits(cloud),0);
  window.location.hostname=CLOUDFLARE_ADSTERRA_HOST;
  assert.equal(startAdUnits(cloud),1);
@@ -155,11 +167,7 @@ test('Cloudflare ad tag runs once only after explicit opt-in and never on other 
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,1);
 },{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
-test('Cloudflare adulterated script and nonactive ad unit always fail closed',()=>{
- const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- for(const ad of [{...cloud.adsterra,key:'other'},{...cloud.adsterra,adUnitStatus:'inactive'},
-                  {...cloud.adsterra,scriptUrl:'https://example.com/ad.js'},
-                  {...cloud.adsterra,adultAds:true}]){
-  assert.equal(adsterraReady({...cloud,adsterra:ad}),false);
- }
+test('Even configured ads fail closed without actual gambling exclusion',()=>{
+ assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,gamblingExclusionConfirmed:false}}),false);
+ assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,siteStatus:'unverified'}}),false);
 });
