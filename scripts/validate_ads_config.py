@@ -55,11 +55,15 @@ def validate_cloudflare_adsterra(ad):
         errors.append("Cloudflare Adsterra enabled must be a boolean")
     if ad.get("siteStatus") not in ("unverified", "pending", "approved", "rejected"):
         errors.append("Unknown Cloudflare Adsterra website status")
+    if "allowUnfilteredCategories" in ad and type(ad["allowUnfilteredCategories"]) is not bool:
+        errors.append("Cloudflare Adsterra unfiltered-category acceptance must be a boolean")
     if ad.get("enabled") is True:
-        if ad.get("siteStatus") != "approved":
-            errors.append("Cloudflare Adsterra website approval is required before serving ads")
-        if ad.get("gamblingExclusionConfirmed") is not True:
-            errors.append("Cloudflare Adsterra gambling/betting/casino exclusion must be confirmed")
+        # 'unverified' is recorded honestly: a provider-side ad request may fail.
+        # Do not substitute the site ID, tag, or an invented approval state.
+        if ad.get("siteStatus") not in ("approved", "unverified"):
+            errors.append("Cloudflare Adsterra site must be approved or awaiting verification")
+        if ad.get("gamblingExclusionConfirmed") is not True and ad.get("allowUnfilteredCategories") is not True:
+            errors.append("Cloudflare Adsterra gambling/betting/casino restrictions or explicit publisher acceptance required")
     return errors
 
 def validate(config):

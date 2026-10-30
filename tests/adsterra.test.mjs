@@ -125,52 +125,51 @@ test('native banners remain labeled, optional and outside application positions'
  assert.equal(renderAdPlacement(active,'jobDetail'),'');
 });
 
-test('top slot is only prepared for a fully approved non-gambling Adsterra unit',()=>{
+test('Cloudflare top slot uses only its own active native unit',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(renderAdPlacement(cloud,'top'),'');
- const example={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
- const approved=resolveAdvertisingConfig(example,CLOUDFLARE_ADSTERRA_HOST);
- const html=renderAdPlacement(approved,'top');
+ assert.equal(cloud.enabled,true);
+ assert.equal(cloud.provider,'adsterra');
+ assert.equal(cloud.adsterra.siteStatus,'unverified'); // Do not invent network approval.
+ assert.equal(cloud.adsterra.allowUnfilteredCategories,true);
+ assert.equal(cloud.adsterra.adultAds,false);
+ assert.equal(cloud.adsterra.key,CLOUDFLARE_ADSTERRA_KEY);
+ assert.equal(cloud.adsterra.scriptUrl,CLOUDFLARE_ADSTERRA_SCRIPT);
+ assert.equal(adsterraReady(cloud),true);
+ const html=renderAdPlacement(cloud,'top');
  assert.match(html,/ad-placement-top/);
  assert.match(html,/data-jobpath-native-placement/);
- assert.match(html,/Privacy policy/);
  assert.match(html,/Allow advertising/);
+ assert.match(html,/Advertisement/);
  assert.doesNotMatch(html,/<script|<iframe/);
+ const other=resolveAdvertisingConfig(current,'jobpath-india.netlify.app');
+ assert.equal(other.enabled,false);
+ assert.equal(adsterraReady(other),false);
 });
-test('Cloudflare ads remain off until website approval and casino/betting exclusion are confirmed',()=>{
- const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(cloud.enabled,false);
- assert.equal(cloud.provider,'none');
- assert.equal(adsterraReady(cloud),false);
- assert.equal(renderAdPlacement(cloud),'');
- assert.equal(cloud.adsterra.key,ADSTERRA_KEY); // disabled fallback stays unchanged
- const example={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
- const approved=resolveAdvertisingConfig(example,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(approved.enabled,true);
- assert.equal(approved.adsterra.key,CLOUDFLARE_ADSTERRA_KEY);
- assert.equal(approved.adsterra.scriptUrl,CLOUDFLARE_ADSTERRA_SCRIPT);
- assert.equal(adsterraReady(approved),true);
- for(const unsafe of [
-  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,gamblingExclusionConfirmed:false}},
-  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,siteStatus:'unverified'}},
-  {...example,cloudflareAdsterra:{...example.cloudflareAdsterra,adUnitStatus:'inactive'}}
- ]){
-  assert.equal(adsterraReady(resolveAdvertisingConfig(unsafe,CLOUDFLARE_ADSTERRA_HOST)),false);
- }
+test('Explicit publisher category acceptance cannot be silently skipped',()=>{
+ const disallowed={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,allowUnfilteredCategories:false}};
+ assert.equal(adsterraReady(resolveAdvertisingConfig(disallowed,CLOUDFLARE_ADSTERRA_HOST)),false);
+ const inactive={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,adUnitStatus:'inactive'}};
+ assert.equal(adsterraReady(resolveAdvertisingConfig(inactive,CLOUDFLARE_ADSTERRA_HOST)),false);
+ const rejected={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,siteStatus:'rejected'}};
+ assert.equal(adsterraReady(resolveAdvertisingConfig(rejected,CLOUDFLARE_ADSTERRA_HOST)),false);
+ const adulterated={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,scriptUrl:'https://example.com/x'}};
+ assert.equal(adsterraReady(resolveAdvertisingConfig(adulterated,CLOUDFLARE_ADSTERRA_HOST)),false);
  for(const hostname of ['jobpath-india.netlify.app','jobpath-india.onrender.com','bytebright-converter.netlify.app','localhost']){
   const unchanged=resolveAdvertisingConfig(current,hostname);
   assert.equal(unchanged,current);
   assert.equal(advertisingReady(unchanged),false);
  }
 });
-test('Cloudflare script can run after explicit opt-in ONLY when network restrictions confirmed',()=>browserFixture(({storage,scripts,unit})=>{
- const draft={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
- const cloud=resolveAdvertisingConfig(draft,CLOUDFLARE_ADSTERRA_HOST);
+test('Cloudflare native script requests ads only after explicit visitor opt-in and on correct hostname',()=>browserFixture(({storage,scripts,unit})=>{
+ const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(startAdUnits(cloud),0);
+ assert.equal(scripts.length,0);
  saveAdvertisingConsent('deny',storage);
  assert.equal(startAdUnits(cloud),0);
  saveAdvertisingConsent('allow',storage);
  window.location.hostname='jobpath-india.netlify.app';
+ assert.equal(startAdUnits(cloud),0);
+ window.location.hostname='jobpath-india.onrender.com';
  assert.equal(startAdUnits(cloud),0);
  window.location.hostname=CLOUDFLARE_ADSTERRA_HOST;
  assert.equal(startAdUnits(cloud),1);
