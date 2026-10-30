@@ -66,13 +66,22 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def test_cloudflare_native_unit_is_distinct_and_validated(self):
         cfg=copy.deepcopy(load_and_validate())
         self.assertFalse(cfg["enabled"])
-        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["gamblingExclusionConfirmed"])
         self.assertEqual(validate(cfg),[])
         for key,value in [("websiteHost","example.com"),("scriptUrl","https://example.com/x"),
                           ("key","malicious"),("adultAds",True),("adUnitStatus","inactive")]:
             bad=copy.deepcopy(cfg)
             bad["cloudflareAdsterra"][key]=value
             self.assertTrue(validate(bad))
+        # No production activation on a hypothetical switch alone.
+        blocked=copy.deepcopy(cfg);blocked["cloudflareAdsterra"]["enabled"]=True
+        self.assertTrue(any("gambling" in err for err in validate(blocked)))
+        self.assertTrue(any("approval" in err for err in validate(blocked)))
+        permitted=copy.deepcopy(blocked)
+        permitted["cloudflareAdsterra"]["siteStatus"]="approved"
+        permitted["cloudflareAdsterra"]["gamblingExclusionConfirmed"]=True
+        self.assertEqual(validate(permitted),[])
 
     def test_native_provider_cannot_mix_google_ids(self):
         bad=self.native_config();bad["publisherId"]="ca-pub-8073443569494348"
