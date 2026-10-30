@@ -65,7 +65,7 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(typeof navigator!=='undefined'&&navigator.globalPrivacyControl===true)return '';
  const unit=name=>{const u=config.cloudflareBanners.units[name];
   return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-   '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ads-white-fix-20261031"></iframe></aside>';};
+   '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ads-verified-only-20261031"></iframe></aside>';};
  // Never request an impression for a hidden responsive format.
  const mobile=typeof window!=='undefined'&&window.matchMedia?.('(max-width:760px)')?.matches===true;
  return location==='responsive'?unit(mobile?'mobile':'desktop'):unit('rectangle');

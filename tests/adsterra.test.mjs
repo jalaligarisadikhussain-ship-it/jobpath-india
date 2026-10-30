@@ -278,8 +278,8 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=ads-white-fix-20261031/);
- assert.match(build,/app\.mjs\?v=ads-white-fix-20261031/);
- assert.match(app,/ads\.mjs\?v=ads-white-fix-20261031/);
- assert.match(ads,/ad-units\/.*ads-white-fix-20261031/);
+ assert.match(build,/styles\.css\?v=ads-verified-only-20261031/);
+ assert.match(build,/app\.mjs\?v=ads-verified-only-20261031/);
+ assert.match(app,/ads\.mjs\?v=ads-verified-only-20261031/);
+ assert.match(ads,/ad-units\/.*ads-verified-only-20261031/);
 });
