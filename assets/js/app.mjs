@@ -22,7 +22,13 @@ function intro(title,desc,eyebrow='Information hub'){return `<section class="pag
 function sectionHeader(name,sub='',url=null){return `<div class="section-head"><div><h2>${h(name)}</h2>${sub?`<p>${h(sub)}</p>`:''}</div>${url?`<a href="${url}">View all →</a>`:''}</div>`}
 function chips(){return QUALIFICATIONS.map(q=>`<a class="chip" href="/job-search/?qualification=${encodeURIComponent(q)}">${h(q)} →</a>`).join('')}
 function tile(x){return `<a class="tile" href="${x[2]}"><div class="tile-icon" aria-hidden="true">${x[0]}</div><h3>${h(x[1])} ↗</h3><p>${h(x[3])}</p></a>`}
-function ad(){if(!['home','latest','central','railway','banking'].includes(PAGE))return '';return renderAdPlacement(adsConfig,'content')}
+// Keep advertising in the designated top slot, not repeated inside job lists.
+function ad(){return ''}
+function topAd(){
+ if(!['home','latest','central','railway','banking'].includes(PAGE))return '';
+ const html=renderAdPlacement(adsConfig,'top');
+ return html?'<div class="top-ad-region"><div class="wrap">'+html+'</div></div>':'';
+}
 function sourceCard(x){const link=safeUrl(x.url);return `<div class="source-card" data-source-category="${h(x.category)}" data-source-name="${h(x.name.toLowerCase())}"><div class="label-scope">${h(x.category)}</div><h3>${h(x.name)}</h3><p>${h(x.note)}</p><p class="tiny muted">${x.lastChecked?'Domain/notice checked: '+h(x.lastChecked):'Reference directory entry; recheck before use'}</p>${link?`<a href="${h(link)}" target="_blank" rel="noopener noreferrer">Visit organization website ↗</a>`:`<span class="muted tiny">Official domain not confirmed — no link shown</span>`}</div>`}
 function sourcesTeaser(){return `<section class="section">${sectionHeader('Start with the official source','Checked sources include CWC, SSC, APPSC, RRB, and IBPS; always revisit the latest official notice.','/official-sources/')}<div class="grid">${sources.slice(0,3).map(sourceCard).join('')}</div></section>`}
 function statusLabel(job){const st=job.isDemo?sampleStatus(job):effectiveStatus(job);return `<span class="tag ${st==='closed'?'closed':job.isDemo?'demo':''}">${job.isDemo?'DEMO · ':''}${h(st.toUpperCase())}</span>`}
@@ -165,7 +171,7 @@ async function init(){
  adsConfig=resolveAdvertisingConfig(adsConfig,globalThis.window?.location?.hostname||globalThis.location?.hostname||'');
  // Even if all network JSON reads fail, the site shell and verified-by-document transcription remain visible.
  if(!examUpdatesData.length)examUpdatesData=BUILTIN_EXAM_UPDATES;
- app.innerHTML=header()+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
+ app.innerHTML=header()+topAd()+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
  if(advertisingReady(adsConfig))startAdUnits(adsConfig);
  try{setTheme(localStorage.getItem('jp_theme')==='dark'?'dark':'light')}catch{setTheme('light')}
  attach();

@@ -82,3 +82,12 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .analytics-choice-trigger:focus-visible,.analytics-consent button:focus-visible{outline:3px solid #5b9af2;outline-offset:2px}
 @media(max-width:650px){.analytics-consent{bottom:8px;right:8px;width:calc(100vw - 16px);flex-direction:column;align-items:stretch;gap:8px;padding:10px}.analytics-consent-actions{flex-direction:row}.analytics-consent-actions .btn{flex:1;min-width:0;width:auto;text-align:center;padding:9px 8px;font-size:.83rem}}
 @media print{.analytics-consent,.analytics-choice-trigger{display:none!important}}
+
+/* Future top-of-page advertisement slot; visible only for a verified, enabled provider. */
+.top-ad-region{padding:10px 0 0;background:transparent}
+.top-ad-region .ad-placement{min-height:0;margin:0;padding:10px 16px;border-radius:12px}
+.top-ad-region .ad-placement-label{display:block;margin-bottom:6px}
+.top-ad-region [data-ad-consent-notice] p{font-size:.83rem;margin:0}
+.top-ad-region .ad-consent-actions{margin:8px 0}
+.top-ad-region .ad-consent-actions .btn{flex:0 1 auto}
+@media(max-width:650px){.top-ad-region .ad-consent-actions{flex-direction:column}.top-ad-region .ad-consent-actions .btn{max-width:none;width:100%}}

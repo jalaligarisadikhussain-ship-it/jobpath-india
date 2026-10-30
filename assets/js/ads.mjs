@@ -66,15 +66,14 @@ function privacySignal(){return typeof window!=='undefined'&&window.navigator?.g
 const consentText='Optional Adsterra advertising uses cookies and device/browser information, such as IP address and ad interactions. Allowing ads shares this information with Adsterra and its advertising partners. You can change your choice at any time.';
 function consentButtons(){return '<div class="ad-consent-actions"><button type="button" class="btn btn-secondary" data-ad-choice="allow">Allow advertising</button><button type="button" class="btn btn-secondary" data-ad-choice="deny">Continue without ads</button></div>'}
 export function renderAdPlacement(config,place='content'){
- if(place!=='content')return '';
+ if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
- if(adsterraReady(config))return '<aside class="ad-placement" aria-label="Advertisement" data-jobpath-native-placement>'+
-  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><p>'+consentText+
-  ' <a href="/privacy-policy/">Privacy policy</a></p>'+consentButtons()+'</div>'+
+ if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement>'+
+  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><p>Optional advertising uses cookies/device data. <a href="/privacy-policy/">Privacy policy</a>.</p>'+consentButtons()+'</div>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
   '<p class="tiny muted" data-ad-status role="status"></p><button type="button" class="btn btn-ghost btn-sm" data-ad-choices>Advertising choices</button></aside>';
  // User-provided identifiers must pass strict numeric allowlists; no HTML interpolation of untrusted strings.
- return '<aside class="ad-placement" aria-label="Advertisement">'+
+ return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement">'+
   '<span class="ad-placement-label">Advertisement</span>'+
   '<ins class="adsbygoogle" style="display:block" data-jobpath-ad="content" data-ad-client="'+
   config.publisherId+'" data-ad-slot="'+config.slots.content+
