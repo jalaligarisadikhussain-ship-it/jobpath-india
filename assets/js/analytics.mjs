@@ -36,7 +36,7 @@ function showChoices() {
   banner.id = 'jobpath-analytics-choices';
   banner.className = 'analytics-consent';
   banner.setAttribute('aria-label', 'Optional website analytics preferences');
-  banner.innerHTML = '<div class="analytics-consent-text"><strong>Your privacy matters</strong><p>Optional Google Analytics measures visits using cookies/device data. Job search works without it. <a href="/privacy-policy/">Privacy policy</a>.</p></div><div class="analytics-consent-actions"><button type="button" class="btn btn-primary" data-analytics-allow>Allow analytics</button><button type="button" class="btn btn-secondary" data-analytics-decline>Decline</button></div>';
+  banner.innerHTML = '<div class="analytics-consent-text"><strong>Your privacy matters</strong><p>Optional analytics help improve JobPath India. Jobs work without analytics. <a href="/privacy-policy/">Privacy details</a>.</p></div><div class="analytics-consent-actions"><button type="button" class="btn btn-primary" data-analytics-allow>Allow analytics</button><button type="button" class="btn btn-secondary" data-analytics-decline>Decline</button></div>';
   banner.querySelector('[data-analytics-allow]').addEventListener('click', () => {
     storeChoice('allow');
     closeChoices();

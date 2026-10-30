@@ -20,7 +20,7 @@ function browserFixture(run,options={}){
  const targetScript=options.script||ADSTERRA_SCRIPT;
  const parent={querySelector:()=>status,insertBefore:(script,node)=>{assert.equal(node,unit);scripts.push(script)}};
  const unit={id:'container-'+targetKey,dataset:{},parentNode:parent,hidden:true};
- const host={querySelector:selector=>selector==='[data-ad-consent-notice]'?notice:selector==='[data-jobpath-native]'?unit:status};
+ const host={dataset:{},querySelector:selector=>selector==='[data-ad-consent-notice]'?notice:selector==='[data-jobpath-native]'?unit:status};
  globalThis.localStorage=storage;
  globalThis.window={navigator:{globalPrivacyControl:false},location:{hostname:targetHost,reload:()=>reloads++}};
  globalThis.document={
@@ -29,7 +29,7 @@ function browserFixture(run,options={}){
   getElementById:()=>null,
   createElement:tag=>{assert.equal(tag,'script');return {attrs:{},setAttribute(name,value){this.attrs[name]=value},addEventListener(){}}}
  };
- try{run({storage,scripts,unit,notice,status,reloads:()=>reloads})}
+ try{run({storage,scripts,unit,host,notice,status,reloads:()=>reloads})}
  finally{for(const [key,value] of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value}}
 }
 
@@ -181,4 +181,19 @@ test('Cloudflare native script requests ads only after explicit visitor opt-in a
 test('Even configured ads fail closed without actual gambling exclusion',()=>{
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,gamblingExclusionConfirmed:false}}),false);
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,siteStatus:'unverified'}}),false);
+});
+
+test('Declining a native ad collapses its panel, and opting back in restores it',()=>browserFixture(({storage,unit,host,notice})=>{
+ saveAdvertisingConsent('deny',storage);assert.equal(startAdUnits(active),0);
+ assert.equal(host.hidden,true);assert.equal(unit.hidden,true);assert.equal(notice.hidden,true);
+ saveAdvertisingConsent('allow',storage);assert.equal(startAdUnits(active),1);
+ assert.equal(host.hidden,false);assert.equal(host.dataset.adState,'active');assert.equal(unit.hidden,false);
+}));
+test('Native sponsorship notice is compact, clearly marked and not an application',()=>{
+ const markup=renderAdPlacement(active,'top');
+ assert.match(markup,/Optional sponsored content/);assert.match(markup,/Advertisement/);
+ assert.doesNotMatch(markup,/<iframe|Official apply|Apply Now/);
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ assert.match(css,/\.top-ad-region \.ad-placement\[hidden\]/);
+ assert.match(css,/\.analytics-consent\{width:min\(375px/);
 });

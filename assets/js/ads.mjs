@@ -76,7 +76,7 @@ export function renderAdPlacement(config,place='content'){
  if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
  if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement>'+
-  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><p>Optional advertising uses cookies/device data. <a href="/privacy-policy/">Privacy policy</a>.</p>'+consentButtons()+'</div>'+
+  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><div class="ad-consent-summary"><strong>Optional sponsored content</strong><p>Ads may use cookies and device data. Jobs remain free. <a href="/privacy-policy/">Privacy details</a>.</p></div>'+consentButtons()+'</div>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
   '<p class="tiny muted" data-ad-status role="status"></p><button type="button" class="btn btn-ghost btn-sm" data-ad-choices>Advertising choices</button></aside>';
  // User-provided identifiers must pass strict numeric allowlists; no HTML interpolation of untrusted strings.
@@ -89,6 +89,9 @@ export function renderAdPlacement(config,place='content'){
 function syncNativePlacements(){
  const choice=readAdvertisingConsent(),blocked=privacySignal();
  for(const host of document.querySelectorAll('[data-jobpath-native-placement]')){
+  // Decline or Global Privacy Control must not leave a blank ad panel.
+  host.hidden=choice==='deny'||blocked;
+  host.dataset.adState=blocked?'blocked':choice==='allow'?'active':'preview';
   const notice=host.querySelector('[data-ad-consent-notice]'),unit=host.querySelector('[data-jobpath-native]'),status=host.querySelector('[data-ad-status]');
   if(notice)notice.hidden=choice!==null||blocked;
   if(unit)unit.hidden=choice!=='allow'||blocked;
