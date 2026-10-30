@@ -125,6 +125,18 @@ test('native banners remain labeled, optional and outside application positions'
  assert.equal(renderAdPlacement(active,'jobDetail'),'');
 });
 
+test('top slot is only prepared for a fully approved non-gambling Adsterra unit',()=>{
+ const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+ assert.equal(renderAdPlacement(cloud,'top'),'');
+ const example={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,enabled:true,siteStatus:'approved',gamblingExclusionConfirmed:true}};
+ const approved=resolveAdvertisingConfig(example,CLOUDFLARE_ADSTERRA_HOST);
+ const html=renderAdPlacement(approved,'top');
+ assert.match(html,/ad-placement-top/);
+ assert.match(html,/data-jobpath-native-placement/);
+ assert.match(html,/Privacy policy/);
+ assert.match(html,/Allow advertising/);
+ assert.doesNotMatch(html,/<script|<iframe/);
+});
 test('Cloudflare ads remain off until website approval and casino/betting exclusion are confirmed',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(cloud.enabled,false);
