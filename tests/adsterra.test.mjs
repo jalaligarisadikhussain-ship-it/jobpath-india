@@ -264,7 +264,7 @@ test('blank iframe-only markup is not treated as a filled advertisement',()=>{
  const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
  const runtime=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
  const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
- assert.match(build,/An iframe existing is NOT proof/);
+ assert.match(build,/A nested iframe alone does not prove/);
  assert.doesNotMatch(build,/el\.tagName==='IFRAME'.*return true/);
  assert.match(build,/naturalWidth>=90/);
  assert.match(build,/report\('empty'\)/);
