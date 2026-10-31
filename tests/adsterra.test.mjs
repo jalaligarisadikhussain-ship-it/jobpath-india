@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
  adsterraConfigured,adsterraReady,advertisingReady,renderAdPlacement,
  readAdvertisingConsent,saveAdvertisingConsent,startAdUnits,chooseAdvertising,
- resolveAdvertisingConfig,bannerReady,renderBannerPlacement,monitorNativeFill,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
+ resolveAdvertisingConfig,bannerReady,renderBannerPlacement,monitorNativeFill,effectiveAdvertisingChoice,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
@@ -119,13 +119,13 @@ test('a storage-access security error does not break the site or load ads',()=>b
 test('native banners remain labeled, optional and outside application positions',()=>{
  const html=renderAdPlacement(active);
  assert.match(html,/aria-label="Advertisement"/);
- assert.match(html,/Allow advertising/);assert.match(html,/Continue without ads/);
+ assert.doesNotMatch(html,/Allow advertising|Continue without ads|Show sponsored ads/);
  assert.doesNotMatch(html,/<script|<iframe|Official apply|Apply Now/);
  assert.equal(renderAdPlacement(active,'application'),'');
  assert.equal(renderAdPlacement(active,'jobDetail'),'');
 });
 
-test('Cloudflare trial requires explicit publisher authorization and renewed visitor consent',()=>{
+test('Cloudflare publisher-authorized automatic ads retain visitor opt-out',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(current.cloudflareAdsterra.enabled,true);
  assert.equal(current.cloudflareAdsterra.userAuthorizedTrial,true);
@@ -135,7 +135,9 @@ test('Cloudflare trial requires explicit publisher authorization and renewed vis
  assert.equal(cloud.provider,'adsterra');
  assert.equal(adsterraReady(cloud),true);
  assert.match(renderAdPlacement(cloud,'top'),/Advertisement/);
- assert.match(renderAdPlacement(cloud,'top'),/dating-style content/);
+ assert.doesNotMatch(renderAdPlacement(cloud,'top'),/Allow advertising|Continue without ads/);
+ assert.equal(cloud.consent.required,false);
+ assert.equal(cloud.adsterra.automaticDisplay,true);
  const other=resolveAdvertisingConfig(current,'jobpath-india.netlify.app');
  assert.equal(other.enabled,false);
 });
@@ -150,24 +152,39 @@ test('Cloudflare trial rejects missing authorization, wrong host, tampered code 
   assert.equal(adsterraReady(resolved),false);
  }
 });
-test('Previously saved opt-in from earlier version cannot load ads',()=>browserFixture(({storage,scripts,unit})=>{
- window.location.hostname=CLOUDFLARE_ADSTERRA_HOST;
- storage.setItem(AD_CONSENT_KEY,JSON.stringify({version:'adsterra-2026-10-29',choice:'allow',timestamp:Date.now()}));
+test('Cloudflare persisted refusal blocks automatic ad scripts',()=>browserFixture(({storage,scripts,unit})=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+ saveAdvertisingConsent('deny',storage);
+ assert.equal(effectiveAdvertisingChoice(cloud,storage),'deny');
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,0);
  assert.equal(unit.hidden,true);
 },{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
-test('Cloudflare opt-in trial injects only the pinned ad tag on its exact domain',()=>browserFixture(({storage,scripts,unit})=>{
+test('Cloudflare default display loads pinned ad tag without homepage permission button',()=>browserFixture(({storage,scripts,unit})=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(startAdUnits(cloud),0);
- saveAdvertisingConsent('allow',storage);
+ assert.equal(effectiveAdvertisingChoice(cloud,storage),'allow');
  assert.equal(startAdUnits(cloud),1);
  assert.equal(unit.hidden,false);
  assert.equal(scripts[0].src,CLOUDFLARE_ADSTERRA_SCRIPT);
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,1);
 },{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
+test('Cloudflare defaults never bypass GPC, storage failures or another host',()=>{
+ const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
+ const stored=memoryStorage(),prior=globalThis.window;
+ try{
+  globalThis.window={navigator:{globalPrivacyControl:false}};
+  assert.equal(effectiveAdvertisingChoice(cloud,stored),'allow');
+  assert.equal(effectiveAdvertisingChoice(active,stored),null);
+  assert.equal(effectiveAdvertisingChoice(cloud,{getItem(){throw Error('blocked')}}),null);
+  saveAdvertisingConsent('deny',stored);
+  assert.equal(effectiveAdvertisingChoice(cloud,stored),'deny');
+  saveAdvertisingConsent('allow',stored);
+  assert.equal(effectiveAdvertisingChoice(cloud,stored),'allow');
+  globalThis.window.navigator.globalPrivacyControl=true;
+  assert.equal(effectiveAdvertisingChoice(cloud,stored),'deny');
+ }finally{if(prior===undefined)delete globalThis.window;else globalThis.window=prior}
+});
 test('Even configured ads fail closed without actual gambling exclusion',()=>{
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,gamblingExclusionConfirmed:false}}),false);
  assert.equal(adsterraReady({...active,adsterra:{...active.adsterra,siteStatus:'unverified'}}),false);
@@ -181,7 +198,7 @@ test('Declining a native ad collapses its panel, and opting back in restores it'
 }));
 test('Native sponsorship notice is compact, clearly marked and not an application',()=>{
  const markup=renderAdPlacement(active,'top');
- assert.match(markup,/Optional sponsored content/);assert.match(markup,/Advertisement/);
+ assert.match(markup,/Advertisement/);assert.doesNotMatch(markup,/Allow advertising|Show sponsored ads/);
  assert.doesNotMatch(markup,/<iframe|Official apply|Apply Now/);
  const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
  assert.match(css,/\.top-ad-region \.ad-placement\[hidden\]/);
@@ -212,18 +229,15 @@ test('ad positions stay ordered top, middle, and bottom without duplicates',()=>
  assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
 });
 
-test('homepage offers a compact in-flow consent choice and never auto-loads ads',()=>{
+test('homepage does not show advertising permission prompts',()=>{
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
- assert.match(app,/function adQuickAccess\(\)/);
- assert.match(app,/readAdvertisingConsent\(\)!=='allow'/);
- assert.match(app,/data-ad-choice="allow"/);
- assert.match(app,/data-ad-choice="deny"/);
+ assert.match(app,/function adQuickAccess\(\)\{return ''\}/);
+ assert.doesNotMatch(app,/Show sponsored ads/);
+ assert.match(app,/effectiveAdvertisingChoice\(adsConfig\)/);
  assert.match(app,/return `\$\{siteBanner\("responsive"\)\}<section class="hero">/);
- assert.match(app,/<\/section>\$\{adQuickAccess\(\)\}<div class="stats">/);
+ assert.doesNotMatch(app,/\$\{adQuickAccess\(\)\}/);
  assert.match(app,/PAGE==="home"\?"":topAd\(\)/);
- assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
 });
-
 test('all three exact owner-provided ad tags enabled only with explicit consent and correct host',()=>{
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
  const cloud=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
@@ -264,7 +278,7 @@ test('blank iframe-only markup is not treated as a filled advertisement',()=>{
  const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
  const runtime=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
  const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
- assert.match(build,/A nested iframe alone does not prove/);
+ assert.match(build,/var frames=document\.body\.querySelectorAll/);
  assert.doesNotMatch(build,/el\.tagName==='IFRAME'.*return true/);
  assert.match(build,/naturalWidth>=90/);
  assert.match(build,/report\('empty'\)/);
@@ -277,17 +291,17 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=no-white-placeholders-20261031/);
- assert.match(build,/app\.mjs\?v=no-white-placeholders-20261031/);
- assert.match(app,/ads\.mjs\?v=no-white-placeholders-20261031/);
- assert.match(ads,/ad-units\/.*no-white-placeholders-20261031/);
+ assert.match(build,/styles\.css\?v=ads-default-display-20261031/);
+ assert.match(build,/app\.mjs\?v=ads-default-display-20261031/);
+ assert.match(app,/ads\.mjs\?v=ads-default-display-20261031/);
+ assert.match(ads,/ad-units\/.*ads-default-display-20261031/);
 });
 
 test('generated ad creative probe does not swallow monitoring code with single-line JS comments',()=>{
  const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
  assert.match(build,/jobpath-banner-fill/);
  assert.match(build,/MutationObserver/);
- assert.match(build,/A nested iframe alone does not prove/);
+ assert.match(build,/var frames=document\.body\.querySelectorAll/);
  assert.doesNotMatch(build,/\/\/ An iframe existing is NOT proof/);
  // The independent Python build test also runs Node --check on generated scripts.
  const hosting=fs.readFileSync(new URL('../tests/test_hosting_build.py',import.meta.url),'utf8');

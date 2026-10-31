@@ -22,9 +22,10 @@
   },
   "consent": {
     "required": true,
-    "version": "adsterra-2026-10-30-trial"
+    "version": "adsterra-2026-10-30-trial",
+    "note": "User-choice storage remains for opt-out; Cloudflare resolver sets required:false for owner-authorized default display trial. Other hosts retain legacy consent gates."
   },
-  "note": "Cloudflare-only Adsterra native banner reactivated as a visitor-opt-in trial on 2026-10-30 at publisher request. Previously seen dating adverts may recur; provider-side exclusions have NOT been confirmed. Netlify and Render remain OFF. Ads do not load until visitor explicitly opts into updated 2026-10-30 trial consent.",
+  "note": "Cloudflare-only Adsterra ads are configured for automatic display by publisher request without homepage permission prompts. Users can opt out in footer, saved denials and GPC take precedence. Netlify/Render off. Regional consent compliance requires review.",
   "cloudflareAdsterra": {
     "enabled": true,
     "websiteHost": "jobpath-india.pages.dev",
@@ -37,10 +38,11 @@
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Publisher explicitly requested Adsterra to resume on 2026-10-30 after being warned that dating/gambling and other unwanted creatives can recur until the network confirms exclusions. Existing approved-domain native tag is used on Cloudflare only, and scripts require new visitor opt-in. Provider site status remains unverified; no network category restrictions are claimed.",
+    "note": "Cloudflare-only publisher-authorized default display trial. Third-party ads can process cookies and device data; GPC and saved opt-out are honored. Applicable consent-law review/CMP still required before broad deployment to regulated markets.",
     "allowUnfilteredCategories": true,
     "datingExclusionConfirmed": false,
-    "userAuthorizedTrial": true
+    "userAuthorizedTrial": true,
+    "automaticDisplay": true
   },
   "plannedPlacements": [
     {
@@ -50,27 +52,27 @@
       "desktop": "728x90",
       "mobile": "320x50",
       "position": "before hero",
-      "requiresVisitorOptIn": true,
-      "status": "all-device-sources-verified-trial"
+      "requiresVisitorOptIn": false,
+      "status": "all-device-sources-verified-trial-default-display"
     },
     {
       "id": "homepage-middle",
       "type": "banner-300x250",
       "enabled": true,
       "position": "after career-path category tiles",
-      "requiresVisitorOptIn": true,
-      "status": "300x250-source-verified-trial"
+      "requiresVisitorOptIn": false,
+      "status": "300x250-source-verified-trial-default-display"
     },
     {
       "id": "homepage-bottom",
       "type": "native-banner",
       "enabled": true,
       "position": "after examination resources, before footer",
-      "requiresVisitorOptIn": true,
-      "status": "existing-native-trial"
+      "requiresVisitorOptIn": false,
+      "status": "existing-native-trial-default-display"
     }
   ],
-  "layoutNote": "Three site-specific sources verified exactly. Home top uses either mobile 320x50 or desktop 728x90, middle uses 300x250, bottom uses the established native banner; all consent-gated on Cloudflare-only host. Empty-fill handling best effort; code verification is not live ad visibility verification.",
+  "layoutNote": "Cloudflare-only publisher-requested automatic Adsterra trial: responsive top, 300x250 middle, bottom Native. No homepage Show Ads/Allow button; privacy/opt-out footer remains. Opt-out and GPC block requests. EU/UK and other consent regimes require CMP/legal review; not certified compliant.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": true,

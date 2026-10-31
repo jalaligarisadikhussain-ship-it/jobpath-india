@@ -221,3 +221,9 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 }
 [data-jobpath-native-placement][data-jp-native-ready="empty"]{display:none!important}
 [data-jobpath-native-placement][data-jp-native-ready="filled"]{position:relative;visibility:visible}
+
+/* Home advertising permission card removed; privacy choices remain in footer. */
+.ad-quick-choice{display:none!important}
+/* Allow fill detection in ad documents while keeping pending units out of flow. */
+.jp-banner[data-jp-banner-state="pending"]{visibility:visible!important;opacity:0!important}
+.jp-banner[data-jp-banner-state="filled"]{visibility:visible!important;opacity:1!important}

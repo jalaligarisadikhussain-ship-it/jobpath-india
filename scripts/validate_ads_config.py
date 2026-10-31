@@ -59,6 +59,8 @@ def validate_cloudflare_adsterra(ad):
         errors.append("Cloudflare Adsterra unfiltered-category acceptance must be a boolean")
     if "datingExclusionConfirmed" in ad and type(ad["datingExclusionConfirmed"]) is not bool:
         errors.append("Cloudflare dating-category exclusion confirmation must be a boolean")
+    if "automaticDisplay" in ad and type(ad["automaticDisplay"]) is not bool:
+        errors.append("Cloudflare default advertising flag must be boolean")
     if "userAuthorizedTrial" in ad and type(ad["userAuthorizedTrial"]) is not bool:
         errors.append("Cloudflare explicit trial authorization must be a boolean")
     if ad.get("enabled") is True:

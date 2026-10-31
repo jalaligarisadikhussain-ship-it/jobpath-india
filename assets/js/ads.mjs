@@ -23,7 +23,7 @@ export function resolveAdvertisingConfig(config,hostname=''){
    ['approved','unverified'].includes(ad.siteStatus);
  if(ad?.enabled!==true||!(filtered||trial))return {...config,enabled:false,provider:'none'};
  return {...config,enabled:true,provider:'adsterra',adsterra:ad,
-  consent:{required:true,version:AD_CONSENT_VERSION}};
+  consent:{required:ad.automaticDisplay===true?false:true,version:AD_CONSENT_VERSION}};
 }
 
 export function adsterraConfigured(config){
@@ -47,7 +47,7 @@ export function adsterraReady(config){
   ['approved','unverified'].includes(ad.siteStatus);
  return config?.enabled===true&&config.provider==='adsterra'&&adsterraConfigured(config)&&
   (filtered||trial)&&ad.adUnitStatus==='active'&&
-  config.consent?.required===true&&config.consent.version===AD_CONSENT_VERSION;
+  (config.consent?.required===true||(isCloudflare&&ad.automaticDisplay===true&&config.consent?.required===false))&&config.consent.version===AD_CONSENT_VERSION;
 }
 // Exact jobpath-india.pages.dev banner codes supplied by the publisher.
 const BANNER_KEYS=Object.freeze({"mobile":"22d5d7312497a4575a8261d0d18522ea","desktop":"5b1925f1b2ab32ef7b6d207bde9e0fa1","rectangle":"58623b07e46a924f55b4d5d4895086c0"});
@@ -66,7 +66,7 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(!bannerReady(config,name))return '';
  const u=config.cloudflareBanners.units[name];
  return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=no-white-placeholders-20261031"></iframe></aside>';
+  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ads-default-display-20261031"></iframe></aside>';
 }
 // Blank ad inventory must not strand white cards on the job portal.
 // Ad content comes from a sandboxed, site-hosted iframe. The iframe reports
@@ -158,6 +158,23 @@ export function readAdvertisingConsent(storage,now=Date.now()){
   return value.choice;
  }catch{return null}
 }
+// On the exact Cloudflare hostname, the site owner has requested default display
+// with an opt-out. Existing stored refusals and browser GPC always take priority.
+// No automatic enablement applies to Netlify, Render or other projects.
+export function effectiveAdvertisingChoice(config,storage){
+ if(privacySignal())return 'deny';
+ const chosen=readAdvertisingConsent(storage);
+ if(chosen==='deny'||chosen==='allow')return chosen;
+ if(config?.adsterra?.websiteHost!==CLOUDFLARE_ADSTERRA_HOST||
+    config?.adsterra?.automaticDisplay!==true||
+    config?.consent?.required!==false)return null;
+ try{
+  const target=storage===undefined?globalThis.localStorage:storage;
+  if(!target||typeof target.getItem!=='function')return null;
+  target.getItem(AD_CONSENT_KEY); // Fail closed when storage is blocked.
+ }catch{return null}
+ return 'allow';
+}
 export function saveAdvertisingConsent(choice,storage,now=Date.now()){
  if(!['allow','deny'].includes(choice))return false;
  try{const target=storage===undefined?globalThis.localStorage:storage;
@@ -167,15 +184,15 @@ export function saveAdvertisingConsent(choice,storage,now=Date.now()){
  }catch{return false}
 }
 function privacySignal(){return typeof window!=='undefined'&&window.navigator?.globalPrivacyControl===true}
-const consentText='Adsterra ads are optional and may use cookies and device/browser information. The ad network has not confirmed restrictions on dating or other unwanted content, so such ads may reappear. You can decline and still use all job information.';
+const consentText='Adsterra ads may use cookies, IP address and device information. You can disable ads at any time and still use all job information. Provider filtering for dating and gambling has not been confirmed. Regional consent requirements may apply.';
 function consentButtons(){return '<div class="ad-consent-actions"><button type="button" class="btn btn-secondary" data-ad-choice="allow">Allow advertising</button><button type="button" class="btn btn-secondary" data-ad-choice="deny">Continue without ads</button></div>'}
 export function renderAdPlacement(config,place='content'){
  if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
  if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement data-jp-native-ready="pending">'+
-  '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><div class="ad-consent-summary"><strong>Optional sponsored content</strong><p>Third-party ads may still contain unrelated or dating-style content until the ad network applies restrictions. Jobs remain free. <a href="/privacy-policy/">Privacy details</a>.</p></div>'+consentButtons()+'</div>'+
+  '<span class="ad-placement-label">Advertisement</span>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
-  '<p class="tiny muted" data-ad-status role="status"></p><button type="button" class="btn btn-ghost btn-sm" data-ad-choices>Advertising choices</button></aside>';
+  '<p class="tiny muted" data-ad-status role="status"></p></aside>';
  // User-provided identifiers must pass strict numeric allowlists; no HTML interpolation of untrusted strings.
  return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement">'+
   '<span class="ad-placement-label">Advertisement</span>'+
@@ -183,8 +200,8 @@ export function renderAdPlacement(config,place='content'){
   config.publisherId+'" data-ad-slot="'+config.slots.content+
   '" data-ad-format="auto" data-full-width-responsive="true"></ins></aside>';
 }
-function syncNativePlacements(){
- const choice=readAdvertisingConsent(),blocked=privacySignal();
+function syncNativePlacements(config){
+ const choice=effectiveAdvertisingChoice(config),blocked=privacySignal();
  for(const host of document.querySelectorAll('[data-jobpath-native-placement]')){
   // Decline or Global Privacy Control must not leave a blank ad panel.
   host.hidden=choice==='deny'||blocked;
@@ -198,11 +215,11 @@ function syncNativePlacements(){
 export function startAdUnits(config){
  if(typeof document==='undefined'||typeof window==='undefined')return 0;
  if(adsterraReady(config)){
-  syncNativePlacements();
+  syncNativePlacements(config);
   const ad=config.adsterra;
   const allowedHost=ad.websiteHost===CLOUDFLARE_ADSTERRA_HOST?CLOUDFLARE_ADSTERRA_HOST:ADSTERRA_HOST;
   const scriptUrl=ad.scriptUrl; // Exact pinned URL, validated by adsterraReady.
-  if(window.location.hostname!==allowedHost||privacySignal()||readAdvertisingConsent()!=='allow')return 0;
+  if(window.location.hostname!==allowedHost||privacySignal()||effectiveAdvertisingChoice(config)!=='allow')return 0;
   for(const unit of document.querySelectorAll('[data-jobpath-native]')){
    if(unit.id!==config.adsterra.containerId||unit.dataset.jobpathInitialized==='true')continue;
    if(document.querySelector('script[src="'+scriptUrl+'"]'))return 0;
@@ -257,6 +274,9 @@ export function closeAdvertisingChoices(){
 export function chooseAdvertising(config,choice){
  if(!adsterraReady(config)||(choice==='allow'&&privacySignal())||!saveAdvertisingConsent(choice))return false;
  closeAdvertisingChoices();
+ if(choice==='deny'&&config.adsterra?.automaticDisplay===true){
+  window.location.reload();return true;
+ }
  if(choice==='deny'&&document.querySelector('script[src="'+config.adsterra.scriptUrl+'"]')){
   // Reload removes the already-running third-party script and its timers.
   window.location.reload();return true;

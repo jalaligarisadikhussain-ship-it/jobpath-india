@@ -70,6 +70,7 @@ class AdvertisingConfigurationTests(unittest.TestCase):
         self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "unverified")
         self.assertTrue(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
         self.assertTrue(cfg["cloudflareAdsterra"]["userAuthorizedTrial"])
+        self.assertTrue(cfg["cloudflareAdsterra"]["automaticDisplay"])
         self.assertFalse(cfg["cloudflareAdsterra"]["datingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["gamblingExclusionConfirmed"])
         self.assertFalse(cfg["cloudflareAdsterra"]["adultAds"])
