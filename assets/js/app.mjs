@@ -1,5 +1,5 @@
 import {safeUrl,escapeHTML as e,daysUntil,effectiveStatus,sampleStatus,filterJobs,publicJobs,QUALIFICATIONS} from './utils.mjs';
-import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,bannerReady,renderBannerPlacement,monitorBannerFill,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs?v=ads-verified-only-20261031';
+import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,bannerReady,renderBannerPlacement,monitorBannerFill,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs?v=mobile-tag-20261031';
 
 const PAGE= document.body.dataset.page || 'home';
 const h=(s)=>e(s); const app=document.getElementById('app');

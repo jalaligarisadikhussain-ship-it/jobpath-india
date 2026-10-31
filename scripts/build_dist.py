@@ -45,11 +45,13 @@ ads_config = load_and_validate()
 
 # Render each format inside its own ad-document so atOptions cannot collide.
 # A visitor-facing iframe is inserted only after they opt into advertising.
-if (ads_config.get('cloudflareBanners', {}).get('enabled') is True and
-        ads_config['cloudflareBanners'].get('deliveryVerified') is True):
-    ad_dir = DIST / 'ad-units'
-    ad_dir.mkdir()
-    for name, unit in ads_config['cloudflareBanners']['units'].items():
+if ads_config.get('cloudflareBanners', {}).get('enabled') is True:
+    verified_units = {name: unit for name, unit in ads_config['cloudflareBanners']['units'].items()
+                      if unit.get('enabled') is True and unit.get('sourceVerified') is True}
+    if verified_units:
+        ad_dir = DIST / 'ad-units'
+        ad_dir.mkdir()
+    for name, unit in verified_units.items():
         options = {'key': unit['key'], 'format': 'iframe',
                    'height': unit['height'], 'width': unit['width'], 'params': {}}
         script = '<script>var atOptions = '+json.dumps(options, separators=(',',':'))+';</script>'

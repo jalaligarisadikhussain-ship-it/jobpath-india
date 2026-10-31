@@ -28,3 +28,7 @@ The previous fill checker incorrectly treated any nested iframe as a successful 
 
 ## 31 October 2026: fail-closed correction for the screenshot's empty advertisement
 Both fixed banner regions are paused until original **complete** Adsterra script sources can be read from the publisher's Copy Code dialogs. This prevents ad iframe requests to reconstructed URLs and entirely removes the resulting blank top/middle boxes on all future deployed builds. The working Cloudflare-specific Native Banner remains at the bottom, subject to the same visitor consent. The codes remain recorded; they have not been discarded. To restore three positions, verify the exact full `<script src>` tags, then explicitly set `cloudflareBanners.deliveryVerified=true` only after testing that those exact URLs render. Do not claim top/middle ad revenue is active while the units are paused.
+
+
+### Mobile banner code received (October 31, 2026)
+The owner supplied the entire Adsterra 320×50 script with exact key `22d5d7312497a4575a8261d0d18522ea`, iframe format and script `https://bauval.org/22/22d5d7312497a4575a8261d0d18522ea`. These **source parameters** are now verified. This does **not** independently confirm a successful ad response. The mobile homepage uses an opt-in-only trial with blank-collapse protection. Desktop 728×90 and rectangle 300×250 remain unpublished until exact complete tags are supplied. Native bottom banner remains enabled.

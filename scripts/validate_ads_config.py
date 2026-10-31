@@ -101,6 +101,8 @@ def validate_cloudflare_banners(banners):
             errors.append(name+' must be a banner object')
             continue
         expected={'key':key,'width':width,'height':height,'format':'iframe','enabled':True,'scriptUrl':'https://bauval.org/22/'+key}
+        if type(u.get('sourceVerified')) is not bool:
+            errors.append(name+' sourceVerified must be boolean')
         for field,value in expected.items():
             if type(u.get(field)) is not type(value) or u.get(field)!=value:
                 errors.append(name+' '+field+' differs from documented banner snippet')

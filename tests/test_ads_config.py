@@ -101,11 +101,17 @@ class AdvertisingConfigurationTests(unittest.TestCase):
         self.assertEqual(validate(config),[])
         self.assertEqual(set(config['cloudflareBanners']['units']), {'mobile','desktop','rectangle'})
         self.assertFalse(config['cloudflareBanners']['deliveryVerified'])
+        self.assertTrue(config['cloudflareBanners']['units']['mobile']['sourceVerified'])
+        self.assertFalse(config['cloudflareBanners']['units']['desktop']['sourceVerified'])
+        self.assertFalse(config['cloudflareBanners']['units']['rectangle']['sourceVerified'])
         for bad_flag in ('yes', None, 1):
             bad=copy.deepcopy(config)
             bad['cloudflareBanners']['deliveryVerified']=bad_flag
             self.assertTrue(validate(bad),bad_flag)
         for name in ('mobile','desktop','rectangle'):
+            bad_status=copy.deepcopy(config)
+            bad_status['cloudflareBanners']['units'][name]['sourceVerified']='yes'
+            self.assertTrue(validate(bad_status),name)
             bad=copy.deepcopy(config)
             bad['cloudflareBanners']['units'][name]['scriptUrl']='https://example.com/malicious.js'
             self.assertTrue(validate(bad),name)

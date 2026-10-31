@@ -46,12 +46,12 @@
     {
       "id": "homepage-top",
       "type": "responsive-banner",
-      "enabled": false,
+      "enabled": true,
       "desktop": "728x90",
       "mobile": "320x50",
       "position": "before hero",
       "requiresVisitorOptIn": true,
-      "status": "paused-unverified-script-source"
+      "status": "mobile-tag-confirmed-desktop-paused"
     },
     {
       "id": "homepage-middle",
@@ -59,7 +59,7 @@
       "enabled": false,
       "position": "after career-path category tiles",
       "requiresVisitorOptIn": true,
-      "status": "paused-unverified-script-source"
+      "status": "awaiting-full-script"
     },
     {
       "id": "homepage-bottom",
@@ -70,12 +70,12 @@
       "status": "existing-native-trial"
     }
   ],
-  "layoutNote": "Unverified fixed-size banners on TOP/MIDDLE are temporarily disabled (not loaded and no blank cards) because the full script src URLs are unknown. Existing bottom native ad remains running with visitor opt-in. After exact Adsterra codes are verified, add banners back in top/middle in their original positions.",
+  "layoutNote": "Mobile 320x50 source confirmed and consent-gated; desktop and middle paused; bottom native remains enabled. Real ad fill not yet verified.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": true,
-    "source": "Owner screenshots of Adsterra site-specific Get Code dialogs (2026-10-31)",
-    "verificationNote": "Full Adsterra <script src> URLs for 320x50, 728x90 and 300x250 were cropped from screenshots. Previous reconstructed /22/<key> URLs have not delivered verified creatives and have created blank placeholders. Banner delivery is paused pending exact original tags from the publisher account.",
+    "source": "Owner-provided complete 320x50 tag, October 31 2026; other banners screenshot-only",
+    "verificationNote": "Full mobile 320x50 source verified exactly; no live creative-fill guarantee. Desktop 728x90 and 300x250 tags remain incomplete.",
     "units": {
       "mobile": {
         "key": "22d5d7312497a4575a8261d0d18522ea",
@@ -83,7 +83,8 @@
         "height": 50,
         "format": "iframe",
         "scriptUrl": "https://bauval.org/22/22d5d7312497a4575a8261d0d18522ea",
-        "enabled": true
+        "enabled": true,
+        "sourceVerified": true
       },
       "desktop": {
         "key": "5b1925f1b2ab32ef7b6d207bde9e0fa1",
@@ -91,7 +92,8 @@
         "height": 90,
         "format": "iframe",
         "scriptUrl": "https://bauval.org/22/5b1925f1b2ab32ef7b6d207bde9e0fa1",
-        "enabled": true
+        "enabled": true,
+        "sourceVerified": false
       },
       "rectangle": {
         "key": "58623b07e46a924f55b4d5d4895086c0",
@@ -99,7 +101,8 @@
         "height": 250,
         "format": "iframe",
         "scriptUrl": "https://bauval.org/22/58623b07e46a924f55b4d5d4895086c0",
-        "enabled": true
+        "enabled": true,
+        "sourceVerified": false
       }
     },
     "deliveryVerified": false

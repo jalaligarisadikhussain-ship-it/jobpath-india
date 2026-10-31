@@ -207,7 +207,7 @@ test('ad positions stay ordered while unverified top and middle banners are hidd
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
  assert.deepEqual(cfg.plannedPlacements.map(x=>x.id),
  ['homepage-top','homepage-middle','homepage-bottom']);
- assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,1);
+ assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,2);
  assert.equal(cfg.cloudflareBanners.deliveryVerified,false);
  assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
 });
@@ -224,28 +224,27 @@ test('homepage offers a compact in-flow consent choice and never auto-loads ads'
  assert.doesNotMatch(app,/header\(\)\+topAd\(\)/);
 });
 
-test('unverified fixed banners do not render white ad placeholders or request impressions',()=>{
+test('only exact owner-provided mobile 320x50 tag is activated',()=>{
  const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
- const resolved=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(cfg.cloudflareBanners.deliveryVerified,false);
- assert.equal(bannerReady(resolved),false);
- assert.equal(renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
- assert.equal(renderBannerPlacement(resolved,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
- assert.equal(renderBannerPlacement(resolved,'responsive',CLOUDFLARE_ADSTERRA_HOST,''),'');
- assert.equal(renderBannerPlacement(resolved,'rectangle','jobpath-india.netlify.app','allow'),'');
- // Provider-code validation remains available for a future manual verification.
- const simulated={...resolved,cloudflareBanners:{...resolved.cloudflareBanners,deliveryVerified:true}};
- assert.equal(bannerReady(simulated),true);
- const wide=renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
- assert.ok(wide.includes('ad-units/desktop.html'));
- assert.ok(!wide.includes('ad-units/mobile.html'));
- const prior=globalThis.window;
- try{globalThis.window={matchMedia:()=>({matches:true})};
-  assert.ok(renderBannerPlacement(simulated,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/mobile.html'));
- }finally{if(prior===undefined)delete globalThis.window;else globalThis.window=prior}
- assert.ok(renderBannerPlacement(simulated,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/rectangle.html'));
- const tampered={...simulated,cloudflareBanners:{...simulated.cloudflareBanners,units:{...simulated.cloudflareBanners.units,mobile:{...simulated.cloudflareBanners.units.mobile,key:'tampered'}}}};
- assert.equal(bannerReady(tampered),false);
+ const cloud=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
+ assert.equal(cfg.cloudflareBanners.units.mobile.sourceVerified,true);
+ assert.equal(cfg.cloudflareBanners.units.desktop.sourceVerified,false);
+ assert.equal(cfg.cloudflareBanners.units.rectangle.sourceVerified,false);
+ assert.equal(bannerReady(cloud,'mobile'),true);
+ assert.equal(bannerReady(cloud,'desktop'),false);
+ assert.equal(bannerReady(cloud,'rectangle'),false);
+ assert.equal(renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,''),'');
+ assert.equal(renderBannerPlacement(cloud,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
+ assert.equal(renderBannerPlacement(cloud,'responsive','jobpath-india.netlify.app','allow'),'');
+ const original=globalThis.window;
+ try{
+  globalThis.window={matchMedia:()=>({matches:true})};
+  assert.ok(renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/mobile.html'));
+  assert.ok(!renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/desktop.html'));
+ }finally{if(original===undefined)delete globalThis.window;else globalThis.window=original}
+ assert.equal(renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow'),'');
+ const altered={...cloud,cloudflareBanners:{...cloud.cloudflareBanners,units:{...cloud.cloudflareBanners.units,mobile:{...cloud.cloudflareBanners.units.mobile,key:'wrong'}}}};
+ assert.equal(bannerReady(altered,'mobile'),false);
 });
 
 test('unfilled display inventory collapses rather than leaving white ad boxes',()=>{
@@ -278,8 +277,8 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=ads-verified-only-20261031/);
- assert.match(build,/app\.mjs\?v=ads-verified-only-20261031/);
- assert.match(app,/ads\.mjs\?v=ads-verified-only-20261031/);
- assert.match(ads,/ad-units\/.*ads-verified-only-20261031/);
+ assert.match(build,/styles\.css\?v=mobile-tag-20261031/);
+ assert.match(build,/app\.mjs\?v=mobile-tag-20261031/);
+ assert.match(app,/ads\.mjs\?v=mobile-tag-20261031/);
+ assert.match(ads,/ad-units\/.*mobile-tag-20261031/);
 });
