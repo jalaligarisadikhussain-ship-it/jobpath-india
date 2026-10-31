@@ -277,8 +277,19 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=all-ad-tags-20261031/);
- assert.match(build,/app\.mjs\?v=all-ad-tags-20261031/);
- assert.match(app,/ads\.mjs\?v=all-ad-tags-20261031/);
- assert.match(ads,/ad-units\/.*all-ad-tags-20261031/);
+ assert.match(build,/styles\.css\?v=probe-syntax-fix-20261031/);
+ assert.match(build,/app\.mjs\?v=probe-syntax-fix-20261031/);
+ assert.match(app,/ads\.mjs\?v=probe-syntax-fix-20261031/);
+ assert.match(ads,/ad-units\/.*probe-syntax-fix-20261031/);
+});
+
+test('generated ad creative probe does not swallow monitoring code with single-line JS comments',()=>{
+ const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
+ assert.match(build,/jobpath-banner-fill/);
+ assert.match(build,/MutationObserver/);
+ assert.match(build,/A nested iframe alone does not prove/);
+ assert.doesNotMatch(build,/\/\/ An iframe existing is NOT proof/);
+ // The independent Python build test also runs Node --check on generated scripts.
+ const hosting=fs.readFileSync(new URL('../tests/test_hosting_build.py',import.meta.url),'utf8');
+ assert.match(hosting,/node,'--check','-'/);
 });

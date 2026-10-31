@@ -36,3 +36,7 @@ The owner supplied the entire Adsterra 320×50 script with exact key `22d5d73124
 
 ### All three banner tags received on October 31, 2026
 The owner supplied the **complete** 728×90 desktop and 300×250 rectangle tags, in addition to the mobile 320×50. All three existing keys, sizes and complete `https://bauval.org/22/{key}` source URLs match the source configuration. The three banner units are now code-verified and rendered in sandboxed separate HTML wrappers, consent-gated and host-restricted. Homepage top shows one device-appropriate banner (320×50 mobile or 728×90 desktop). Middle shows 300×250. Existing native placement stays at bottom. Adsterra ad delivery/creative suitability have not been independently verified; empty-fill auto-hide is best effort.
+
+
+## 31 October — confirmed blank-probe JavaScript syntax bug
+The old `build_dist.py` generated a single-line probe snippet containing `//` comments. These comments swallowed the remaining JavaScript source (including closing braces), so the monitoring script was invalid and no `jobpath-banner-fill` event could be delivered. Replaced the inline line-comments with a block comment, cache-busted JS/CSS/ad iframe documents and added a production regression check running `node --check -` against BOTH generated inline scripts in each ad HTML document. This repairs the fill-status reporting path, not the external Adsterra inventory. Ads may remain unfilled/blocked by browsers or the network. On missing fill the existing parent watchdog hides the blank unit. The standalone native script remains unchanged.

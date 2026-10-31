@@ -66,7 +66,7 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(!bannerReady(config,name))return '';
  const u=config.cloudflareBanners.units[name];
  return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-  '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=all-ad-tags-20261031"></iframe></aside>';
+  '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=probe-syntax-fix-20261031"></iframe></aside>';
 }
 // Blank ad inventory must not strand white cards on the job portal.
 // Ad content comes from a sandboxed, site-hosted iframe. The iframe reports

@@ -74,6 +74,20 @@ class HostingBuildTests(unittest.TestCase):
                 self.assertTrue(banner_page.is_file())
                 self.assertIn('https://bauval.org/22/'+key,banner_page.read_text())
                 self.assertIn('var atOptions',banner_page.read_text())
+                # Regression check: the generated probe previously used // inside a
+                # one-line JS string and accidentally commented out its closing
+                # braces and MutationObserver setup. Compile the emitted JS.
+                html=banner_page.read_text()
+                inline=re.findall(r'<script>(.*?)</script>',html,re.DOTALL)
+                self.assertEqual(len(inline),2)
+                self.assertIn('jobpath-banner-fill',inline[-1])
+                self.assertNotIn('// An iframe existing',inline[-1])
+                node=shutil.which('node')
+                self.assertIsNotNone(node,'Node.js needed to syntax-check ad probes')
+                for snippet in inline:
+                    result=subprocess.run([node,'--check','-'],input=snippet,
+                                          text=True,capture_output=True,check=False)
+                    self.assertEqual(result.returncode,0,result.stderr)
             for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
                 self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
