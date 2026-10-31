@@ -182,7 +182,9 @@ async function init(){
  // Even if all network JSON reads fail, the site shell and verified-by-document transcription remain visible.
  if(!examUpdatesData.length)examUpdatesData=BUILTIN_EXAM_UPDATES;
  app.innerHTML=header()+(PAGE==="home"?"":topAd())+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
- // Do not auto-collapse or resize a potentially loading third-party creative.\n // Adsterra support warns that interference with ad visibility can affect compliance.\n if(advertisingReady(adsConfig)){startAdUnits(adsConfig);}
+ // Do not auto-collapse or resize a potentially loading third-party creative.
+ // Adsterra support warns that interference with ad visibility can affect compliance.
+ if(advertisingReady(adsConfig)){startAdUnits(adsConfig);}
  try{setTheme(localStorage.getItem('jp_theme')==='dark'?'dark':'light')}catch{setTheme('light')}
  attach();
  }catch(err){console.error('Website display failed',err);
