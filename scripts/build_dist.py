@@ -65,4 +65,24 @@ if ads_config.get('cloudflareBanners', {}).get('enabled') is True:
                 '<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>'
                 '</head><body>') + script + probe + '</body></html>'
         (ad_dir/(name+'.html')).write_text(page, encoding='utf-8')
+# Cloudflare Pages reads _headers; do not restrict script-src here because approved
+# Cloudflare-only advertising is rendered inside same-origin unit frames.
+# X-Frame-Options SAMEORIGIN keeps internal ad frames functional.
+(DIST/'_headers').write_text("""/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Content-Security-Policy: object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'
+
+/ad-units/*
+  X-Robots-Tag: noindex, nofollow
+
+/assets/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
+""", encoding='utf-8')
+
 print(f'Generated dist/ with {len(page_data)} pages; automation and private review reports excluded.')

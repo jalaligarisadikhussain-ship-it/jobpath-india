@@ -102,6 +102,11 @@ class HostingBuildTests(unittest.TestCase):
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
             for private in ("scripts", "reports", "tests", ".github", "RENDER_DEPLOYMENT_SETUP.md"):
                 self.assertFalse((dist / private).exists())
+            headers = (dist / "_headers").read_text(encoding="utf-8")
+            self.assertIn("X-Content-Type-Options: nosniff", headers)
+            self.assertIn("X-Frame-Options: SAMEORIGIN", headers)
+            self.assertIn("X-Robots-Tag: noindex, nofollow", headers)
+            self.assertIn("frame-ancestors 'self'", headers)
             self.assertEqual((dist / "ads.txt").read_text(), ADS_TXT_LINE)
 
     def test_cloudflare_primary_has_indexable_sitemap_and_self_canonical(self):
