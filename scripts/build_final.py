@@ -10,12 +10,13 @@ root=Path(__file__).resolve().parent.parent
 base=site_origin()
 seo_primary=search_primary_origin()
 pages=json.loads((root/'data/pages.json').read_text())
+editorial_pages=json.loads((root/'data/editorial-pages.json').read_text(encoding='utf-8'))
 source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
 exams=json.loads((root/'data/exam-updates.json').read_text())
 ads_config=load_and_validate()
 adsense_loader=(f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ads_config["publisherId"]}" crossorigin="anonymous"></script>' if ads_config['enabled'] and ads_config['provider']=='adsense' else '')
-jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json','/data/auto-notices.json','/data/ads-config.json']}
+jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json','/data/auto-notices.json','/data/ads-config.json','/data/editorial-pages.json']}
 inline_json=json.dumps(jsdata,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
 noindex={'state','telangana','ssc','upsc','defence','teaching','search','job','saved','alerts','dates','qualifications','examupdates','autonotices'}
 nav=[('Home','/'),('Latest Jobs','/latest-jobs/'),('Auto Notices','/auto-recruitment-notices/'),('All States','/states-directory/'),('SSC','/ssc-recruitment/'),('UPSC','/upsc-recruitment/'),('Exam Calendar','/exam-calendar/'),('Exam Updates','/exam-updates/'),('Official Sources','/official-sources/'),('Notice Desk','/recruitment-updates/')]
@@ -62,6 +63,8 @@ seo_text={
 }
 
 def fallback_content(key):
+ if key in editorial_pages:
+  return editorial_pages[key]
  title,desc=seo_text[key]
  buf=[f'<h1>{html.escape(title)}</h1><p class="lead">{html.escape(desc)}</p>']
  if key=='privacy':

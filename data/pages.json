@@ -193,5 +193,20 @@
     "path": "auto-recruitment-notices",
     "title": "Automatically Detected Recruitment Notices",
     "description": "Automatically discovered official recruitment notice links; unverified leads, not confirmed open vacancies. Check original official notices."
+  },
+  "guideverify": {
+    "path": "guides/verify-government-job-notifications",
+    "title": "How to Verify Government Job Notifications in India",
+    "description": "Ten practical checks for official recruitment notices, eligibility and application safety."
+  },
+  "guidefraud": {
+    "path": "guides/avoid-recruitment-scams",
+    "title": "How to Identify Fake Government Recruitment Websites",
+    "description": "Identify misleading government job advertisements, scam websites and risky payment requests."
+  },
+  "guidedocuments": {
+    "path": "guides/job-application-documents-checklist",
+    "title": "Government Job Application Documents Checklist",
+    "description": "Prepare application documents and verify the required format before applying to Indian government jobs."
   }
 }
