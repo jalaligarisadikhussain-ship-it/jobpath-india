@@ -266,3 +266,11 @@ test('Native fill detector still collapses an empty ad placement',()=>{
  assert.match(ads,/8500/);
  assert.match(ads,/jpNativeReady='empty'/);
 });
+
+// Adsterra prohibits changing an ad's visible area or manipulating creative wrappers
+// while the provider is still rendering. Our UI must not auto-collapse Native ads.
+test('production page does not auto-collapse or resize third-party Native Banner creatives',()=>{
+ const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
+ assert.doesNotMatch(app,/monitorNativeFill\(\)/);
+ assert.match(app,/startAdUnits\(adsConfig\)/);
+});
