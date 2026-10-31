@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
  adsterraConfigured,adsterraReady,advertisingReady,renderAdPlacement,
  readAdvertisingConsent,saveAdvertisingConsent,startAdUnits,chooseAdvertising,
- resolveAdvertisingConfig,bannerReady,renderBannerPlacement,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
+ resolveAdvertisingConfig,bannerReady,renderBannerPlacement,monitorNativeFill,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
@@ -292,4 +292,25 @@ test('generated ad creative probe does not swallow monitoring code with single-l
  // The independent Python build test also runs Node --check on generated scripts.
  const hosting=fs.readFileSync(new URL('../tests/test_hosting_build.py',import.meta.url),'utf8');
  assert.match(hosting,/node,'--check','-'/);
+});
+
+test('unfilled native placement collapses, while a creative-bearing unit stays visible',()=>{
+ const callbacks=[];
+ const win={setTimeout:cb=>{callbacks.push(cb);return 1}};
+ const emptyUnit={querySelectorAll:()=>[]};
+ const emptyHost={hidden:false,dataset:{adState:'active'},querySelector:()=>emptyUnit};
+ const filledUnit={querySelectorAll:query=>query==='img,canvas,video'?
+  [{tagName:'IMG',complete:true,naturalWidth:300}]:[]};
+ const filledHost={hidden:false,dataset:{adState:'active'},querySelector:()=>filledUnit};
+ const root={querySelectorAll:()=>[emptyHost,filledHost]};
+ assert.equal(monitorNativeFill(root,win),2);
+ assert.equal(monitorNativeFill(root,win),0);
+ assert.equal(callbacks.length,2);
+ callbacks.forEach(cb=>cb());
+ assert.equal(emptyHost.hidden,true);
+ assert.equal(emptyHost.dataset.adState,'empty');
+ assert.equal(filledHost.hidden,false);
+ assert.equal(filledHost.dataset.adState,'active');
+ const declined={hidden:false,dataset:{adState:'preview'},querySelector:()=>emptyUnit};
+ assert.equal(monitorNativeFill({querySelectorAll:()=>[declined]},win),0);
 });

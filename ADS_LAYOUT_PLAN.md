@@ -40,3 +40,7 @@ The owner supplied the **complete** 728×90 desktop and 300×250 rectangle tags,
 
 ## 31 October — confirmed blank-probe JavaScript syntax bug
 The old `build_dist.py` generated a single-line probe snippet containing `//` comments. These comments swallowed the remaining JavaScript source (including closing braces), so the monitoring script was invalid and no `jobpath-banner-fill` event could be delivered. Replaced the inline line-comments with a block comment, cache-busted JS/CSS/ad iframe documents and added a production regression check running `node --check -` against BOTH generated inline scripts in each ad HTML document. This repairs the fill-status reporting path, not the external Adsterra inventory. Ads may remain unfilled/blocked by browsers or the network. On missing fill the existing parent watchdog hides the blank unit. The standalone native script remains unchanged.
+
+
+## Native empty-slot safety guard
+The native unit is now monitored after a consented request. If neither substantial image/video/canvas content nor text-bearing ad links appear after eight seconds, the entire native panel is hidden (including the ADVERTISEMENT header). An existing creative stays visible. This complements the repaired top/middle banner probe. Third-party cross-origin iframe contents cannot be reliably inspected, so provider-side no-fill or browser blocking may still limit real impressions.

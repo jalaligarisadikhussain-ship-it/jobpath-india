@@ -100,6 +100,33 @@ export function monitorBannerFill(root=globalThis.document,win=globalThis.window
  } else slots.forEach(watch);
  return slots.length;
 }
+// Native inventory can also fail: do not leave its heading and empty box
+// visible indefinitely. This runs only after an authorized native request.
+export function monitorNativeFill(root=globalThis.document,win=globalThis.window){
+ if(!root?.querySelectorAll||!win?.setTimeout)return 0;
+ let monitoring=0;
+ for(const host of root.querySelectorAll('[data-jobpath-native-placement]')){
+  if(host.hidden||host.dataset?.adState!=='active'||host.dataset.jpNativeWatching==='true')continue;
+  const unit=host.querySelector?.('[data-jobpath-native]');
+  if(!unit)continue;
+  host.dataset.jpNativeWatching='true';monitoring++;
+  win.setTimeout(()=>{
+   if(host.hidden||host.dataset.adState!=='active')return;
+   const realMedia=[...(unit.querySelectorAll?.('img,canvas,video')||[])].some(el=>
+    el.tagName==='IMG'?el.complete&&el.naturalWidth>=90:
+    el.tagName==='CANVAS'?el.width>=90&&el.height>=32:
+    el.readyState>1);
+   // A network-created iframe with no observable body is not proof of a real ad.
+   const readableLink=[...(unit.querySelectorAll?.('a[href]')||[])].some(a=>
+    (a.textContent||'').trim().length>=12);
+   if(!realMedia&&!readableLink){
+    host.dataset.adState='empty';
+    host.hidden=true;
+   }
+  },8000);
+ }
+ return monitoring;
+}
 export function adSenseReady(config){
  return config?.enabled===true&&config.provider==='adsense'&&
    typeof config.publisherId==='string'&&PUBLISHER.test(config.publisherId)&&
