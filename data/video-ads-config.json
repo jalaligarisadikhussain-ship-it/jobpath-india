@@ -1,0 +1,15 @@
+{
+  "enabled": false,
+  "provider": "none",
+  "status": "awaiting-publisher-approval",
+  "mode": "provider-iframe",
+  "publisherApproved": false,
+  "categoryExclusionsConfirmed": false,
+  "mutedPlaybackVerified": false,
+  "closeControlVerified": false,
+  "embedUrl": "",
+  "embedHost": "",
+  "requiresExplicitOptIn": true,
+  "placement": "homepage-content",
+  "note": "Fail closed. Do not enable until the selected network issues an approved outstream iframe embed, category exclusions are independently confirmed, muted/close UX is verified, and region-specific consent requirements are met. No video inventory is available yet."
+}

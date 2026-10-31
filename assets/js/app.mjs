@@ -1,4 +1,5 @@
 import {safeUrl,escapeHTML as e,daysUntil,effectiveStatus,sampleStatus,filterJobs,publicJobs,QUALIFICATIONS} from './utils.mjs';
+import {mountProfessionalVideo} from './video-ads.mjs';
 import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,bannerReady,renderBannerPlacement,monitorBannerFill,monitorNativeFill,effectiveAdvertisingChoice,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs?v=ad-visibility-repair-20261031';
 
 const PAGE= document.body.dataset.page || 'home';
@@ -183,6 +184,10 @@ async function init(){
  if(!examUpdatesData.length)examUpdatesData=BUILTIN_EXAM_UPDATES;
  app.innerHTML=header()+(PAGE==="home"?"":topAd())+`<main id="main" tabindex="-1"><div class="wrap">${renderMain()}</div></main>`+footer();
  if(advertisingReady(adsConfig)){startAdUnits(adsConfig);monitorBannerFill();monitorNativeFill();}
+ // Optional professional video: no slot/network request unless approval and explicit consent are verified.
+ void readData('/data/video-ads-config.json',{enabled:false},x=>x&&typeof x.enabled==='boolean')
+   .then(videoConfig=>mountProfessionalVideo(videoConfig,readAdvertisingConsent()))
+   .catch(()=>{});
  try{setTheme(localStorage.getItem('jp_theme')==='dark'?'dark':'light')}catch{setTheme('light')}
  attach();
  }catch(err){console.error('Website display failed',err);
