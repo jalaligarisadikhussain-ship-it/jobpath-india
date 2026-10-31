@@ -101,6 +101,7 @@ class AdvertisingConfigurationTests(unittest.TestCase):
         config=copy.deepcopy(load_and_validate())
         self.assertEqual(validate(config),[])
         self.assertEqual(set(config['cloudflareBanners']['units']), {'mobile','desktop','rectangle'})
+        self.assertFalse(config['cloudflareBanners']['enabled'])
         self.assertFalse(config['cloudflareBanners']['deliveryVerified'])
         self.assertTrue(config['cloudflareBanners']['units']['mobile']['sourceVerified'])
         self.assertTrue(config['cloudflareBanners']['units']['desktop']['sourceVerified'])

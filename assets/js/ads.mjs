@@ -49,57 +49,8 @@ export function adsterraReady(config){
   (filtered||trial)&&ad.adUnitStatus==='active'&&
   (config.consent?.required===true||(isCloudflare&&ad.automaticDisplay===true&&config.consent?.required===false))&&config.consent.version===AD_CONSENT_VERSION;
 }
-// Exact jobpath-india.pages.dev banner codes supplied by the publisher.
-const BANNER_KEYS=Object.freeze({"mobile":"22d5d7312497a4575a8261d0d18522ea","desktop":"5b1925f1b2ab32ef7b6d207bde9e0fa1","rectangle":"58623b07e46a924f55b4d5d4895086c0"});
-export function bannerReady(config,name='mobile'){
- const b=config?.cloudflareBanners;
- if(!adsterraReady(config)||b?.enabled!==true||b.websiteHost!==CLOUDFLARE_ADSTERRA_HOST)return false;
- const dims={mobile:[320,50],desktop:[728,90],rectangle:[300,250]},u=b.units?.[name],key=BANNER_KEYS[name],d=dims[name];
- return Boolean(key&&d&&u?.enabled===true&&u.sourceVerified===true&&u.key===key&&
-  u.format==='iframe'&&u.width===d[0]&&u.height===d[1]&&u.scriptUrl==='https://bauval.org/22/'+key);
-}
-export function renderBannerPlacement(config,location,hostname='',consent=''){
- if(!['responsive','rectangle'].includes(location)||hostname!==CLOUDFLARE_ADSTERRA_HOST||consent!=='allow')return '';
- if(typeof navigator!=='undefined'&&navigator.globalPrivacyControl===true)return '';
- const mobile=typeof window!=='undefined'&&window.matchMedia?.('(max-width:760px)')?.matches===true;
- const name=location==='rectangle'?'rectangle':mobile?'mobile':'desktop';
- if(!bannerReady(config,name))return '';
- const u=config.cloudflareBanners.units[name];
- return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ad-visibility-repair-20261031"></iframe></aside>';
-}
-// Blank ad inventory must not strand white cards on the job portal.
-// Ad content comes from a sandboxed, site-hosted iframe. The iframe reports
-// when a rendered creative exists; only a matching frame may update its slot.
-export function monitorBannerFill(root=globalThis.document,win=globalThis.window){
- if(!root?.querySelectorAll||!win?.addEventListener)return 0;
- const slots=[...root.querySelectorAll('.jp-banner[data-jp-banner-unit]')];
- if(!slots.length)return 0;
- const timers=new Map();
- const collapse=slot=>{if(slot.dataset.jpBannerState==='filled')return;slot.dataset.jpBannerState='empty';slot.hidden=true;slot.setAttribute('aria-hidden','true');};
- const handler=event=>{
-  const data=event.data;
-  if(data?.type!=='jobpath-banner-fill'||!['filled','empty'].includes(data.status))return;
-  const slot=slots.find(node=>node.dataset.jpBannerUnit===data.unit&&
-   node.querySelector('iframe[data-jp-banner-frame]')?.contentWindow===event.source);
-  if(!slot||slot.hidden)return;
-  if(timers.has(slot)){clearTimeout(timers.get(slot));timers.delete(slot);}
-  if(data.status==='filled'){slot.dataset.jpBannerState='filled';slot.setAttribute('aria-busy','false');return;}
-  collapse(slot);
- };
- win.addEventListener('message',handler);
- const watch=slot=>{if(slot.dataset.jpBannerWatching==='true')return;
-  slot.dataset.jpBannerWatching='true';
-  timers.set(slot,setTimeout(()=>{timers.delete(slot);collapse(slot);},5700));
- };
- if(typeof win.IntersectionObserver==='function'){
-  const observer=new win.IntersectionObserver(entries=>{for(const entry of entries){
-   if(entry.isIntersecting){watch(entry.target);observer.unobserve(entry.target);}
-  }},{rootMargin:'260px'});
-  slots.forEach(slot=>observer.observe(slot));
- } else slots.forEach(watch);
- return slots.length;
-}
+// Adsterra support (31 Oct 2026) prohibits publisher iframe wrappers.
+// Banner units are disabled; only the exact native tag runs directly in the site DOM.
 // Native inventory can also fail: do not leave its heading and empty box
 // visible indefinitely. This runs only after an authorized native request.
 // Do not show a native Advertisement heading before paid creative evidence.

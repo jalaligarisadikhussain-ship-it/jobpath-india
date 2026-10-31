@@ -29,3 +29,6 @@ Updated 2026-10-31
 - [ ] Confirm Cloudflare live deploy and inspect the actual creative in a browser; code and successful CI alone do not verify ad display.
 
 The AdSense account verification/approval and all other sites are independent of this migration.
+
+## Safety update — 31 October 2026
+Adsterra support has confirmed that custom publisher iframes containing their ad codes are prohibited and may lead to suspension. The Cloudflare homepage display-iframe banners (responsive 320×50/728×90 and 300×250) are therefore disabled in configuration and removed from the build. The existing native unit is still enabled **directly** in the page DOM, once per eligible page, subject to saved visitor opt-out/GPC. The old banner script identifiers are retained only as inactive reference records. An approved video-only ad zone has **not** yet been supplied. Do not reactivate the legacy iframe path.

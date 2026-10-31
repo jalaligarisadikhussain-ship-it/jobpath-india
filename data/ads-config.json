@@ -48,20 +48,20 @@
     {
       "id": "homepage-top",
       "type": "responsive-banner",
-      "enabled": true,
+      "enabled": false,
       "desktop": "728x90",
       "mobile": "320x50",
       "position": "before hero",
       "requiresVisitorOptIn": false,
-      "status": "all-device-sources-verified-trial-default-display"
+      "status": "disabled-adsterra-prohibits-publisher-iframe"
     },
     {
       "id": "homepage-middle",
       "type": "banner-300x250",
-      "enabled": true,
+      "enabled": false,
       "position": "after career-path category tiles",
       "requiresVisitorOptIn": false,
-      "status": "300x250-source-verified-trial-default-display"
+      "status": "disabled-adsterra-prohibits-publisher-iframe"
     },
     {
       "id": "homepage-bottom",
@@ -72,10 +72,10 @@
       "status": "existing-native-trial-default-display"
     }
   ],
-  "layoutNote": "Cloudflare-only publisher-requested automatic Adsterra trial: responsive top, 300x250 middle, bottom Native. No homepage Show Ads/Allow button; privacy/opt-out footer remains. Opt-out and GPC block requests. EU/UK and other consent regimes require CMP/legal review; not certified compliant.",
+  "layoutNote": "Cloudflare Pages: ONE original direct Adsterra Native Banner tag only; custom iframe banner placements OFF per Adsterra support warning. Original banner keys retained for reference, not loaded. No verified video-only unit. Existing GPC/opt-out and regional consent obligations remain.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
-    "enabled": true,
+    "enabled": false,
     "source": "All three banner scripts supplied in full by owner on October 31, 2026.",
     "verificationNote": "All three full banner code snippets exactly match the configured keys, dimensions and external script URLs; this proves only code correctness, not actual ad fill or acceptable creative categories.",
     "units": {
@@ -107,6 +107,7 @@
         "sourceVerified": true
       }
     },
-    "deliveryVerified": false
+    "deliveryVerified": false,
+    "disabledReason": "Adsterra support says publisher-side iframes embedding ad codes are forbidden and can cause suspension; this preserves unit records but blocks all custom iframe ads while awaiting direct approved replacement."
   }
 }

@@ -73,30 +73,11 @@ class HostingBuildTests(unittest.TestCase):
             self.assertTrue(all(url.startswith(DEFAULT_SITE_URL + "/") for url in locations))
             self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
             self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
-            # All three full-format banner tags were supplied by the owner.
-            for name, key in (
-                ('mobile','22d5d7312497a4575a8261d0d18522ea'),
-                ('desktop','5b1925f1b2ab32ef7b6d207bde9e0fa1'),
-                ('rectangle','58623b07e46a924f55b4d5d4895086c0'),
-            ):
-                banner_page=dist/'ad-units'/(name+'.html')
-                self.assertTrue(banner_page.is_file())
-                self.assertIn('https://bauval.org/22/'+key,banner_page.read_text())
-                self.assertIn('var atOptions',banner_page.read_text())
-                # Regression check: the generated probe previously used // inside a
-                # one-line JS string and accidentally commented out its closing
-                # braces and MutationObserver setup. Compile the emitted JS.
-                html=banner_page.read_text()
-                inline=re.findall(r'<script>(.*?)</script>',html,re.DOTALL)
-                self.assertEqual(len(inline),2)
-                self.assertIn('jobpath-banner-fill',inline[-1])
-                self.assertNotIn('// An iframe existing',inline[-1])
-                node=shutil.which('node')
-                self.assertIsNotNone(node,'Node.js needed to syntax-check ad probes')
-                for snippet in inline:
-                    result=subprocess.run([node,'--check','-'],input=snippet,
-                                          text=True,capture_output=True,check=False)
-                    self.assertEqual(result.returncode,0,result.stderr)
+            # The publisher-side iframe ad wrappers violate Adsterra's
+            # terms (support confirmation 31 Oct). The direct Native Banner
+            # remains configured, but no custom iframe pages may be shipped.
+            self.assertFalse((dist / "ad-units").exists())
+            self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["cloudflareBanners"]["enabled"])
             for name in ("jobs.json", "auto-notices.json", "ads-config.json", "editorial-pages.json"):
                 self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
@@ -104,8 +85,8 @@ class HostingBuildTests(unittest.TestCase):
                 self.assertFalse((dist / private).exists())
             headers = (dist / "_headers").read_text(encoding="utf-8")
             self.assertIn("X-Content-Type-Options: nosniff", headers)
-            self.assertIn("X-Frame-Options: SAMEORIGIN", headers)
-            self.assertIn("X-Robots-Tag: noindex, nofollow", headers)
+            self.assertIn("X-Frame-Options: DENY", headers)
+            self.assertNotIn("/ad-units/*", headers)
             self.assertIn("frame-ancestors 'self'", headers)
             self.assertEqual((dist / "ads.txt").read_text(), ADS_TXT_LINE)
 

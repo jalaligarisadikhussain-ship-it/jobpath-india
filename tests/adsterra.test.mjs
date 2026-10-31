@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
  adsterraConfigured,adsterraReady,advertisingReady,renderAdPlacement,
  readAdvertisingConsent,saveAdvertisingConsent,startAdUnits,chooseAdvertising,
- resolveAdvertisingConfig,bannerReady,renderBannerPlacement,monitorNativeFill,effectiveAdvertisingChoice,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
+ resolveAdvertisingConfig,monitorNativeFill,effectiveAdvertisingChoice,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
@@ -205,109 +205,31 @@ test('Native sponsorship notice is compact, clearly marked and not an applicatio
  assert.match(css,/\.analytics-consent\{width:min\(375px/);
 });
 
-test('ad positions stay ordered top, middle, and bottom without duplicates',()=>{
- const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
- const homepage=app.slice(app.indexOf('function home()'),app.indexOf('function options('));
- const first=homepage.indexOf('siteBanner("responsive")');
- const hero=homepage.indexOf('<section class="hero">');
- const categories=homepage.indexOf("Explore by career path");
- const middle=homepage.indexOf("siteBanner('rectangle')");
- const vacancies=homepage.indexOf("Latest reviewed vacancies");
- const exams=homepage.indexOf("Examination resources");
- const last=homepage.indexOf('topAd()');
- assert.ok(first>=0&&first<hero);
- assert.ok(categories<middle&&middle<vacancies);
- assert.ok(exams<last&&last>middle);
- assert.equal(homepage.split('siteBanner("responsive")').length-1,1);
- assert.equal(homepage.split("siteBanner('rectangle')").length-1,1);
- assert.equal(homepage.split('topAd()').length-1,1);
- const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
- assert.deepEqual(cfg.plannedPlacements.map(x=>x.id),
- ['homepage-top','homepage-middle','homepage-bottom']);
- assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,3);
- assert.equal(cfg.cloudflareBanners.deliveryVerified,false);
- assert.equal(cfg.cloudflareAdsterra.datingExclusionConfirmed,false);
-});
-
-test('homepage does not show advertising permission prompts',()=>{
- const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
- assert.match(app,/function adQuickAccess\(\)\{return ''\}/);
- assert.doesNotMatch(app,/Show sponsored ads/);
- assert.match(app,/effectiveAdvertisingChoice\(adsConfig\)/);
- assert.match(app,/return `\$\{siteBanner\("responsive"\)\}<section class="hero">/);
- assert.doesNotMatch(app,/\$\{adQuickAccess\(\)\}/);
- assert.match(app,/PAGE==="home"\?"":topAd\(\)/);
-});
-test('all three exact owner-provided ad tags enabled only with explicit consent and correct host',()=>{
- const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url),'utf8'));
+test('Adsterra prohibition: custom publisher iframe banners cannot load on any host',()=>{
+ const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
  const cloud=resolveAdvertisingConfig(cfg,CLOUDFLARE_ADSTERRA_HOST);
- for(const unit of ['mobile','desktop','rectangle']){
-  assert.equal(cfg.cloudflareBanners.units[unit].sourceVerified,true);
-  assert.equal(bannerReady(cloud,unit),true);
- }
- assert.equal(cfg.cloudflareBanners.deliveryVerified,false); // Source is verified; fill is not.
- assert.equal(renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,''),'');
- assert.equal(renderBannerPlacement(cloud,'rectangle',CLOUDFLARE_ADSTERRA_HOST,''),'');
- assert.equal(renderBannerPlacement(cloud,'responsive','jobpath-india.netlify.app','allow'),'');
- assert.ok(renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/desktop.html'));
- const original=globalThis.window;
- try{
-  globalThis.window={matchMedia:()=>({matches:true})};
-  const mobile=renderBannerPlacement(cloud,'responsive',CLOUDFLARE_ADSTERRA_HOST,'allow');
-  assert.ok(mobile.includes('ad-units/mobile.html'));
-  assert.ok(!mobile.includes('ad-units/desktop.html'));
- }finally{if(original===undefined)delete globalThis.window;else globalThis.window=original}
- assert.ok(renderBannerPlacement(cloud,'rectangle',CLOUDFLARE_ADSTERRA_HOST,'allow').includes('ad-units/rectangle.html'));
- const altered={...cloud,cloudflareBanners:{...cloud.cloudflareBanners,units:{...cloud.cloudflareBanners.units,mobile:{...cloud.cloudflareBanners.units.mobile,key:'wrong'}}}};
- assert.equal(bannerReady(altered,'mobile'),false);
-});
-test('unfilled display inventory collapses rather than leaving white ad boxes',()=>{
- const s=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
- const builder=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
- assert.match(s,/export function monitorBannerFill\(/);
- assert.match(s,/node\.querySelector\('iframe\[data-jp-banner-frame\]'\)\?\.contentWindow===event\.source/);
- assert.match(s,/slot\.hidden=true/);
- assert.match(s,/IntersectionObserver/);
- assert.match(css,/\.jp-banner\[hidden\]/);
- assert.match(builder,/jobpath-banner-fill/);
- assert.match(builder,/creative\(\)/);
-});
-
-test('blank iframe-only markup is not treated as a filled advertisement',()=>{
- const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
- const runtime=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
- assert.match(build,/var frames=document\.body\.querySelectorAll/);
- assert.doesNotMatch(build,/el\.tagName==='IFRAME'.*return true/);
- assert.match(build,/naturalWidth>=90/);
- assert.match(build,/report\('empty'\)/);
- assert.match(runtime,/slot\.dataset\.jpBannerState='empty';slot\.hidden=true/);
- assert.match(runtime,/5700/);
- assert.match(css,/\.jp-banner\[data-jp-banner-state="empty"\]/);
-});
-
-test('new ad-fix deploy invalidates old cached site script and ad iframe assets',()=>{
- const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=ad-visibility-repair-20261031/);
- assert.match(build,/app\.mjs\?v=ad-visibility-repair-20261031/);
- assert.match(app,/ads\.mjs\?v=ad-visibility-repair-20261031/);
- assert.match(ads,/ad-units\/.*ad-visibility-repair-20261031/);
-});
-
-test('generated ad creative probe does not swallow monitoring code with single-line JS comments',()=>{
  const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
- assert.match(build,/jobpath-banner-fill/);
- assert.match(build,/MutationObserver/);
- assert.match(build,/var frames=document\.body\.querySelectorAll/);
- assert.doesNotMatch(build,/\/\/ An iframe existing is NOT proof/);
- // The independent Python build test also runs Node --check on generated scripts.
- const hosting=fs.readFileSync(new URL('../tests/test_hosting_build.py',import.meta.url),'utf8');
- assert.match(hosting,/node,'--check','-'/);
+ assert.equal(cfg.cloudflareBanners.enabled,false);
+ assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,1);
+ assert.equal(cfg.plannedPlacements.find(x=>x.enabled).id,'homepage-bottom');
+ assert.equal(adsterraReady(cloud),true); // original direct Native Banner preserved
+ assert.ok(!app.includes('siteBanner('));
+ assert.ok(!app.includes('monitorBannerFill('));
+ assert.ok(!ads.includes('renderBannerPlacement('));
+ assert.ok(!ads.includes('data-jp-banner-frame'));
+ assert.match(build,/assert ads_config\['cloudflareBanners'\]\['enabled'\] is False/);
+ assert.doesNotMatch(build,/var atOptions =|jobpath-banner-fill/);
+ assert.match(app,/\$\{topAd\(\)\}<section class="hero">/);
 });
-
+test('Cloudflare banner code IDs retained for reference only; no page-level iframe is created',()=>{
+ const cfg=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
+ assert.deepEqual(Object.keys(cfg.cloudflareBanners.units).sort(),['desktop','mobile','rectangle']);
+ assert.equal(cfg.cloudflareBanners.enabled,false);
+ const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
+ assert.doesNotMatch(build,/ad_dir\s*=|ad-units\//);
+});
 test('native ad remains invisible until real content, and empty slot collapses',()=>{
  const callbacks=[];
  const win={setTimeout:(cb,delay)=>{callbacks.push({cb,delay});return callbacks.length}};
@@ -339,26 +261,8 @@ test('native ad remains invisible until real content, and empty slot collapses',
  assert.equal(monitorNativeFill({querySelectorAll:()=>[frameHost]},win),1);
  assert.equal(frameHost.dataset.jpNativeReady,'filled');
 });
-test('ad zones are visible during delivery attempts rather than invisible forever',()=>{
- const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+test('Native fill detector still collapses an empty ad placement',()=>{
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- const builder=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
- assert.match(css,/\.jp-banner\[data-jp-banner-state="pending"\]\{/);
- assert.match(css,/position:relative!important;visibility:visible!important;opacity:1!important/);
- assert.match(css,/\[data-jobpath-native-placement\]\[data-jp-native-ready="pending"\]\{/);
- assert.match(ads,/unit\.querySelectorAll\?\.\('iframe'\)/);
- assert.match(builder,/frame\.contentDocument\.body\.children\.length>0/);
- assert.match(ads,/8500/); // Empty native panels still collapse.
- assert.match(ads,/5700/); // Empty display panels still collapse.
-});
-test('ad placeholders take no page space before they contain a creative',()=>{
- const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
- const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(css,/\.jp-banner\[data-jp-banner-state="pending"\]/);
- assert.match(css,/position:relative!important;visibility:visible!important;opacity:1!important/);
- assert.match(css,/\[data-jobpath-native-placement\]\[data-jp-native-ready="pending"\]/);
- assert.match(css,/\.top-ad-region\{margin:0!important/);
- assert.match(ads,/data-jp-native-ready="pending"/);
- assert.match(ads,/data-jp-banner-state="pending"/);
- assert.match(ads,/loading="eager"/);
+ assert.match(ads,/8500/);
+ assert.match(ads,/jpNativeReady='empty'/);
 });

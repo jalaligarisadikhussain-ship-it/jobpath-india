@@ -43,40 +43,18 @@ ads_config = load_and_validate()
 # Do not load Google advertising scripts merely to publish ads.txt.
 (DIST/'ads.txt').write_text(ADS_TXT_LINE, encoding='utf-8')
 
-# Render each format inside its own ad-document so atOptions cannot collide.
-# A visitor-facing iframe is inserted only after they opt into advertising.
-if ads_config.get('cloudflareBanners', {}).get('enabled') is True:
-    verified_units = {name: unit for name, unit in ads_config['cloudflareBanners']['units'].items()
-                      if unit.get('enabled') is True and unit.get('sourceVerified') is True}
-    if verified_units:
-        ad_dir = DIST / 'ad-units'
-        ad_dir.mkdir()
-    for name, unit in verified_units.items():
-        options = {'key': unit['key'], 'format': 'iframe',
-                   'height': unit['height'], 'width': unit['width'], 'params': {}}
-        script = '<script>var atOptions = '+json.dumps(options, separators=(',',':'))+';</script>'
-        script += '<script src="'+unit['scriptUrl']+'"></script>'
-        # The banner must report genuine creative markup, not merely that the
-        # empty wrapper document loaded. No filled markup => collapse in parent.
-        probe = "<script>(function(){var unitName=UNIT_NAME,done=false;function report(state){if(done)return;done=true;window.parent.postMessage({type:'jobpath-banner-fill',unit:unitName,status:state},'https://jobpath-india.pages.dev');}function isVisible(node,minW,minH){var box=node.getBoundingClientRect();return box.width>=minW&&box.height>=minH&&getComputedStyle(node).visibility!=='hidden';}function creative(){var imgs=document.body.querySelectorAll('img');for(var i=0;i<imgs.length;i++){var im=imgs[i];if(im.complete&&im.naturalWidth>=90&&im.naturalHeight>=32&&isVisible(im,90,32))return true;}var videos=document.body.querySelectorAll('video');for(var j=0;j<videos.length;j++){if(videos[j].readyState>1&&isVisible(videos[j],90,32))return true;}var canvases=document.body.querySelectorAll('canvas');for(var k=0;k<canvases.length;k++){var canvas=canvases[k];if(canvas.width>=90&&canvas.height>=32&&isVisible(canvas,90,32))return true;}var links=document.body.querySelectorAll('a[href]');for(var m=0;m<links.length;m++){var link=links[m];if((link.textContent||'').trim().length>12&&isVisible(link,90,24))return true;}var frames=document.body.querySelectorAll('iframe');for(var z=0;z<frames.length;z++){var frame=frames[z],source=frame.getAttribute('src')||'';if(isVisible(frame,90,32)&&(source.indexOf('https://')===0||frame.getAttribute('srcdoc')))return true;try{if(isVisible(frame,90,32)&&frame.contentDocument&&frame.contentDocument.body&&frame.contentDocument.body.children.length>0)return true;}catch(e){}}return false;}function check(){if(!done&&creative())report('filled');}var obs=new MutationObserver(check);obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['src','srcdoc','style','class']});window.addEventListener('load',check);setTimeout(check,450);setTimeout(check,1250);setTimeout(check,2300);setTimeout(function(){if(!done){check();if(!done)report('empty');obs.disconnect();}},4700);})();</script>"
-        probe = probe.replace('UNIT_NAME', json.dumps(name))
-        page = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
-                '<meta name="robots" content="noindex,nofollow">'
-                '<style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style>'
-                '</head><body>') + script + probe + '</body></html>'
-        (ad_dir/(name+'.html')).write_text(page, encoding='utf-8')
-# Cloudflare Pages reads _headers; do not restrict script-src here because approved
-# Cloudflare-only advertising is rendered inside same-origin unit frames.
-# X-Frame-Options SAMEORIGIN keeps internal ad frames functional.
+# Adsterra support explicitly prohibits embedding publisher ad code in custom
+# iframes. Therefore publish NO ad-unit iframe wrappers. The original one
+# native tag is rendered directly in assets/js/ads.mjs after privacy checks.
+assert ads_config['cloudflareBanners']['enabled'] is False, 'Publisher iframe banners must stay disabled'
+# Cloudflare Pages reads _headers. The approved original Native Banner script
+# is inserted directly in the main document, never a custom publisher iframe.
 (DIST/'_headers').write_text("""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: SAMEORIGIN
+  X-Frame-Options: DENY
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Content-Security-Policy: object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'
-
-/ad-units/*
-  X-Robots-Tag: noindex, nofollow
 
 /assets/*
   Cache-Control: public, max-age=600, must-revalidate
