@@ -51,15 +51,15 @@
       "mobile": "320x50",
       "position": "before hero",
       "requiresVisitorOptIn": true,
-      "status": "mobile-tag-confirmed-desktop-paused"
+      "status": "all-device-sources-verified-trial"
     },
     {
       "id": "homepage-middle",
       "type": "banner-300x250",
-      "enabled": false,
+      "enabled": true,
       "position": "after career-path category tiles",
       "requiresVisitorOptIn": true,
-      "status": "awaiting-full-script"
+      "status": "300x250-source-verified-trial"
     },
     {
       "id": "homepage-bottom",
@@ -70,12 +70,12 @@
       "status": "existing-native-trial"
     }
   ],
-  "layoutNote": "Mobile 320x50 source confirmed and consent-gated; desktop and middle paused; bottom native remains enabled. Real ad fill not yet verified.",
+  "layoutNote": "Three site-specific sources verified exactly. Home top uses either mobile 320x50 or desktop 728x90, middle uses 300x250, bottom uses the established native banner; all consent-gated on Cloudflare-only host. Empty-fill handling best effort; code verification is not live ad visibility verification.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": true,
-    "source": "Owner-provided complete 320x50 tag, October 31 2026; other banners screenshot-only",
-    "verificationNote": "Full mobile 320x50 source verified exactly; no live creative-fill guarantee. Desktop 728x90 and 300x250 tags remain incomplete.",
+    "source": "All three banner scripts supplied in full by owner on October 31, 2026.",
+    "verificationNote": "All three full banner code snippets exactly match the configured keys, dimensions and external script URLs; this proves only code correctness, not actual ad fill or acceptable creative categories.",
     "units": {
       "mobile": {
         "key": "22d5d7312497a4575a8261d0d18522ea",
@@ -93,7 +93,7 @@
         "format": "iframe",
         "scriptUrl": "https://bauval.org/22/5b1925f1b2ab32ef7b6d207bde9e0fa1",
         "enabled": true,
-        "sourceVerified": false
+        "sourceVerified": true
       },
       "rectangle": {
         "key": "58623b07e46a924f55b4d5d4895086c0",
@@ -102,7 +102,7 @@
         "format": "iframe",
         "scriptUrl": "https://bauval.org/22/58623b07e46a924f55b4d5d4895086c0",
         "enabled": true,
-        "sourceVerified": false
+        "sourceVerified": true
       }
     },
     "deliveryVerified": false

@@ -64,12 +64,16 @@ class HostingBuildTests(unittest.TestCase):
             self.assertTrue(all(url.startswith(DEFAULT_SITE_URL + "/") for url in locations))
             self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
             self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
-            # Only the owner's fully supplied 320x50 tag is built.
-            banner_page=dist/'ad-units'/'mobile.html'
-            self.assertTrue(banner_page.is_file())
-            self.assertIn('https://bauval.org/22/22d5d7312497a4575a8261d0d18522ea',banner_page.read_text())
-            self.assertFalse((dist/'ad-units'/'desktop.html').exists())
-            self.assertFalse((dist/'ad-units'/'rectangle.html').exists())
+            # All three full-format banner tags were supplied by the owner.
+            for name, key in (
+                ('mobile','22d5d7312497a4575a8261d0d18522ea'),
+                ('desktop','5b1925f1b2ab32ef7b6d207bde9e0fa1'),
+                ('rectangle','58623b07e46a924f55b4d5d4895086c0'),
+            ):
+                banner_page=dist/'ad-units'/(name+'.html')
+                self.assertTrue(banner_page.is_file())
+                self.assertIn('https://bauval.org/22/'+key,banner_page.read_text())
+                self.assertIn('var atOptions',banner_page.read_text())
             for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
                 self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])

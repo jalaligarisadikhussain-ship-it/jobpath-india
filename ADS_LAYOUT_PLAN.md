@@ -32,3 +32,7 @@ Both fixed banner regions are paused until original **complete** Adsterra script
 
 ### Mobile banner code received (October 31, 2026)
 The owner supplied the entire Adsterra 320×50 script with exact key `22d5d7312497a4575a8261d0d18522ea`, iframe format and script `https://bauval.org/22/22d5d7312497a4575a8261d0d18522ea`. These **source parameters** are now verified. This does **not** independently confirm a successful ad response. The mobile homepage uses an opt-in-only trial with blank-collapse protection. Desktop 728×90 and rectangle 300×250 remain unpublished until exact complete tags are supplied. Native bottom banner remains enabled.
+
+
+### All three banner tags received on October 31, 2026
+The owner supplied the **complete** 728×90 desktop and 300×250 rectangle tags, in addition to the mobile 320×50. All three existing keys, sizes and complete `https://bauval.org/22/{key}` source URLs match the source configuration. The three banner units are now code-verified and rendered in sandboxed separate HTML wrappers, consent-gated and host-restricted. Homepage top shows one device-appropriate banner (320×50 mobile or 728×90 desktop). Middle shows 300×250. Existing native placement stays at bottom. Adsterra ad delivery/creative suitability have not been independently verified; empty-fill auto-hide is best effort.
