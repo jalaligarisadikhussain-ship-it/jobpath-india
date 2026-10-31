@@ -73,6 +73,7 @@ jobs:
         run: |
           node --check assets/js/app.mjs
           node --check assets/js/ads.mjs
+          node --check assets/js/video-ads.mjs
       - name: Build Netlify website output
         run: python3 scripts/build_dist.py
       - name: Audit site pages and SEO
