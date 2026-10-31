@@ -60,7 +60,16 @@ class HostingBuildTests(unittest.TestCase):
                 self.assertNotRegex(text, r'<script[^>]+src="https://(?:bauval\.org|pagead2\.googlesyndication\.com)')
             sitemap = ET.parse(dist / "sitemap.xml")
             locations = [node.text for node in sitemap.findall(".//{*}loc")]
-            self.assertEqual(len(locations), 25 if origin == DEFAULT_SITE_URL else 0)
+            indexable_count = sum(
+                '<meta name="robots" content="index,follow">' in
+                (dist / page["path"] / "index.html").read_text()
+                for page in pages.values()
+            )
+            self.assertEqual(len(locations), indexable_count if origin == DEFAULT_SITE_URL else 0)
+            if origin == DEFAULT_SITE_URL:
+                self.assertIn(DEFAULT_SITE_URL + "/guides/verify-government-job-notifications/", locations)
+                self.assertIn(DEFAULT_SITE_URL + "/guides/avoid-recruitment-scams/", locations)
+                self.assertIn(DEFAULT_SITE_URL + "/guides/job-application-documents-checklist/", locations)
             self.assertTrue(all(url.startswith(DEFAULT_SITE_URL + "/") for url in locations))
             self.assertNotIn(origin + "/auto-recruitment-notices/", locations)
             self.assertIn(f"Sitemap: {origin}/sitemap.xml\n", (dist / "robots.txt").read_text())
@@ -88,7 +97,7 @@ class HostingBuildTests(unittest.TestCase):
                     result=subprocess.run([node,'--check','-'],input=snippet,
                                           text=True,capture_output=True,check=False)
                     self.assertEqual(result.returncode,0,result.stderr)
-            for name in ("jobs.json", "auto-notices.json", "ads-config.json"):
+            for name in ("jobs.json", "auto-notices.json", "ads-config.json", "editorial-pages.json"):
                 self.assertEqual((dist / "data" / name).read_bytes(), (ROOT / "data" / name).read_bytes())
             self.assertFalse(json.loads((dist / "data/ads-config.json").read_text())["enabled"])
             for private in ("scripts", "reports", "tests", ".github", "RENDER_DEPLOYMENT_SETUP.md"):
