@@ -22,15 +22,15 @@
       "url": "https://www.ibps.in/",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-10-31",
+      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "c11d421d5ec3603a62b40485e1f03c0be209efa8ecabdc3b45dae3bb9e14c63e",
-      "last_change_or_status_date": "2026-10-30"
+      "fingerprint": "3e336c1308481648a6e1429d85c672321c2a9151cdca73f57c428755d96cdf88",
+      "last_change_or_status_date": "2026-10-31"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -59,25 +59,24 @@
     "ctet": {
       "name": "Central Teacher Eligibility Test",
       "url": "https://ctet.nic.in/",
-      "status": "unreachable",
+      "status": "reachable",
       "fingerprint": "33a862e9c89aa39a3516459f79670ab9f1a81bc3a8f42ae39d0d12e4fd17291e",
-      "last_change_or_status_date": "2026-10-30",
-      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-10-31"
     },
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "3978928065720881d7680b17550132b3747e93c43fced028ae5626785df14821",
-      "last_change_or_status_date": "2026-10-30"
+      "fingerprint": "1b7c17a2fb0b6e431da45de6ca6527438ce6a740390807e3d0c4d5c6898b05f8",
+      "last_change_or_status_date": "2026-10-31"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
       "url": "https://navodaya.gov.in/",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: network/DNS/TLS error (OSError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-10-31",
+      "note": "Could not check: network/DNS/TLS error (TimeoutError); not proof of a closed recruitment"
     },
     "employment-news": {
       "name": "Employment News",
