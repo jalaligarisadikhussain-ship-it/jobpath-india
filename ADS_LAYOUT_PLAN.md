@@ -44,3 +44,7 @@ The old `build_dist.py` generated a single-line probe snippet containing `//` co
 
 ## Native empty-slot safety guard
 The native unit is now monitored after a consented request. If neither substantial image/video/canvas content nor text-bearing ad links appear after eight seconds, the entire native panel is hidden (including the ADVERTISEMENT header). An existing creative stays visible. This complements the repaired top/middle banner probe. Third-party cross-origin iframe contents cannot be reliably inspected, so provider-side no-fill or browser blocking may still limit real impressions.
+
+
+## No-white-placeholder change, 31 October 2026
+The banner and native-ad wrappers now occupy **no normal layout space** while waiting for positive proof of a creative. Banner iframes load eagerly inside transparent/hidden off-flow wrappers. A valid reported image/video/canvas or substantial text link transitions the slot to filled and restores its in-flow place. Empty or blocked inventory is removed after a limited timeout. The native unit uses the same invisible pending/visible filled logic, without suppressing user opt-in or the provider's code. Real external ad fill remains outside website control; iframe-only opaque creative cannot be reliably verified, so may remain hidden. All keys and host gating unchanged. No blank paid-ad placeholders are knowingly rendered.

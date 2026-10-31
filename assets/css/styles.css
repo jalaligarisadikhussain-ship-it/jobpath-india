@@ -203,3 +203,21 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 
 /* Never display advertising placeholders if the unit has not been verified or filled. */
 .jp-banner[hidden],.jp-banner[data-jp-banner-state="empty"]{display:none!important}
+
+/* Do not paint or reserve empty ad zones. A provider's code may be valid while
+   the network returns no impression, blocks the request, or delays delivery. */
+.jp-banner[data-jp-banner-state="pending"]{
+ position:absolute!important;visibility:hidden!important;pointer-events:none!important;
+ margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;
+ background:transparent!important;
+}
+.jp-banner[data-jp-banner-state="empty"],.jp-banner[hidden]{display:none!important}
+.jp-banner[data-jp-banner-state="filled"]{visibility:visible}
+.top-ad-region{margin:0!important;padding:0!important;min-height:0!important}
+.top-ad-region:has([data-jp-native-ready="filled"]){margin:26px auto 14px!important}
+[data-jobpath-native-placement][data-jp-native-ready="pending"]{
+ position:absolute!important;visibility:hidden!important;pointer-events:none!important;
+ border:0!important;box-shadow:none!important;margin:0!important;
+}
+[data-jobpath-native-placement][data-jp-native-ready="empty"]{display:none!important}
+[data-jobpath-native-placement][data-jp-native-ready="filled"]{position:relative;visibility:visible}

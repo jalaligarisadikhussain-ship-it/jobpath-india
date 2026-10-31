@@ -277,10 +277,10 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=probe-syntax-fix-20261031/);
- assert.match(build,/app\.mjs\?v=probe-syntax-fix-20261031/);
- assert.match(app,/ads\.mjs\?v=probe-syntax-fix-20261031/);
- assert.match(ads,/ad-units\/.*probe-syntax-fix-20261031/);
+ assert.match(build,/styles\.css\?v=no-white-placeholders-20261031/);
+ assert.match(build,/app\.mjs\?v=no-white-placeholders-20261031/);
+ assert.match(app,/ads\.mjs\?v=no-white-placeholders-20261031/);
+ assert.match(ads,/ad-units\/.*no-white-placeholders-20261031/);
 });
 
 test('generated ad creative probe does not swallow monitoring code with single-line JS comments',()=>{
@@ -294,23 +294,36 @@ test('generated ad creative probe does not swallow monitoring code with single-l
  assert.match(hosting,/node,'--check','-'/);
 });
 
-test('unfilled native placement collapses, while a creative-bearing unit stays visible',()=>{
+test('native ad remains invisible until real content, and empty slot collapses',()=>{
  const callbacks=[];
- const win={setTimeout:cb=>{callbacks.push(cb);return 1}};
- const emptyUnit={querySelectorAll:()=>[]};
- const emptyHost={hidden:false,dataset:{adState:'active'},querySelector:()=>emptyUnit};
- const filledUnit={querySelectorAll:query=>query==='img,canvas,video'?
-  [{tagName:'IMG',complete:true,naturalWidth:300}]:[]};
- const filledHost={hidden:false,dataset:{adState:'active'},querySelector:()=>filledUnit};
+ const win={setTimeout:(cb,delay)=>{callbacks.push({cb,delay});return callbacks.length}};
+ const unit=()=>({querySelectorAll:()=>[]});
+ const empty=unit();
+ const emptyHost={hidden:false,dataset:{adState:'active'},querySelector:()=>empty};
+ const creative={querySelectorAll:selector=>selector==='img,canvas,video'?
+  [{tagName:'IMG',complete:true,naturalWidth:300,naturalHeight:250}]:[]};
+ const filledHost={hidden:false,dataset:{adState:'active'},querySelector:()=>creative};
  const root={querySelectorAll:()=>[emptyHost,filledHost]};
  assert.equal(monitorNativeFill(root,win),2);
+ assert.equal(emptyHost.dataset.jpNativeReady,'pending');
+ assert.equal(filledHost.dataset.jpNativeReady,'filled');
  assert.equal(monitorNativeFill(root,win),0);
- assert.equal(callbacks.length,2);
- callbacks.forEach(cb=>cb());
+ callbacks.filter(x=>x.delay===8500).forEach(x=>x.cb());
+ assert.equal(emptyHost.dataset.jpNativeReady,'empty');
  assert.equal(emptyHost.hidden,true);
- assert.equal(emptyHost.dataset.adState,'empty');
  assert.equal(filledHost.hidden,false);
- assert.equal(filledHost.dataset.adState,'active');
- const declined={hidden:false,dataset:{adState:'preview'},querySelector:()=>emptyUnit};
- assert.equal(monitorNativeFill({querySelectorAll:()=>[declined]},win),0);
+ assert.equal(filledHost.dataset.jpNativeReady,'filled');
+ const inactive={hidden:false,dataset:{adState:'preview'},querySelector:()=>empty};
+ assert.equal(monitorNativeFill({querySelectorAll:()=>[inactive]},win),0);
+});
+test('ad placeholders take no page space before they contain a creative',()=>{
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
+ assert.match(css,/\.jp-banner\[data-jp-banner-state="pending"\]/);
+ assert.match(css,/position:absolute!important;visibility:hidden!important/);
+ assert.match(css,/\[data-jobpath-native-placement\]\[data-jp-native-ready="pending"\]/);
+ assert.match(css,/\.top-ad-region\{margin:0!important/);
+ assert.match(ads,/data-jp-native-ready="pending"/);
+ assert.match(ads,/data-jp-banner-state="pending"/);
+ assert.match(ads,/loading="eager"/);
 });

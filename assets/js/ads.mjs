@@ -66,7 +66,7 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(!bannerReady(config,name))return '';
  const u=config.cloudflareBanners.units[name];
  return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-  '<iframe loading="lazy" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=probe-syntax-fix-20261031"></iframe></aside>';
+  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=no-white-placeholders-20261031"></iframe></aside>';
 }
 // Blank ad inventory must not strand white cards on the job portal.
 // Ad content comes from a sandboxed, site-hosted iframe. The iframe reports
@@ -102,6 +102,10 @@ export function monitorBannerFill(root=globalThis.document,win=globalThis.window
 }
 // Native inventory can also fail: do not leave its heading and empty box
 // visible indefinitely. This runs only after an authorized native request.
+// Do not show a native Advertisement heading before paid creative evidence.
+// The opt-in script still executes; empty inventory is discarded, without a
+// reserved white rectangle or fake advert. These checks cannot inspect
+// cross-origin iframe paint.
 export function monitorNativeFill(root=globalThis.document,win=globalThis.window){
  if(!root?.querySelectorAll||!win?.setTimeout)return 0;
  let monitoring=0;
@@ -110,20 +114,32 @@ export function monitorNativeFill(root=globalThis.document,win=globalThis.window
   const unit=host.querySelector?.('[data-jobpath-native]');
   if(!unit)continue;
   host.dataset.jpNativeWatching='true';monitoring++;
-  win.setTimeout(()=>{
-   if(host.hidden||host.dataset.adState!=='active')return;
-   const realMedia=[...(unit.querySelectorAll?.('img,canvas,video')||[])].some(el=>
-    el.tagName==='IMG'?el.complete&&el.naturalWidth>=90:
+  host.dataset.jpNativeReady='pending';
+  const filled=()=>{
+   const media=[...(unit.querySelectorAll?.('img,canvas,video')||[])].some(el=>
+    el.tagName==='IMG'?el.complete&&el.naturalWidth>=90&&el.naturalHeight>=32:
     el.tagName==='CANVAS'?el.width>=90&&el.height>=32:
     el.readyState>1);
-   // A network-created iframe with no observable body is not proof of a real ad.
-   const readableLink=[...(unit.querySelectorAll?.('a[href]')||[])].some(a=>
+   const textLink=[...(unit.querySelectorAll?.('a[href]')||[])].some(a=>
     (a.textContent||'').trim().length>=12);
-   if(!realMedia&&!readableLink){
-    host.dataset.adState='empty';
-    host.hidden=true;
-   }
-  },8000);
+   return media||textLink;
+  };
+  const ready=()=>{
+   if(host.hidden||host.dataset.adState!=='active'||host.dataset.jpNativeReady!=='pending')return;
+   if(filled()){host.dataset.jpNativeReady='filled';observer?.disconnect();}
+  };
+  let observer=null;
+  if(typeof win.MutationObserver==='function'){
+   observer=new win.MutationObserver(ready);
+   observer.observe(unit,{childList:true,subtree:true,attributes:true,attributeFilter:['src','style','class']});
+  }
+  ready();
+  for(const delay of [400,1400,3300])win.setTimeout(ready,delay);
+  win.setTimeout(()=>{
+   if(host.dataset.jpNativeReady==='filled'){observer?.disconnect();return;}
+   host.dataset.jpNativeReady='empty';host.dataset.adState='empty';
+   host.hidden=true;observer?.disconnect();
+  },8500);
  }
  return monitoring;
 }
@@ -156,7 +172,7 @@ function consentButtons(){return '<div class="ad-consent-actions"><button type="
 export function renderAdPlacement(config,place='content'){
  if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
- if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement>'+
+ if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement data-jp-native-ready="pending">'+
   '<span class="ad-placement-label">Advertisement</span><div data-ad-consent-notice><div class="ad-consent-summary"><strong>Optional sponsored content</strong><p>Third-party ads may still contain unrelated or dating-style content until the ad network applies restrictions. Jobs remain free. <a href="/privacy-policy/">Privacy details</a>.</p></div>'+consentButtons()+'</div>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
   '<p class="tiny muted" data-ad-status role="status"></p><button type="button" class="btn btn-ghost btn-sm" data-ad-choices>Advertising choices</button></aside>';
