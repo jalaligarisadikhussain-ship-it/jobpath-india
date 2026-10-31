@@ -66,7 +66,7 @@ export function renderBannerPlacement(config,location,hostname='',consent=''){
  if(!bannerReady(config,name))return '';
  const u=config.cloudflareBanners.units[name];
  return '<aside class="jp-banner jp-banner--'+name+'" data-jp-banner-unit="'+name+'" data-jp-banner-state="pending" aria-label="Advertisement"><span class="jp-banner-label">Advertisement</span>'+
-  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ads-default-display-20261031"></iframe></aside>';
+  '<iframe loading="eager" data-jp-banner-frame="'+name+'" title="Sponsored '+name+' banner" scrolling="no" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-popups" width="'+u.width+'" height="'+u.height+'" src="/ad-units/'+name+'.html?v=ad-visibility-repair-20261031"></iframe></aside>';
 }
 // Blank ad inventory must not strand white cards on the job portal.
 // Ad content comes from a sandboxed, site-hosted iframe. The iframe reports
@@ -122,7 +122,14 @@ export function monitorNativeFill(root=globalThis.document,win=globalThis.window
     el.readyState>1);
    const textLink=[...(unit.querySelectorAll?.('a[href]')||[])].some(a=>
     (a.textContent||'').trim().length>=12);
-   return media||textLink;
+   // Adsterra Native Banner can render genuine ad content in a nested frame.
+   // Previous logic always marked iframe-only creatives empty and hid them.
+   const frame=[...(unit.querySelectorAll?.('iframe')||[])].some(el=>{
+    const src=el.getAttribute?.('src')||'';
+    const substantial=Number(el.width)||el.getBoundingClientRect?.().width||0;
+    return (src.startsWith('https://')||Boolean(el.getAttribute?.('srcdoc')))&&substantial>=90;
+   });
+   return media||textLink||frame;
   };
   const ready=()=>{
    if(host.hidden||host.dataset.adState!=='active'||host.dataset.jpNativeReady!=='pending')return;

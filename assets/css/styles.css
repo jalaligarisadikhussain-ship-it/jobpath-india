@@ -227,3 +227,21 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 /* Allow fill detection in ad documents while keeping pending units out of flow. */
 .jp-banner[data-jp-banner-state="pending"]{visibility:visible!important;opacity:0!important}
 .jp-banner[data-jp-banner-state="filled"]{visibility:visible!important;opacity:1!important}
+
+/* A third-party banner cannot reliably fill a zero-opacity/off-flow slot:
+   restore visible and in-flow layout while loading, then collapse true no-fill. */
+.jp-banner[data-jp-banner-state="pending"]{
+ position:relative!important;visibility:visible!important;opacity:1!important;
+ pointer-events:auto!important;
+ margin:14px auto 20px!important;padding:7px!important;
+ border:0!important;box-shadow:none!important;background:transparent!important;
+}
+.jp-banner[data-jp-banner-state="filled"]{position:relative!important;opacity:1!important}
+[data-jobpath-native-placement][data-jp-native-ready="pending"]{
+ position:relative!important;visibility:visible!important;opacity:1!important;
+ pointer-events:auto!important;margin:0 auto!important;
+}
+.top-ad-region:has([data-jp-native-ready="pending"]){margin:12px auto!important;padding:0!important}
+.jp-banner[data-jp-banner-state="empty"],[data-jobpath-native-placement][data-jp-native-ready="empty"]{
+ display:none!important;margin:0!important;padding:0!important
+}

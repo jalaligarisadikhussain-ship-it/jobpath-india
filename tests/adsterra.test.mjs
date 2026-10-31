@@ -291,10 +291,10 @@ test('new ad-fix deploy invalidates old cached site script and ad iframe assets'
  const build=fs.readFileSync(new URL('../scripts/build_final.py',import.meta.url),'utf8');
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
- assert.match(build,/styles\.css\?v=ads-default-display-20261031/);
- assert.match(build,/app\.mjs\?v=ads-default-display-20261031/);
- assert.match(app,/ads\.mjs\?v=ads-default-display-20261031/);
- assert.match(ads,/ad-units\/.*ads-default-display-20261031/);
+ assert.match(build,/styles\.css\?v=ad-visibility-repair-20261031/);
+ assert.match(build,/app\.mjs\?v=ad-visibility-repair-20261031/);
+ assert.match(app,/ads\.mjs\?v=ad-visibility-repair-20261031/);
+ assert.match(ads,/ad-units\/.*ad-visibility-repair-20261031/);
 });
 
 test('generated ad creative probe does not swallow monitoring code with single-line JS comments',()=>{
@@ -329,12 +329,33 @@ test('native ad remains invisible until real content, and empty slot collapses',
  assert.equal(filledHost.dataset.jpNativeReady,'filled');
  const inactive={hidden:false,dataset:{adState:'preview'},querySelector:()=>empty};
  assert.equal(monitorNativeFill({querySelectorAll:()=>[inactive]},win),0);
+ // Iframe creatives are common for native providers; they must not be
+ // mistaken for permanent no-fill and hidden before users can view them.
+ const framed={
+  querySelectorAll:sel=>sel==='iframe'?
+   [{width:300,getAttribute:key=>key==='src'?'https://ads.example/creative':null}]:[]
+ };
+ const frameHost={hidden:false,dataset:{adState:'active'},querySelector:()=>framed};
+ assert.equal(monitorNativeFill({querySelectorAll:()=>[frameHost]},win),1);
+ assert.equal(frameHost.dataset.jpNativeReady,'filled');
+});
+test('ad zones are visible during delivery attempts rather than invisible forever',()=>{
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
+ const builder=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
+ assert.match(css,/\.jp-banner\[data-jp-banner-state="pending"\]\{/);
+ assert.match(css,/position:relative!important;visibility:visible!important;opacity:1!important/);
+ assert.match(css,/\[data-jobpath-native-placement\]\[data-jp-native-ready="pending"\]\{/);
+ assert.match(ads,/unit\.querySelectorAll\?\.\('iframe'\)/);
+ assert.match(builder,/frame\.contentDocument\.body\.children\.length>0/);
+ assert.match(ads,/8500/); // Empty native panels still collapse.
+ assert.match(ads,/5700/); // Empty display panels still collapse.
 });
 test('ad placeholders take no page space before they contain a creative',()=>{
  const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
  const ads=fs.readFileSync(new URL('../assets/js/ads.mjs',import.meta.url),'utf8');
  assert.match(css,/\.jp-banner\[data-jp-banner-state="pending"\]/);
- assert.match(css,/position:absolute!important;visibility:hidden!important/);
+ assert.match(css,/position:relative!important;visibility:visible!important;opacity:1!important/);
  assert.match(css,/\[data-jobpath-native-placement\]\[data-jp-native-ready="pending"\]/);
  assert.match(css,/\.top-ad-region\{margin:0!important/);
  assert.match(ads,/data-jp-native-ready="pending"/);
