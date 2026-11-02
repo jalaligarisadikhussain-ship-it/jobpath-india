@@ -50,7 +50,7 @@ jobs:
               echo "Public HTML is already in sync with verified source data."
               exit 0
             fi
-            git commit -m "build: refresh generated JobPath Pages site [skip ci]"
+            git commit -m "build: refresh generated JobPath Pages site"
             if git push origin HEAD:main; then
               echo "Published generated HTML; Git-linked Cloudflare Pages can redeploy."
               exit 0
