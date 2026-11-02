@@ -245,3 +245,18 @@ main{min-height:55vh;padding:35px 0 65px}.breadcrumbs{font-size:.83rem;color:var
 .jp-banner[data-jp-banner-state="empty"],[data-jobpath-native-placement][data-jp-native-ready="empty"]{
  display:none!important;margin:0!important;padding:0!important
 }
+
+/* 2026 professional mobile and keyboard usability polish; advertising slots unchanged. */
+.job-card,.tile,.source-card{transition:transform .17s ease,border-color .17s ease,box-shadow .17s ease}
+@media(hover:hover){.job-card:hover,.tile:hover,.source-card:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(18,55,93,.12)}}
+.job-card:focus-within,.tile:focus-visible,.source-card:focus-within{border-color:var(--accent)}
+.footer-report-ad{display:inline-flex!important;align-items:center;margin:12px 0!important;min-height:44px;color:#a3f4e9!important;text-decoration:underline!important;text-underline-offset:4px}
+@media(max-width:690px){
+  .hero-actions .btn,.action-row .btn{min-height:44px;line-height:1.3}
+  .source-card,.job-card,.panel{overflow-wrap:anywhere}
+  .footer-report-ad{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .job-card,.tile,.source-card{transition:none!important}
+  .job-card:hover,.tile:hover,.source-card:hover{transform:none!important}
+}
