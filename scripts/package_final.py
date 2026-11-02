@@ -7,7 +7,7 @@ out=Path('/mnt/data')
 prod=out/'JOBPATH_INDIA_V2_1_SINGLE_UPLOAD.zip'
 source=out/'JOBPATH_INDIA_V2_1_SOURCE.zip'
 pages=json.loads((root/'data/pages.json').read_text())
-public_files=[root/'index.html',root/'robots.txt',root/'sitemap.xml',root/'netlify.toml',root/'googlefcd24aba957dc07b.html']
+public_files=[root/'index.html',root/'robots.txt',root/'sitemap.xml',root/'netlify.toml',root/'_headers',root/'googlefcd24aba957dc07b.html']
 for page in pages.values():
  if page['path']:public_files.append(root/page['path']/'index.html')
 for folder in ['assets','data']:
