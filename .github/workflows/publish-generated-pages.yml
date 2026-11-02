@@ -1,0 +1,61 @@
+name: Publish generated JobPath pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/**'
+      - 'scripts/build_final.py'
+      - 'scripts/site_config.py'
+      - 'assets/js/**'
+      - 'assets/css/**'
+      - '.github/workflows/publish-generated-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: jobpath-generated-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Rebuild from latest source, validate, and publish generated HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "JobPath Website Builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 scripts/build_final.py
+            python3 tests/site_audit.py
+            python3 -m unittest discover -s tests -p 'test_generated_site_quality.py' -v
+            node scripts/validate.mjs
+            node --test tests/*.test.mjs
+            # Only publish generated, tracked pages and supporting SEO/host files.
+            git add -u -- '*.html' robots.txt sitemap.xml netlify.toml
+            if git diff --cached --quiet; then
+              echo "Public HTML is already in sync with verified source data."
+              exit 0
+            fi
+            git commit -m "build: refresh generated JobPath Pages site [skip ci]"
+            if git push origin HEAD:main; then
+              echo "Published generated HTML; Git-linked Cloudflare Pages can redeploy."
+              exit 0
+            fi
+            echo "Main changed during build; retrying from latest source."
+          done
+          echo "Failed to publish generated HTML after three attempts."
+          exit 1
