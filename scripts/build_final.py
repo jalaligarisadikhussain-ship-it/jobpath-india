@@ -7,6 +7,7 @@ from adsense_identity import ADSENSE_META_TAG
 from site_config import site_origin, search_primary_origin
 from xml.sax.saxutils import escape as xml_escape
 root=Path(__file__).resolve().parent.parent
+build_date_utc=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 base=site_origin()
 seo_primary=search_primary_origin()
 pages=json.loads((root/'data/pages.json').read_text())
@@ -72,12 +73,14 @@ def fallback_content(key):
  if key=='examupdates':
   buf+=['''<section><h2>SSC revised proposed dates — not final</h2><div class="exam-schedule"><article class="exam-schedule-card"><h3>Junior Engineer Examination, 2026</h3><p>Paper-I (CBE)</p><ul class="exam-windows"><li><strong>Window 1:</strong> <time datetime="2026-11-02">2 November 2026</time> – <time datetime="2026-11-06">6 November 2026</time></li><li><strong>Window 2:</strong> <time datetime="2026-11-30">30 November 2026</time> – <time datetime="2026-12-01">1 December 2026</time></li></ul></article><article class="exam-schedule-card"><h3>Sub-Inspector in Delhi Police and CAPFs Examination, 2026</h3><p>Computer-based examination (CBE)</p><ul class="exam-windows"><li><time datetime="2026-11-23">23 November 2026</time> – <time datetime="2026-11-28">28 November 2026</time></li></ul></article></div><p>Dates are only <strong>revised proposed</strong>. Source: reader-supplied SSC corrigendum screenshots dated 26 October 2026. SSC notice board confirms title/date; full original PDF comparison pending. <a href="https://ssc.gov.in/">Check SSC's latest notices</a>.</p></section>''']
  if key in ('home','latest','central','railway','banking','dates','ap','updates'):
-  verified=[j for j in jsdata['/data/jobs.json'] if j.get('verified') and not j.get('isDemo')]
+  # Do not present an expired or closed vacancy as open on the static/SEO fallback.
+  verified=[j for j in jsdata['/data/jobs.json'] if j.get('verified') and not j.get('isDemo') and j.get('status')=='open' and isinstance(j.get('lastDate'),str) and j['lastDate']>=build_date_utc]
   pick=verified if key in ('home','latest','central','dates') else [j for j in verified if (j.get('category')=='Railway' if key=='railway' else j.get('category')=='Banking' if key=='banking' else False)]
   if pick:
-   buf+=['<section><h2>Source-checked recruitment records</h2><p>Each record shows its own last-verification date. Always confirm updated rules and deadlines with the issuing authority.</p><div class="grid">']
+   pick=sorted(pick,key=lambda j:(j.get('lastDate','9999-12-31'),j.get('organization',''),j.get('title','')))
+   buf+=[f'<section><h2>Source-checked application windows</h2><p>Records with an application deadline on or after {build_date_utc} (UTC), sorted by deadline. These are not real-time confirmations; always check later changes with the issuing authority.</p><div class="grid">']
    for j in pick[:12]:
-    buf.append('<article class="source-card"><h3>'+html.escape(j['title'])+'</h3><p>'+html.escape(j['organization'])+' · '+str(j.get('vacancies') or 'Not specified')+' vacancies · Last application date: '+html.escape(j.get('lastDate') or 'Not verified')+' · Last verified: '+html.escape(j.get('lastVerifiedDate') or 'Not provided')+'</p><a href="'+html.escape(j['notificationUrl'],quote=True)+'">Official notice/source →</a></article>')
+    buf.append('<article class="source-card"><h3>'+html.escape(j['title'])+'</h3><p>'+html.escape(j['organization'])+' · '+str(j.get('vacancies') or 'Not specified')+' vacancies · Application deadline: <time datetime="'+html.escape(j['lastDate'],quote=True)+'">'+html.escape(j['lastDate'])+'</time> · Last verified: '+html.escape(j.get('lastVerifiedDate') or 'Not provided')+'</p><a href="'+html.escape(j['notificationUrl'],quote=True)+'" rel="noopener noreferrer">Official notice/source →</a></article>')
    buf+=['</div></section>']
   if key in ('home','ap','updates'):
    buf+=['<section><h2>APPSC 2026 notice register</h2><p>APPSC published Group-I (07/2026), Group-II (37/2026), Forest Beat Officer (18/2026) and other notices in October 2026. Exact application dates and qualifications are not verified here. <a href="https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications">View official APPSC notifications</a>.</p></section>']
