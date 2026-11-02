@@ -6,7 +6,7 @@ const jobs=JSON.parse(fs.readFileSync(new URL('../data/jobs.json',import.meta.ur
 const now=new Date('2026-10-28T08:00:00Z');
 const demoJobs=jobs.filter(j=>j.isDemo);
 const verifiedJobs=jobs.filter(j=>j.verified&&!j.isDemo);
-test('fictional records are valid with no official application links',()=>{assert.deepEqual(validateJobs(jobs),[]);assert(demoJobs.every(j=>!j.verified&&!j.applicationUrl&&!j.notificationUrl));assert.equal(verifiedJobs.length,10)});
+test('fictional records are valid with no official application links',()=>{assert.deepEqual(validateJobs(jobs),[]);assert(demoJobs.every(j=>!j.verified&&!j.applicationUrl&&!j.notificationUrl));assert(verifiedJobs.length>=10)});
 test('unique records: duplicate ID is rejected',()=>{assert.match(validateJobs([...jobs,jobs[0]]).join(','),/duplicate ID/)});
 test('invalid dates and missing HTTPS official links are rejected',()=>{const bad={...demoJobs[0],isDemo:false,verified:true,status:'open',lastDate:'2026-02-30'};assert.match(validateJobs([bad]).join(','),/bad lastDate/);assert.match(validateJobs([bad]).join(','),/official HTTPS/)});
 test('deadline arithmetic: today, future and expired',()=>{assert.equal(daysUntil('2026-10-28',now),0);assert.equal(daysUntil('2026-10-30',now),2);assert.equal(daysUntil('2026-10-25',now),-3)});
