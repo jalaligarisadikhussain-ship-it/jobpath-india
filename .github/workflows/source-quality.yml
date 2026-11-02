@@ -25,10 +25,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate recruitment source data
-        run: node scripts/validate.mjs
-      - name: Rebuild all static HTML with current deadlines
+      - name: Rebuild all static HTML from source before validating generated routes
         run: python3 scripts/build_final.py
+      - name: Validate recruitment source data and generated route files
+        run: node scripts/validate.mjs
       - name: Check generated pages and internal links
         run: python3 tests/site_audit.py
       - name: Verify SEO origin and application-date freshness
