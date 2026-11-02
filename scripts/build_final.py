@@ -38,7 +38,7 @@ seo_text={
 'results':('Government Exam Results','Check examination year, result notice, merit-list status and document verification instructions on the original publisher website.'),
 'syllabus':('Government Exam Syllabus','Match the official syllabus, exam scheme, year and notice number. Coaching-site PDFs may not reflect the latest changes.'),
 'upcoming':('Upcoming Government Examination Planning','Exam timetables may change through corrigenda. Track application windows, exam dates, city intimation, admit cards and results separately.'),
-'dates':('Application Deadline Research','Current application deadlines were source checked on 28 October 2026. Verify the original notice and extension amendments with the recruiting body.'),
+'dates':('Application Deadline Research','Application deadline records include individual verification dates. Always confirm the latest notice and deadline extensions with the recruiting body.'),
 'job':('Job Details and Recruitment Source Verification','Real job records link to the original notice and official application portal; demonstration records are clearly labeled.'),
 'search':('Advanced Job Search','Filter verified vacancies by organization, state, qualification, status and deadline. Training examples are shown only with an explicit demo setting.'),
 'saved':('Saved Job Bookmarks','Saved references are browser-local. This version does not provide a user account or automatic email/push notifications.'),
@@ -75,9 +75,9 @@ def fallback_content(key):
   verified=[j for j in jsdata['/data/jobs.json'] if j.get('verified') and not j.get('isDemo')]
   pick=verified if key in ('home','latest','central','dates') else [j for j in verified if (j.get('category')=='Railway' if key=='railway' else j.get('category')=='Banking' if key=='banking' else False)]
   if pick:
-   buf+=['<section><h2>Recruitment notices checked on 28 October 2026</h2><p>These summaries are independent; confirm updated rules and deadlines with the issuing employer.</p><div class="grid">']
+   buf+=['<section><h2>Source-checked recruitment records</h2><p>Each record shows its own last-verification date. Always confirm updated rules and deadlines with the issuing authority.</p><div class="grid">']
    for j in pick[:12]:
-    buf.append('<article class="source-card"><h3>'+html.escape(j['title'])+'</h3><p>'+html.escape(j['organization'])+' · '+str(j.get('vacancies') or 'Not specified')+' vacancies · Last application date: '+html.escape(j.get('lastDate') or 'Not verified')+'</p><a href="'+html.escape(j['notificationUrl'],quote=True)+'">Official notice/source →</a></article>')
+    buf.append('<article class="source-card"><h3>'+html.escape(j['title'])+'</h3><p>'+html.escape(j['organization'])+' · '+str(j.get('vacancies') or 'Not specified')+' vacancies · Last application date: '+html.escape(j.get('lastDate') or 'Not verified')+' · Last verified: '+html.escape(j.get('lastVerifiedDate') or 'Not provided')+'</p><a href="'+html.escape(j['notificationUrl'],quote=True)+'">Official notice/source →</a></article>')
    buf+=['</div></section>']
   if key in ('home','ap','updates'):
    buf+=['<section><h2>APPSC 2026 notice register</h2><p>APPSC published Group-I (07/2026), Group-II (37/2026), Forest Beat Officer (18/2026) and other notices in October 2026. Exact application dates and qualifications are not verified here. <a href="https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications">View official APPSC notifications</a>.</p></section>']
