@@ -1,0 +1,41 @@
+name: Report incorrect or expired job information
+description: Submit a source-backed correction without sharing applicant personal information.
+title: "[Listing correction] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        JobPath India publishes independent job discovery information. Recruiters and official issuers remain the source of truth. Avoid sharing applicant identity documents, phone numbers, OTPs, bank details, or confidential records in a public GitHub issue.
+  - type: input
+    id: listing
+    attributes:
+      label: Listing title or reference ID
+      placeholder: Job title and employer, or published reference ID
+    validations:
+      required: true
+  - type: dropdown
+    id: problem
+    attributes:
+      label: What needs correction?
+      options:
+        - Job is closed or application date expired
+        - Incorrect employer or position
+        - Broken or misleading official apply link
+        - Location or work eligibility mismatch
+        - Duplicate or unauthorized feed listing
+        - Other factual correction
+    validations:
+      required: true
+  - type: input
+    id: official_source
+    attributes:
+      label: Official source URL (if available)
+      description: Link to the recruiting authority or employer notice, not a shortened or tracking link.
+      placeholder: https://
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Evidence or explanation
+      description: State what is wrong and provide a notice/corrigendum date if known. Remove all private applicant data.
+    validations:
+      required: true
