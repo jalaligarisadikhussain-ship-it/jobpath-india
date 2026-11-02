@@ -1,0 +1,10 @@
+# Cloudflare Pages response headers; do not restrict approved third-party ad delivery.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  X-Permitted-Cross-Domain-Policies: none
+
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
