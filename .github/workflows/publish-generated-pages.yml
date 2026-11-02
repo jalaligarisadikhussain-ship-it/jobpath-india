@@ -9,6 +9,9 @@ on:
       - 'assets/js/**'
       - 'assets/css/**'
       - '.github/workflows/publish-generated-pages.yml'
+  schedule:
+    # Rebuild the verified-vacancy fallback every morning so elapsed deadlines disappear.
+    - cron: '11 1 * * *'
   workflow_dispatch:
 permissions:
   contents: write
