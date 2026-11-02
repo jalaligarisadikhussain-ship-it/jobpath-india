@@ -1,6 +1,10 @@
-# JOBPATH INDIA — All-India Portal Source (Build 2.1)
+# JOBPATH INDIA — Independent Government Recruitment Research Portal
 
-**Live project to update after manual review:** https://jobpath-india.netlify.app/
+**Current primary website:** https://jobpath-india.pages.dev/ (Cloudflare Pages, connected to `main`).
+
+**Current operational notes — 2 November 2026:** The previous Netlify and Render references later in this README are historical and should not be used as the primary website. Verified recruitment records live in `data/jobs.json`; static HTML must be generated with `python3 scripts/build_final.py`. The `publish-generated-pages.yml` workflow now rebuilds, validates, and commits generated public pages on source/data changes, keeping embedded job data aligned with the repo. See `source-quality.yml` for canonical, deadline, and link checks. This does **not** imply that every external vacancy is still open; always confirm the issuing authority's notice.
+
+**Advertising:** Preserve the existing reviewed Adsterra configuration and user preferences. Brand-safe category enforcement is provider-controlled and remains unverified; do not claim that unsuitable creatives are fully blocked.
 
 **Render live (29 October 2026):** Separate static site: https://jobpath-india.onrender.com/ (39 public routes, built with `python3 scripts/build_dist.py` and published from `dist`). Netlify remains the indexed Google canonical origin; the Render copy uses cross-domain canonical tags pointing to Netlify and excludes the duplicate pages from its own sitemap. Google Analytics GA4 (`G-HFKPWNKDBY`) is opt-in on Render. Netlify production deploys are paused due to credits and its earlier site remains online. No advertising is active. See [RENDER_DEPLOYMENT_SETUP.md](RENDER_DEPLOYMENT_SETUP.md).
 
