@@ -10,7 +10,8 @@ export function sampleStatus(job,now=new Date()){if(!job.isDemo)return effective
 export function filterJobs(items,filters={},now=new Date()){
  let out=items.filter(job=>{
  const q=String(filters.q||'').trim().toLowerCase(); const search=[job.title,job.organization,job.department,job.state,job.category,job.qualification].join(' ').toLowerCase();
- if(q&&!search.includes(q))return false;
+ // Match every keyword across organization, role, state and qualification fields.
+ if(q&&q.split(/\s+/).some(term=>term&&!search.includes(term)))return false;
  for(const key of ['state','type','qualification','department','organization','category'])if(filters[key]&&String(job[key]).toLowerCase()!==String(filters[key]).toLowerCase())return false;
  const st=job.isDemo?sampleStatus(job,now):effectiveStatus(job,now);
  if(filters.status&&st!==filters.status)return false;
