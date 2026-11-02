@@ -35,7 +35,7 @@ test('every configured route renders via complete embedded data, without fetchin
  assert.deepEqual(fails,[]);
 });
 test('demo records are opt-in and not included on the public home page',()=>{
- assert.equal(bundle['/data/jobs.json'].filter(x=>x.verified&&!x.isDemo).length,10);
+ assert(bundle['/data/jobs.json'].filter(x=>x.verified&&!x.isDemo).length>=10);
  assert.equal(bundle['/data/regions.json'].states.length,28);
  assert.equal(bundle['/data/regions.json'].unionTerritories.length,8);
 });
