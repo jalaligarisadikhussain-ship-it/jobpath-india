@@ -1,0 +1,47 @@
+name: Report an inappropriate advertisement
+description: Help identify gambling, misleading, adult, or unrelated ads. Do not post private data.
+title: "[Ad quality] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping keep JobPath India trustworthy. A third-party advertising network chooses individual creatives, so this report helps the publisher request removals. Please **do not include** passwords, identity documents, financial details, phone numbers, or tracking identifiers.
+  - type: dropdown
+    id: category
+    attributes:
+      label: Advertising concern
+      options:
+        - Gambling, casino or betting
+        - Adult or dating content
+        - Fake recruitment or job offer
+        - Misleading loan or finance offer
+        - Deceptive streaming, software or download ad
+        - Other unrelated or misleading ad
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page where it appeared
+      description: Public page URL only; remove identifying query parameters.
+      placeholder: https://jobpath-india.pages.dev/
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What did you see?
+      description: Describe the advertisement and approximate date/time. You may add a cropped screenshot without private information.
+      placeholder: Describe visible advertiser name, words and type of creative, without clicking suspicious ads.
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Android / mobile browser
+        - iPhone / mobile browser
+        - Desktop / laptop
+        - Other or unknown
