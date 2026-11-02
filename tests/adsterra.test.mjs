@@ -128,6 +128,9 @@ test('native banners remain labeled, optional and outside application positions'
 test('Cloudflare publisher-authorized automatic ads retain visitor opt-out',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(current.cloudflareAdsterra.enabled,true);
+ assert.equal(current.cloudflareAdsterra.websiteId,'6160438');
+ assert.equal(current.cloudflareAdsterra.adUnitId,'31987938');
+ assert.equal(current.cloudflareAdsterra.siteStatus,'approved');
  assert.equal(current.cloudflareAdsterra.userAuthorizedTrial,true);
  assert.equal(current.cloudflareAdsterra.datingExclusionConfirmed,false);
  assert.equal(current.cloudflareAdsterra.gamblingExclusionConfirmed,false);
@@ -273,4 +276,12 @@ test('production page does not auto-collapse or resize third-party Native Banner
  const app=fs.readFileSync(new URL('../assets/js/app.mjs',import.meta.url),'utf8');
  assert.doesNotMatch(app,/monitorNativeFill\(\)/);
  assert.match(app,/startAdUnits\(adsConfig\)/);
+});
+
+test('Published CSS never clips, shrinks or embeds direct Native Banner creatives',()=>{
+ const css=fs.readFileSync(new URL('../assets/css/styles.css',import.meta.url),'utf8');
+ const rule=css.match(/\.ad-placement\{([^}]+)\}/)?.[1]||'';
+ assert.match(rule,/overflow:visible/);
+ assert.match(css,/\.top-ad-region \[data-jobpath-native\]\{display:block;overflow:visible\}/);
+ assert.doesNotMatch(css,/\.ad-placement iframe\{/);
 });

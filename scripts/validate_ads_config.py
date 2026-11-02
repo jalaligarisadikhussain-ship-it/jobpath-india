@@ -42,6 +42,8 @@ def validate_cloudflare_adsterra(ad):
         return ["cloudflareAdsterra must be an object"]
     expected = {
         "websiteHost": "jobpath-india.pages.dev",
+        "websiteId": "6160438",
+        "adUnitId": "31987938",
         "format": "native",
         "key": CF_ADSTERRA_KEY,
         "scriptUrl": CF_ADSTERRA_SCRIPT,

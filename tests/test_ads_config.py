@@ -67,7 +67,9 @@ class AdvertisingConfigurationTests(unittest.TestCase):
         cfg=copy.deepcopy(load_and_validate())
         self.assertFalse(cfg["enabled"])  # other hosts remain OFF
         self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
-        self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "unverified")
+        self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "approved")
+        self.assertEqual(cfg["cloudflareAdsterra"]["websiteId"], "6160438")
+        self.assertEqual(cfg["cloudflareAdsterra"]["adUnitId"], "31987938")
         self.assertTrue(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
         self.assertTrue(cfg["cloudflareAdsterra"]["userAuthorizedTrial"])
         self.assertTrue(cfg["cloudflareAdsterra"]["automaticDisplay"])

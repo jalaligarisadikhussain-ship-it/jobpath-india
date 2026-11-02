@@ -33,16 +33,19 @@
     "key": "84de856c9d01a37c08d4912fbf3df530",
     "scriptUrl": "https://bauval.org/21/84de856c9d01a37c08d4912fbf3df530",
     "containerId": "container-84de856c9d01a37c08d4912fbf3df530",
-    "siteStatus": "unverified",
+    "siteStatus": "approved",
     "adUnitStatus": "active",
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Cloudflare-only publisher-authorized default display trial. Third-party ads can process cookies and device data; GPC and saved opt-out are honored. Applicable consent-law review/CMP still required before broad deployment to regulated markets.",
+    "note": "Approved website and Native Banner per publisher email; original site-specific code is inserted directly, not via publisher-created iframe. Adsterra support states undesirable categories were blocked account-wide, but job/education-only inventory and guaranteed impressions remain unverified. Respect saved opt-outs and GPC; regional consent compliance must be reviewed.",
     "allowUnfilteredCategories": true,
     "datingExclusionConfirmed": false,
     "userAuthorizedTrial": true,
-    "automaticDisplay": true
+    "automaticDisplay": true,
+    "websiteId": "6160438",
+    "adUnitId": "31987938",
+    "approvalSource": "Adsterra website and Native Banner approval email for jobpath-india.pages.dev"
   },
   "plannedPlacements": [
     {
