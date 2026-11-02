@@ -29,7 +29,7 @@ test('every configured route renders via complete embedded data, without fetchin
   if(page==='statesdir'&&!out.includes('Lakshadweep'))fails.push('UT directory missing');
   if(page==='sources'&&!out.includes('source-search'))fails.push('source search missing');
   if(page==='careerguides'&&!out.includes('Railway recruitment regions'))fails.push('career pathways missing');
-  if(page==='home'&&!out.includes('Verified vacancy records'))fails.push('homepage verification labels missing');
+  if(page==='home'&&!out.includes('Open reviewed vacancy records'))fails.push('homepage verification labels missing');
   if(page==='privacy'&&(!out.includes('Adsterra')||!out.includes('adsterra.com/privacy-policy-managed/')||!out.includes('Google AdSense')))fails.push('Current ad-provider disclosures missing');
  }
  assert.deepEqual(fails,[]);
