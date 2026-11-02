@@ -1,0 +1,20 @@
+name: Weekly JobPath recruitment content health
+on:
+  schedule:
+    - cron: '19 4 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  editorial-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check source records and publish editorial summary
+        run: |
+          node scripts/validate.mjs
+          node scripts/editorial-health.mjs
