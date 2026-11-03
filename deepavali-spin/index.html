@@ -13,6 +13,8 @@
   <meta property="og:description" content="Festive Spin &amp; Win preview! Try the warm-up and random sample gift spin. DEMO only — no real prizes or discount coupons." />
   <meta property="og:site_name" content="Deepavali Dhamaka" />
   <meta property="og:image" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
+  <meta property="og:image:url" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
+  <link rel="image_src" href="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
   <meta property="og:image:secure_url" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
@@ -93,6 +95,12 @@
 }
 @media(prefers-reduced-motion:reduce){.hero-jump,.stage-item{transition:none}}
 </style>
+<style>
+.preview-share-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:13px auto 0}
+.preview-share-actions .secondary-btn{min-height:46px;padding:12px 19px;font-size:12px}
+.preview-share-tip{max-width:550px;margin:12px auto 0!important;font-size:12px!important;line-height:1.6!important;color:#dcd0e6!important}
+.banner-share-help{font-size:11px;color:#e7d3ec;line-height:1.65;max-width:570px;margin:8px auto 0}
+</style>
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -111,7 +119,12 @@
         <p>Deepavali special Spin & Win! First play a warm-up spin with no prize, then unlock one free sample gift-draw spin. Only the gift-draw spin is random. Real eligibility would require verified referrals.</p>
         <div class="hero-chips"><span>🎡 Warm-up round (no prize)</span><span>🎁 Gift-draw spin next</span><span>🤝 20 referrals + 5 groups (demo tasks)</span></div>
         <a href="#spinGame" class="hero-jump">🎡 Go to Lucky Wheel</a>
-        <button type="button" id="shareWebsiteBtn" class="secondary-btn" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin:14px 8px 0">↗ Share on WhatsApp</button>
+        <div class="preview-share-actions">
+          <button type="button" id="shareWebsiteBtn" class="secondary-btn">↗ Share Website Link</button>
+          <button type="button" id="shareBannerBtn" class="secondary-btn">🖼 Share Banner Image</button>
+        </div>
+        <p class="preview-share-tip">WhatsApp controls whether a link preview appears. If it does not show a picture, tap “Share Banner Image” to send the actual image. <a href="./og-preview.png" download="Deepavali-Dhamaka-Demo-Banner.png">Save banner image</a>.</p>
+        <p id="bannerShareStatus" class="banner-share-help" role="status" aria-live="polite"></p>
       </section>
 
       <section class="game-layout" aria-label="Spin and win game">
@@ -297,6 +310,7 @@ async function init(){
   render();tick();setInterval(tick,1000);
   $('spinBtn').addEventListener('click',spin);
   $('shareWebsiteBtn').addEventListener('click',shareWebsite);
+  $('shareBannerBtn').addEventListener('click',shareBannerImage);
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
@@ -425,13 +439,47 @@ async function copyLink(){
   $('copyStatus').textContent=copied?'Link copied. Open WhatsApp and choose the contacts yourself.':'Copy was blocked. Select the referral URL above and copy it manually.';
   $('copyBtn').textContent=copied?'Copied!':'Copy';
 }
-function shareWebsite(){
-  const url=new URL(location.pathname,location.origin).toString();
-  const message='🪔 Deepavali Dhamaka — Spin & Win DEMO! Try the festive spin wheel (sample entries only; no real gifts or coupons): '+url;
+const PREVIEW_BANNER_URL='https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png';
+function openWhatsAppShare(link,description){
+  // Put the link on the first line for better preview detection.
+  // WhatsApp may still suppress image previews, which the website cannot override.
+  const message=link+'\n\n'+description;
   window.open('https://wa.me/?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
 }
-function shareLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up spin first (no prize), then one random sample gift-draw entry. No real gifts or discounts yet: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
-function shareGroupLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up first, then a random sample gift-draw entry. No real prizes or coupons. Share only if this group allows invitations: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
+function shareWebsite(){
+  openWhatsAppShare(new URL(location.pathname,location.origin).toString(),'🪔 Deepavali Dhamaka — Spin & Win DEMO! Sample wheel only; no real gifts or coupons.');
+}
+function shareLink(){
+  openWhatsAppShare(referralUrl(),'🪔 Deepavali Spin & Win DEMO. No real gifts or discounts; this preview does not verify referrals.');
+}
+function shareGroupLink(){
+  openWhatsAppShare(referralUrl(),'🪔 Deepavali Spin & Win DEMO. Share only in WhatsApp groups that allow invites. No real prizes.');
+}
+async function shareBannerImage(){
+  const status=$('bannerShareStatus');
+  status.textContent='Preparing the festive banner…';
+  try{
+    const response=await fetch('./og-preview.png',{cache:'default'});
+    if(!response.ok)throw new Error('Banner unavailable');
+    const blob=await response.blob();
+    if(!blob.type.includes('png'))throw new Error('Not a PNG');
+    const file=new File([blob],'Deepavali-Dhamaka-Demo-Banner.png',{type:'image/png'});
+    if(typeof navigator.share==='function'&&typeof navigator.canShare==='function'&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'Deepavali Dhamaka — Spin & Win Demo',text:'🪔 DEMO preview (no real prizes): https://deepavali-dhamaka-spin-2026.onrender.com/'});
+      status.textContent='Share sheet opened. Choose WhatsApp and send the image. If the URL is missing, add the website link in the caption.';
+      return;
+    }
+    const anchor=document.createElement('a');
+    const objectUrl=URL.createObjectURL(blob);
+    anchor.href=objectUrl;anchor.download='Deepavali-Dhamaka-Demo-Banner.png';
+    document.body.appendChild(anchor);anchor.click();anchor.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),3000);
+    status.textContent='Banner saved. Attach the image in WhatsApp, then add the website link in the caption.';
+  }catch(error){
+    if(error?.name==='AbortError'){status.textContent='Share cancelled; tap again to retry.';return;}
+    status.textContent='Could not share automatically. Tap the Save banner image link above and attach it in WhatsApp.';
+  }
+}
 function tick(){let remaining=Math.max(0,DRAW_DATE.getTime()-Date.now());const days=Math.floor(remaining/86400000);remaining%=86400000;const hours=Math.floor(remaining/3600000);remaining%=3600000;const mins=Math.floor(remaining/60000);remaining%=60000;const secs=Math.floor(remaining/1000);$('countdown').innerHTML=[days,hours,mins,secs].map((n,i)=>`<div><strong>${String(n).padStart(2,'0')}</strong><small>${['DAYS','HOURS','MINS','SECS'][i]}</small></div>`).join('');if(DRAW_DATE<=new Date()){$('countdown').setAttribute('aria-label','Result announcement time has arrived. Official results require organizer publication.');}}
 init();
 </script>
