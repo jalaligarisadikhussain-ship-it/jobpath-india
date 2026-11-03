@@ -101,6 +101,17 @@
 .preview-share-tip{max-width:550px;margin:12px auto 0!important;font-size:12px!important;line-height:1.6!important;color:#dcd0e6!important}
 .banner-share-help{font-size:11px;color:#e7d3ec;line-height:1.65;max-width:570px;margin:8px auto 0}
 </style>
+<style>
+/* Single publisher unit near top; the ad provider controls creatives inside it. */
+.top-ad-panel{max-width:920px;margin:18px auto 0;padding:13px 18px;border-radius:15px;box-shadow:0 10px 30px #10051c20}
+.top-ad-panel .ad-panel-head{margin:0}
+.top-ad-panel .card-eyebrow{font-size:10px;letter-spacing:.12em}
+.top-ad-panel .ad-label{font-size:9px;padding:5px 9px}
+.top-ad-panel .native-ad-slot{margin:10px auto 6px;min-height:60px;max-width:100%;overflow-x:auto}
+.top-ad-panel .ad-status{font-size:10px!important;line-height:1.5;margin:8px 0 0}
+.top-ad-panel .ad-settings-btn{margin-top:8px}
+@media(max-width:640px){.top-ad-panel{margin:12px auto 0;padding:11px 12px}.top-ad-panel .native-ad-slot{padding:8px}}
+</style>
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -113,6 +124,17 @@
     <div class="demo-banner" id="modeBanner" role="status">DEMO PREVIEW • No real prizes or verified referrals until the organizer activates the campaign.</div>
 
     <main>
+      <section class="ad-panel top-ad-panel" id="postSpinAdPanel" aria-label="Sponsored advertisement at the top of the page">
+        <div class="ad-panel-head">
+          <div class="card-eyebrow">SPONSORED ADVERTISEMENT</div>
+          <span class="ad-label">AD</span>
+        </div>
+        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="One approved Adsterra Native Banner placement">
+          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
+        </div>
+        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Hide advertisement</button>
+        <p id="adStatus" class="ad-status" aria-live="polite">Sponsored placement loads if available. Adsterra controls the number of cards displayed inside this unit.</p>
+      </section>
       <section class="hero">
         <div class="hero-small">🪔 LIGHT UP YOUR LUCK 🪔</div>
         <h1>Spin a little.<br><em>Shine a lot.</em></h1>
@@ -151,7 +173,7 @@
               </div>
             </div>
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows; then you see 20-member sharing, a sponsored display ad, and five-group sharing, in that order. No rewarded-video or verified WhatsApp tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. One sponsored ad unit appears at the top of the page; no rewarded-video or verified WhatsApp tracking is connected.</p>
 
 
 
@@ -185,7 +207,7 @@
             <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
             <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
-              <h3 class="share-task-heading" id="shareTasksHeading">🎁 GIFT ENTRY → 20 MEMBERS → AD → 5 GROUPS</h3>
+              <h3 class="share-task-heading" id="shareTasksHeading">🎁 GIFT ENTRY → 20 MEMBERS → 5 GROUPS</h3>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Personally send the link to 20 interested people on WhatsApp. For a real draw, 20 unique people must actually join and be verified. Sending 20 messages alone does not count as 20 referrals.</p>
@@ -195,19 +217,7 @@
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
                 <p class="small-note">Verified member referrals: <b id="refInline">0 / 20</b> — preview links cannot verify joins; progress will remain zero until a backend is activated.</p>
               </div>
-      <section class="ad-panel hidden" id="postSpinAdPanel" aria-label="Sponsored advertisement between the 20-member and five-group sharing tasks">
-        <div class="ad-panel-head">
-          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
-          <span class="ad-label">ADVERTISEMENT</span>
-        </div>
-        <p>Adsterra Native Banner (display ad, not video). Sponsored content can load automatically after your sample gift entry, underneath the 20-member task, subject to browser privacy settings and ad availability. No viewing or clicking required for the free demo gift spin.</p>
-        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
-          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
-        </div>
-        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Hide advertisement</button>
-        <p id="adStatus" class="ad-status" aria-live="polite">Sponsored advertisement may appear after your sample gift entry if available.</p>
-        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
-      </section>
+
               <div class="share-task-card">
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
@@ -246,7 +256,7 @@
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
-  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">An optional Adsterra Native Banner appears in the sharing section after the sample gift spin, below the 20-member task and above the 5-group task.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. This separate native display ad has no effect on unlocking the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
+  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">One Adsterra Native Banner placement is near the top of the page, separate from the free demo spin.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. This separate native display ad has no effect on unlocking the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
    No live giveaway or rewarded-video ad SDK is connected; native display ads are opt-in. */
 'use strict';
@@ -327,11 +337,11 @@ function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'
 function initAdvertising(){
   if(isPreviewTestMode()){ $('adStatus').textContent='Test mode: sponsored ads disabled to avoid invalid repeat impressions.';return; }
   const gpc=navigator.globalPrivacyControl===true;
-  $('adChoicesBtn').classList.toggle('hidden',!playerHasAward()||gpc);
+  $('adChoicesBtn').classList.toggle('hidden',gpc);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   if(gpc){$('adStatus').textContent='Ads are disabled because your browser sends Global Privacy Control.';return;}
   if(getAdPreference()==='decline'){$('adStatus').textContent='Ads disabled by your preference; gift spin is still available.';return;}
-  if(playerHasAward()&&!spinning)loadNativeAd();
+  loadNativeAd();
 }
 function setAdConsent(value){
   if(value!=='allow'&&value!=='decline'||navigator.globalPrivacyControl===true)return;
@@ -339,12 +349,12 @@ function setAdConsent(value){
   location.reload();
 }
 function loadNativeAd(){
-  if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||!playerHasAward()||spinning||getAdPreference()==='decline')return;
+  if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||getAdPreference()==='decline')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
   adScriptLoaded=true;
   $('nativeAdSlot').classList.remove('hidden');
-  $('adStatus').textContent='Ad placement enabled. A creative appears only if Adsterra serves one; this is not a rewarded video.';
+  $('adStatus').textContent='One approved Adsterra ad placement. Adsterra chooses how many creative cards appear inside it.';
   const script=document.createElement('script');
   script.async=true;
   script.setAttribute('data-cfasync','false');
@@ -362,10 +372,10 @@ function render(){
     node.classList.toggle('done',i<stage);
     if(i===stage)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
   }
-  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member sharing, the sponsored ad, then the 5-group instructions below.';
-  $('postSpinAdPanel').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode());
-  if(playerHasAward()&&!spinning&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
-  $('adChoicesBtn').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode()||navigator.globalPrivacyControl===true);
+  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. The sponsored placement is at the top of the page.';
+  $('postSpinAdPanel').classList.toggle('hidden',isPreviewTestMode());
+  if(!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
+  $('adChoicesBtn').classList.toggle('hidden',isPreviewTestMode()||navigator.globalPrivacyControl===true);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   const awardVisible=playerHasAward();
   $('spinResultReceipt').classList.toggle('hidden',!awardVisible);
