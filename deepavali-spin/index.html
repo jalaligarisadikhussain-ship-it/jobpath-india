@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Deepavali Dhamaka 2026 — Spin & Win DEMO" />
-  <meta property="og:description" content="Festive preview: a no-prize warm-up followed by one random sample gift-draw spin. No real gifts, ads, or verified referrals." />
+  <meta property="og:description" content="Festive preview: warm-up followed by a random sample gift-draw spin and optional native display advertising. No real prizes, rewarded-video ads, or verified referrals." />
   <meta property="og:url" content="https://deepavali-dhamaka-spin-2026.onrender.com/" />
   <meta name="twitter:card" content="summary" />
   <meta name="description" content="Deepavali Spin & Win: warm-up round followed by a random sample gift-draw spin. No real gifts are offered." />
@@ -31,6 +31,21 @@
 .share-task-note{font-size:12px;color:#d8c2de;line-height:1.65;border-left:3px solid #ffcd72;padding-left:12px;margin-top:13px}
 #modalTasks{margin:14px 0 18px;text-align:left;padding:13px 16px;background:#ffffff12;border:1px solid #ffcd7260;border-radius:15px;line-height:1.6}
 #modalTasks b{color:#ffe09c;font-size:16px}#modalTasks p{font-size:13px;margin:6px 0}
+</style>
+<style>
+.ad-panel{margin:34px 0 0;padding:22px 25px;border:1px solid #ffdb9a5c;border-radius:22px;background:linear-gradient(135deg,#ffffff13,#ffffff06);text-align:left;box-shadow:0 22px 50px #1304203b}
+.ad-panel-head{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.ad-panel h2{font:800 22px 'Outfit',sans-serif;color:#fff2db;margin:7px 0}
+.ad-label{border-radius:99px;background:#ffffff10;border:1px solid #ffffff30;padding:7px 12px;color:#ffda9d;letter-spacing:.08em;font-size:11px;font-weight:900}
+.ad-panel p{font-size:12px;line-height:1.65;color:var(--muted);margin:12px 0}
+.ad-choices{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.ad-choices button,.ad-settings-btn{border-radius:12px;border:1px solid #ffdeaf85;padding:11px 17px;font:800 12px 'DM Sans',sans-serif;color:#fff0d1;background:#ffffff12}
+#adConsentBtn{background:#ffbf6b;color:#3e2037;border-color:#ffbf6b}
+.native-ad-slot{margin-top:14px;min-height:80px;max-width:100%;overflow-x:auto;background:#ffffff09;border:1px dashed #ffe2b34a;border-radius:12px;padding:16px}
+.native-ad-slot>div{max-width:100%}
+.ad-settings-btn{font-size:11px;margin-top:2px}
+.ad-status{font-size:11px!important;color:#e6d2e9!important}
+@media(max-width:640px){.ad-panel{padding:18px 14px;margin-top:20px}.native-ad-slot{padding:9px}}
 </style>
 </head>
 <body>
@@ -113,8 +128,26 @@
               <p class="share-task-note">DEMO ONLY: These are example participation tasks. Neither WhatsApp shares nor referrals are being verified. No real prize or 50% discount is being awarded. For live prize eligibility, organizer verification and published terms are essential.</p>
             </div>
           </div>
-          <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> no public reset button, no paid spins, no real advertisements in this preview, and no prizes promised. Actual draws require official activation and verified rules.</p></div>
+          <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> no public reset button, no paid spins, no rewarded-video ad verification, and no prizes promised. Actual draws require official activation and verified rules.</p></div>
         </aside>
+      </section>
+
+      <section class="ad-panel" aria-label="Sponsored advertisement">
+        <div class="ad-panel-head">
+          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
+          <span class="ad-label">ADVERTISEMENT</span>
+        </div>
+        <p>Optional Adsterra Native Banner (display ad, not video). Loading this ad is not required to spin or unlock the free demo gift entry. The advertiser controls the creative; content varies.</p>
+        <div id="adChoiceButtons" class="ad-choices">
+          <button id="adConsentBtn" type="button">Allow &amp; show advertisement</button>
+          <button id="adDeclineBtn" type="button">Continue without ads</button>
+        </div>
+        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
+          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
+        </div>
+        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Advertising choices</button>
+        <p id="adStatus" class="ad-status" aria-live="polite">Third-party advertising stays off until you allow it.</p>
+        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
       </section>
 
       <section class="steps-section">
@@ -136,7 +169,7 @@
 <div class="prize"><span>💵</span><b>₹500 Draw Entry</b><small>20% on gift spin</small></div>
 <div class="prize"><span>💰</span><b>₹1,000 Draw Entry</b><small>20% on gift spin</small></div>
 </div></section>
-      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. No genuine advertisements or rewarded-ad verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
+      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. A separately labeled native display ad may appear after visitors allow third-party ads. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
     </main>
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span></footer>
   </div>
@@ -146,6 +179,9 @@
    No live giveaway or ad SDK is connected in the preview. */
 'use strict';
 const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
+const AD_PREFERENCE_KEY='deepavali_native_ad_consent_v1';
+const NATIVE_AD_SCRIPT='https://bauval.org/21/c95b749f1554f30e51c974f2e212afef';
+let adScriptLoaded=false;
 // Transparent staged demo: first spin is a no-prize warm-up, second spin randomly selects among five sample gift draw entries.
 const SEGMENTS=['TRY_AGAIN','FLIPKART_50','AMAZON_50','MEESHO_50','GIFT_500','GIFT_1000'];
 const OUTCOMES={
@@ -190,6 +226,44 @@ async function init(){
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
   $('markGroupBtn').addEventListener('click',markGroupShared);
+  $('adConsentBtn').addEventListener('click',()=>setAdConsent('allow'));
+  $('adDeclineBtn').addEventListener('click',()=>setAdConsent('decline'));
+  $('adChoicesBtn').addEventListener('click',()=>{try{localStorage.removeItem(AD_PREFERENCE_KEY);}catch{}location.reload();});
+  initAdvertising();
+}
+function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
+function initAdvertising(){
+  const pref=getAdPreference();
+  const gpc=navigator.globalPrivacyControl===true;
+  $('adChoiceButtons').classList.toggle('hidden',Boolean(pref)||gpc);
+  $('adChoicesBtn').classList.toggle('hidden',!pref);
+  if(gpc){$('adStatus').textContent='Ads are disabled because your browser sends Global Privacy Control.';return;}
+  if(pref==='allow'){loadNativeAd();}
+  else if(pref==='decline'){$('adStatus').textContent='You chose to continue without ads. Spin remains fully available.';}
+  else{$('adStatus').textContent='Third-party advertising stays off until you opt in.';}
+}
+function setAdConsent(value){
+  if(value!=='allow'&&value!=='decline')return;
+  if(navigator.globalPrivacyControl===true){initAdvertising();return;}
+  try{localStorage.setItem(AD_PREFERENCE_KEY,value);}catch{}
+  $('adChoiceButtons').classList.add('hidden');
+  $('adChoicesBtn').classList.remove('hidden');
+  if(value==='allow')loadNativeAd();
+  else $('adStatus').textContent='Ads are disabled by your choice. Change this using Advertising choices.';
+}
+function loadNativeAd(){
+  if(navigator.globalPrivacyControl===true||adScriptLoaded)return;
+  const container=$('container-c95b749f1554f30e51c974f2e212afef');
+  if(!container)return;
+  adScriptLoaded=true;
+  $('nativeAdSlot').classList.remove('hidden');
+  $('adStatus').textContent='Ad placement enabled. A creative appears only if Adsterra serves one; this is not a rewarded video.';
+  const script=document.createElement('script');
+  script.async=true;
+  script.setAttribute('data-cfasync','false');
+  script.src=NATIVE_AD_SCRIPT;
+  script.onerror=()=>{$('adStatus').textContent='Unable to load advertisement. The gift spin works without it.';};
+  container.parentNode.insertBefore(script,container);
 }
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
