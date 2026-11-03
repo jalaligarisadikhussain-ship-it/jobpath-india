@@ -66,10 +66,12 @@ class AdvertisingConfigurationTests(unittest.TestCase):
     def test_cloudflare_native_unit_is_distinct_and_validated(self):
         cfg=copy.deepcopy(load_and_validate())
         self.assertFalse(cfg["enabled"])  # other hosts remain OFF
-        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertTrue(cfg["cloudflareSocialBar"]["enabled"])
         self.assertEqual(cfg["cloudflareAdsterra"]["siteStatus"], "approved")
         self.assertEqual(cfg["cloudflareAdsterra"]["websiteId"], "6160438")
         self.assertEqual(cfg["cloudflareAdsterra"]["adUnitId"], "31987938")
+        self.assertEqual(cfg["cloudflareSocialBar"]["adUnitId"], "32077295")
         self.assertTrue(cfg["cloudflareAdsterra"]["allowUnfilteredCategories"])
         self.assertTrue(cfg["cloudflareAdsterra"]["userAuthorizedTrial"])
         self.assertTrue(cfg["cloudflareAdsterra"]["automaticDisplay"])
@@ -81,7 +83,7 @@ class AdvertisingConfigurationTests(unittest.TestCase):
                           ("key","malicious"),("adultAds",True),("adUnitStatus","inactive"),
                           ("allowUnfilteredCategories","yes"),("datingExclusionConfirmed","not-bool")]:
             bad=copy.deepcopy(cfg)
-            bad["cloudflareAdsterra"][key]=value
+            bad["cloudflareSocialBar"][key]=value
             self.assertTrue(validate(bad), key)
 
     def test_unfiltered_category_trial_is_explicit_and_host_bound(self):
@@ -92,12 +94,12 @@ class AdvertisingConfigurationTests(unittest.TestCase):
         for patch in ({"userAuthorizedTrial":False},{"allowUnfilteredCategories":False},
                       {"siteStatus":"pending"},{"adUnitStatus":"inactive"}):
             bad=copy.deepcopy(cfg)
-            bad["cloudflareAdsterra"].update(patch)
+            bad["cloudflareSocialBar"].update(patch)
             self.assertTrue(validate(bad),patch)
         restricted=copy.deepcopy(cfg)
-        restricted["cloudflareAdsterra"].update(userAuthorizedTrial=False,allowUnfilteredCategories=False,
+        restricted["cloudflareSocialBar"].update(userAuthorizedTrial=False,allowUnfilteredCategories=False,
              siteStatus="approved",gamblingExclusionConfirmed=True,datingExclusionConfirmed=True)
-        self.assertEqual(validate(restricted),[])
+        self.assertTrue(validate(restricted))
 
     def test_three_site_specific_banner_codes_are_validated(self):
         config=copy.deepcopy(load_and_validate())

@@ -25,9 +25,9 @@
     "version": "adsterra-2026-10-30-trial",
     "note": "User-choice storage remains for opt-out; Cloudflare resolver sets required:false for owner-authorized default display trial. Other hosts retain legacy consent gates."
   },
-  "note": "Cloudflare-only Adsterra ads are configured for automatic display by publisher request without homepage permission prompts. Users can opt out in footer, saved denials and GPC take precedence. Netlify/Render off. Regional consent compliance requires review.",
+  "note": "Cloudflare JobPath: only Adsterra Social Bar active from 3 Nov 2026 by publisher request. Native/display/popunder do not execute. Saved denials and GPC remain effective. Network category exclusions remain unconfirmed; review regional privacy obligations.",
   "cloudflareAdsterra": {
-    "enabled": true,
+    "enabled": false,
     "websiteHost": "jobpath-india.pages.dev",
     "format": "native",
     "key": "84de856c9d01a37c08d4912fbf3df530",
@@ -38,7 +38,7 @@
     "verifiedOn": "2026-10-29",
     "adultAds": false,
     "gamblingExclusionConfirmed": false,
-    "note": "Approved website and Native Banner per publisher email; original site-specific code is inserted directly, not via publisher-created iframe. Adsterra support states undesirable categories were blocked account-wide, but job/education-only inventory and guaranteed impressions remain unverified. Respect saved opt-outs and GPC; regional consent compliance must be reviewed.",
+    "note": "Approved website and Native Banner per publisher email; original site-specific code is inserted directly, not via publisher-created iframe. Adsterra support states undesirable categories were blocked account-wide, but job/education-only inventory and guaranteed impressions remain unverified. Respect saved opt-outs and GPC; regional consent compliance must be reviewed. Disabled on 3 Nov 2026 when Social Bar replaced Native.",
     "allowUnfilteredCategories": true,
     "datingExclusionConfirmed": false,
     "userAuthorizedTrial": true,
@@ -69,13 +69,21 @@
     {
       "id": "homepage-bottom",
       "type": "native-banner",
-      "enabled": true,
+      "enabled": false,
       "position": "after examination resources, before footer",
       "requiresVisitorOptIn": false,
-      "status": "existing-native-trial-default-display"
+      "status": "disabled-replaced-by-social-bar"
+    },
+    {
+      "id": "global-social-bar",
+      "type": "social-bar",
+      "enabled": true,
+      "position": "before closing body via privacy-aware loader",
+      "requiresVisitorOptIn": false,
+      "status": "publisher-supplied-active-unit"
     }
   ],
-  "layoutNote": "Cloudflare Pages: ONE original direct Adsterra Native Banner tag only; custom iframe banner placements OFF per Adsterra support warning. Original banner keys retained for reference, not loaded. No verified video-only unit. Existing GPC/opt-out and regional consent obligations remain.",
+  "layoutNote": "Only exact active Social Bar code runs on jobpath-india.pages.dev; other ad unit IDs retained for historical audit but not executed.",
   "cloudflareBanners": {
     "websiteHost": "jobpath-india.pages.dev",
     "enabled": false,
@@ -112,5 +120,23 @@
     },
     "deliveryVerified": false,
     "disabledReason": "Adsterra support says publisher-side iframes embedding ad codes are forbidden and can cause suspension; this preserves unit records but blocks all custom iframe ads while awaiting direct approved replacement."
+  },
+  "cloudflareSocialBar": {
+    "enabled": true,
+    "websiteHost": "jobpath-india.pages.dev",
+    "websiteId": "6160438",
+    "adUnitId": "32077295",
+    "format": "socialbar",
+    "key": "dafa151779190f5c7cef4c2c33b72449",
+    "scriptUrl": "https://bauval.org/14/dafa151779190f5c7cef4c2c33b72449",
+    "siteStatus": "approved",
+    "adUnitStatus": "active",
+    "adultAds": false,
+    "gamblingExclusionConfirmed": false,
+    "datingExclusionConfirmed": false,
+    "allowUnfilteredCategories": true,
+    "userAuthorizedTrial": true,
+    "automaticDisplay": true,
+    "note": "Owner-provided Social Bar tag from active Adsterra unit on 3 Nov 2026. Only this unit runs on Cloudflare. Preserve opt-outs and GPC; categories and real-world ad fill are not guaranteed."
   }
 }

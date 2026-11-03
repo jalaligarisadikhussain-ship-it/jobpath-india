@@ -77,6 +77,27 @@ def validate_cloudflare_adsterra(ad):
             errors.append("Cloudflare native requires verified category exclusions OR explicit documented unfiltered trial authorization")
     return errors
 
+# Pinned user-supplied Social Bar, never substitute any unknown third-party tag.
+CF_SOCIAL_BAR_KEY = "dafa151779190f5c7cef4c2c33b72449"
+CF_SOCIAL_BAR_SCRIPT = f"https://bauval.org/14/{CF_SOCIAL_BAR_KEY}"
+def validate_cloudflare_social_bar(social):
+    if not isinstance(social,dict):
+        return ["cloudflareSocialBar must be an object"]
+    expected = {"websiteHost":"jobpath-india.pages.dev","websiteId":"6160438",
+        "adUnitId":"32077295","format":"socialbar","key":CF_SOCIAL_BAR_KEY,
+        "scriptUrl":CF_SOCIAL_BAR_SCRIPT,"siteStatus":"approved",
+        "adUnitStatus":"active","adultAds":False}
+    errors = ["Social Bar "+field+" differs from owner code" for field,v in expected.items()
+              if social.get(field)!=v or type(social.get(field)) is not type(v)]
+    for field in ("enabled","automaticDisplay","userAuthorizedTrial","allowUnfilteredCategories",
+                  "gamblingExclusionConfirmed","datingExclusionConfirmed"):
+        if type(social.get(field)) is not bool:
+            errors.append("Social Bar "+field+" must be boolean")
+    if social.get("enabled") is True and not (social.get("userAuthorizedTrial") is True
+            and social.get("allowUnfilteredCategories") is True):
+        errors.append("Social Bar requires explicit publisher trial authorization")
+    return errors
+
 # Exact site-specific 320x50, 728x90, 300x250 Adsterra keys supplied by owner.
 CLOUDFLARE_BANNERS = {
     'mobile': ('22d5d7312497a4575a8261d0d18522ea', 320, 50),
@@ -131,6 +152,13 @@ def validate(config):
         errors.extend(validate_cloudflare_adsterra(config["cloudflareAdsterra"]))
     if "cloudflareBanners" in config:
         errors.extend(validate_cloudflare_banners(config["cloudflareBanners"]))
+    if "cloudflareSocialBar" in config:
+        errors.extend(validate_cloudflare_social_bar(config["cloudflareSocialBar"]))
+        if config["cloudflareSocialBar"].get("enabled") is True:
+            if config.get("cloudflareAdsterra",{}).get("enabled") is True:
+                errors.append("Social Bar cannot run alongside Native Banner")
+            if config.get("cloudflareBanners",{}).get("enabled") is True:
+                errors.append("Social Bar cannot run alongside display banners")
     if enabled:
         if provider == "adsense":
             if not isinstance(publisher, str) or not PUBLISHER_RE.fullmatch(publisher):

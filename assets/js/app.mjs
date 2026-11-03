@@ -1,5 +1,5 @@
 import {safeUrl,escapeHTML as e,daysUntil,effectiveStatus,sampleStatus,filterJobs,publicJobs,QUALIFICATIONS} from './utils.mjs';
-import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,effectiveAdvertisingChoice,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs?v=no-publisher-iframe-20261031';
+import {adSenseReady,adsterraConfigured,adsterraReady,advertisingReady,effectiveAdvertisingChoice,renderAdPlacement,startAdUnits,readAdvertisingConsent,openAdvertisingChoices,closeAdvertisingChoices,chooseAdvertising,resolveAdvertisingConfig} from './ads.mjs?v=social-bar-only-20261103';
 
 const PAGE= document.body.dataset.page || 'home';
 const h=(s)=>e(s); const app=document.getElementById('app');
@@ -26,8 +26,7 @@ function tile(x){return `<a class="tile" href="${x[2]}"><div class="tile-icon" a
 function ad(){return ''}
 function topAd(){
  if(!['home','latest','central','railway','banking'].includes(PAGE))return '';
- // Only consented visitors see the approved host-bound Adsterra native unit.
- // We never load tracking-based ads in the absence of visitor authorization.
+ // Social Bar is loaded by startAdUnits; this function never creates a Native slot.
  if(adsterraReady(adsConfig)&&effectiveAdvertisingChoice(adsConfig)!=='allow')return '';
  const html=renderAdPlacement(adsConfig,'top');
  return html?'<div class="top-ad-region">'+html+'</div>':'';

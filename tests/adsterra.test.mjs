@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import {ADSTERRA_KEY,ADSTERRA_SCRIPT,AD_CONSENT_KEY,AD_CONSENT_VERSION,
  adsterraConfigured,adsterraReady,advertisingReady,renderAdPlacement,
  readAdvertisingConsent,saveAdvertisingConsent,startAdUnits,chooseAdvertising,
- resolveAdvertisingConfig,monitorNativeFill,effectiveAdvertisingChoice,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY} from '../assets/js/ads.mjs';
+ resolveAdvertisingConfig,monitorNativeFill,effectiveAdvertisingChoice,CLOUDFLARE_ADSTERRA_HOST,CLOUDFLARE_ADSTERRA_SCRIPT,CLOUDFLARE_ADSTERRA_KEY,
+ CLOUDFLARE_SOCIAL_BAR_SCRIPT,CLOUDFLARE_SOCIAL_BAR_KEY} from '../assets/js/ads.mjs';
 
 const current=JSON.parse(fs.readFileSync(new URL('../data/ads-config.json',import.meta.url)));
 // Test activation only; these tests never load a third-party script or create impressions.
@@ -27,7 +28,8 @@ function browserFixture(run,options={}){
   querySelectorAll:selector=>selector==='[data-jobpath-native-placement]'?[host]:selector==='[data-jobpath-native]'?[unit]:[],
   querySelector:selector=>selector==='script[src="'+targetScript+'"]'?scripts[0]??null:null,
   getElementById:()=>null,
-  createElement:tag=>{assert.equal(tag,'script');return {attrs:{},setAttribute(name,value){this.attrs[name]=value},addEventListener(){}}}
+  createElement:tag=>{assert.equal(tag,'script');return {attrs:{},setAttribute(name,value){this.attrs[name]=value},addEventListener(){}}},
+  body:{appendChild(script){scripts.push(script)}}
  };
  try{run({storage,scripts,unit,host,notice,status,reloads:()=>reloads})}
  finally{for(const [key,value] of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value}}
@@ -127,9 +129,10 @@ test('native banners remain labeled, optional and outside application positions'
 
 test('Cloudflare publisher-authorized automatic ads retain visitor opt-out',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
- assert.equal(current.cloudflareAdsterra.enabled,true);
+ assert.equal(current.cloudflareAdsterra.enabled,false);
  assert.equal(current.cloudflareAdsterra.websiteId,'6160438');
  assert.equal(current.cloudflareAdsterra.adUnitId,'31987938');
+ assert.equal(current.cloudflareSocialBar.adUnitId,'32077295');
  assert.equal(current.cloudflareAdsterra.siteStatus,'approved');
  assert.equal(current.cloudflareAdsterra.userAuthorizedTrial,true);
  assert.equal(current.cloudflareAdsterra.datingExclusionConfirmed,false);
@@ -137,7 +140,7 @@ test('Cloudflare publisher-authorized automatic ads retain visitor opt-out',()=>
  assert.equal(cloud.enabled,true);
  assert.equal(cloud.provider,'adsterra');
  assert.equal(adsterraReady(cloud),true);
- assert.match(renderAdPlacement(cloud,'top'),/Advertisement/);
+ assert.equal(renderAdPlacement(cloud,'top'),''); // Social Bar needs no Native container
  assert.doesNotMatch(renderAdPlacement(cloud,'top'),/Allow advertising|Continue without ads/);
  assert.equal(cloud.consent.required,false);
  assert.equal(cloud.adsterra.automaticDisplay,true);
@@ -150,7 +153,7 @@ test('Cloudflare trial rejects missing authorization, wrong host, tampered code 
   {siteStatus:'rejected'},{adUnitStatus:'inactive'},{adultAds:true},
   {scriptUrl:'https://example.com/inject.js'},{websiteHost:'example.com'}
  ]){
-  const altered={...current,cloudflareAdsterra:{...current.cloudflareAdsterra,...patch}};
+  const altered={...current,cloudflareSocialBar:{...current.cloudflareSocialBar,...patch}};
   const resolved=resolveAdvertisingConfig(altered,CLOUDFLARE_ADSTERRA_HOST);
   assert.equal(adsterraReady(resolved),false);
  }
@@ -162,13 +165,13 @@ test('Cloudflare persisted refusal blocks automatic ad scripts',()=>browserFixtu
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,0);
  assert.equal(unit.hidden,true);
-},{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
+},{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_SOCIAL_BAR_KEY,script:CLOUDFLARE_SOCIAL_BAR_SCRIPT}));
 test('Cloudflare default display loads pinned ad tag without homepage permission button',()=>browserFixture(({storage,scripts,unit})=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  assert.equal(effectiveAdvertisingChoice(cloud,storage),'allow');
  assert.equal(startAdUnits(cloud),1);
- assert.equal(unit.hidden,false);
- assert.equal(scripts[0].src,CLOUDFLARE_ADSTERRA_SCRIPT);
+ assert.equal(unit.hidden,true); // No Native unit activated
+ assert.equal(scripts[0].src,CLOUDFLARE_SOCIAL_BAR_SCRIPT);
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,1);
 },{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
@@ -216,8 +219,8 @@ test('Adsterra prohibition: custom publisher iframe banners cannot load on any h
  const build=fs.readFileSync(new URL('../scripts/build_dist.py',import.meta.url),'utf8');
  assert.equal(cfg.cloudflareBanners.enabled,false);
  assert.equal(cfg.plannedPlacements.filter(x=>x.enabled).length,1);
- assert.equal(cfg.plannedPlacements.find(x=>x.enabled).id,'homepage-bottom');
- assert.equal(adsterraReady(cloud),true); // original direct Native Banner preserved
+ assert.equal(cfg.plannedPlacements.find(x=>x.enabled).id,'global-social-bar');
+ assert.equal(adsterraReady(cloud),true); // Sole Social Bar active, Native disabled
  assert.ok(!app.includes('siteBanner('));
  assert.ok(!app.includes('monitorBannerFill('));
  assert.ok(!ads.includes('renderBannerPlacement('));

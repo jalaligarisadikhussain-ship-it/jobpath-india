@@ -7,6 +7,8 @@ export const ADSTERRA_HOST='jobpath-india.netlify.app';
 export const CLOUDFLARE_ADSTERRA_HOST='jobpath-india.pages.dev';
 export const CLOUDFLARE_ADSTERRA_KEY='84de856c9d01a37c08d4912fbf3df530';
 export const CLOUDFLARE_ADSTERRA_SCRIPT='https://bauval.org/21/'+CLOUDFLARE_ADSTERRA_KEY;
+export const CLOUDFLARE_SOCIAL_BAR_KEY='dafa151779190f5c7cef4c2c33b72449';
+export const CLOUDFLARE_SOCIAL_BAR_SCRIPT='https://bauval.org/14/dafa151779190f5c7cef4c2c33b72449';
 export const AD_CONSENT_KEY='jp_advertising_consent';
 export const AD_CONSENT_VERSION='adsterra-2026-10-30-trial';
 const CONSENT_AGE=180*24*60*60*1000;
@@ -14,6 +16,18 @@ const CONSENT_AGE=180*24*60*60*1000;
 // Hosting-specific config: never change the existing Netlify/Render advertising state.
 export function resolveAdvertisingConfig(config,hostname=''){
  if(hostname!==CLOUDFLARE_ADSTERRA_HOST)return config;
+ const social=config?.cloudflareSocialBar;
+ // Social Bar exclusively replaces the historical Native unit on Cloudflare.
+ if(social?.enabled===true){
+  const valid=social.websiteHost===CLOUDFLARE_ADSTERRA_HOST&&social.websiteId==='6160438'&&
+   social.adUnitId==='32077295'&&social.format==='socialbar'&&
+   social.key===CLOUDFLARE_SOCIAL_BAR_KEY&&social.scriptUrl===CLOUDFLARE_SOCIAL_BAR_SCRIPT&&
+   social.adultAds===false&&social.adUnitStatus==='active'&&social.siteStatus==='approved'&&
+   social.userAuthorizedTrial===true&&social.allowUnfilteredCategories===true;
+  if(!valid)return {...config,enabled:false,provider:'none'};
+  return {...config,enabled:true,provider:'adsterra',adsterra:social,
+    consent:{required:social.automaticDisplay!==true,version:AD_CONSENT_VERSION}};
+ }
  const ad=config?.cloudflareAdsterra;
  // Publisher explicitly requested this opt-in trial even though provider-side
  // dating/gambling exclusions are unconfirmed. Do not claim category safety.
@@ -29,6 +43,9 @@ export function resolveAdvertisingConfig(config,hostname=''){
 export function adsterraConfigured(config){
  const ad=config?.adsterra;
  if(ad?.websiteHost===CLOUDFLARE_ADSTERRA_HOST){
+  if(ad.format==='socialbar')return ad.websiteId==='6160438'&&ad.adUnitId==='32077295'&&
+    ad.key===CLOUDFLARE_SOCIAL_BAR_KEY&&ad.scriptUrl===CLOUDFLARE_SOCIAL_BAR_SCRIPT&&
+    ad.adultAds===false&&ad.adUnitStatus==='active';
   return ad.format==='native'&&ad.key===CLOUDFLARE_ADSTERRA_KEY&&
    ad.scriptUrl===CLOUDFLARE_ADSTERRA_SCRIPT&&
    ad.containerId==='container-'+CLOUDFLARE_ADSTERRA_KEY&&
@@ -147,6 +164,7 @@ function consentButtons(){return '<div class="ad-consent-actions"><button type="
 export function renderAdPlacement(config,place='content'){
  if(!['content','top'].includes(place))return '';
  if(!advertisingReady(config))return ''; // No blank ad card for visitors while ads are disabled.
+ if(adsterraReady(config)&&config.adsterra.format==='socialbar')return '';
  if(adsterraReady(config))return '<aside class="ad-placement'+(place==='top'?' ad-placement-top':'')+'" aria-label="Advertisement" data-jobpath-native-placement data-jp-native-ready="pending">'+
   '<span class="ad-placement-label">Advertisement</span>'+
   '<div id="'+config.adsterra.containerId+'" data-jobpath-native hidden></div>'+
@@ -173,8 +191,18 @@ function syncNativePlacements(config){
 export function startAdUnits(config){
  if(typeof document==='undefined'||typeof window==='undefined')return 0;
  if(adsterraReady(config)){
-  syncNativePlacements(config);
   const ad=config.adsterra;
+  if(ad.format==='socialbar'){
+   if(window.location.hostname!==CLOUDFLARE_ADSTERRA_HOST||privacySignal()||
+     effectiveAdvertisingChoice(config)!=='allow'||!document.body?.appendChild)return 0;
+   if(document.querySelector('script[src="'+CLOUDFLARE_SOCIAL_BAR_SCRIPT+'"]'))return 0;
+   const script=document.createElement('script');
+   script.setAttribute('data-cfasync','false');
+   script.src=CLOUDFLARE_SOCIAL_BAR_SCRIPT;
+   document.body.appendChild(script);
+   return 1;
+  }
+  syncNativePlacements(config);
   const allowedHost=ad.websiteHost===CLOUDFLARE_ADSTERRA_HOST?CLOUDFLARE_ADSTERRA_HOST:ADSTERRA_HOST;
   const scriptUrl=ad.scriptUrl; // Exact pinned URL, validated by adsterraReady.
   if(window.location.hostname!==allowedHost||privacySignal()||effectiveAdvertisingChoice(config)!=='allow')return 0;
@@ -240,6 +268,9 @@ export function chooseAdvertising(config,choice){
   window.location.reload();return true;
  }
  // A first-time visitor may have no ad container until they opt in.
+ if(choice==='allow'&&config.adsterra?.format==='socialbar'){
+  startAdUnits(config);return true;
+ }
  if(choice==='allow'&&typeof document!=='undefined'&&!document.querySelector('[data-jobpath-native]')){
   window.location.reload();return true;
  }
