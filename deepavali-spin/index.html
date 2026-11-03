@@ -29,7 +29,7 @@
         <div class="hero-small">🪔 LIGHT UP YOUR LUCK 🪔</div>
         <h1>Spin a little.<br><em>Shine a lot.</em></h1>
         <p>Deepavali special Spin & Win! Take your chance at a festive draw entry, share your referral link, and see results on Deepavali night.</p>
-        <div class="hero-chips"><span>🎯 Up to 2 spins</span><span>🤝 10 valid referrals to qualify</span><span>🎇 Night results</span></div>
+        <div class="hero-chips"><span>🎯 Up to 2 spins</span><span>🤝 20 valid referrals to qualify</span><span>🎇 Night results</span></div>
       </section>
 
       <section class="game-layout" aria-label="Spin and win game">
@@ -71,13 +71,13 @@
             <div class="card-eyebrow">🎁 YOUR STATUS</div>
             <h2 id="statusTitle">Ready for your spin?</h2>
             <p id="statusCopy">Tap SPIN NOW to see your result. Prizes shown are preview draw categories, not guaranteed gifts.</p>
-            <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 10</b></div>
-            <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
+            <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
+            <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
               <div class="share-heading">Your unique referral link</div>
               <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button">Copy</button></div>
               <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share via WhatsApp</button>
-              <p class="small-note">Sending a link doesn't count by itself. 10 unique people must open the link and join; final referrals require verification. Demo shares do not count.</p>
+              <p class="small-note">Sending a link doesn't count by itself. 20 unique people must open the link and join; final referrals require verification. Demo shares do not count.</p>
             </div>
           </div>
           <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> sample wheel odds are published below. No payment required. An actual gift draw must be officially activated before prizes can be awarded.</p></div>
@@ -89,7 +89,7 @@
         <h2>Three steps to the festive draw</h2>
         <div class="steps-grid">
           <div class="step"><span class="step-num">01</span><span class="step-icon">🎡</span><h3>Spin the wheel</h3><p>Get a draw entry or “Try Again”. There are at most two spins, and one retry only after an unsuccessful first spin.</p></div>
-          <div class="step"><span class="step-num">02</span><span class="step-icon">💬</span><h3>Invite 10 people</h3><p>If you land on a gift entry, invite 10 distinct participants. Shares alone do not complete the task.</p></div>
+          <div class="step"><span class="step-num">02</span><span class="step-icon">💬</span><h3>Invite 20 people</h3><p>If you land on a gift entry, invite 20 distinct participants. Shares alone do not complete the task.</p></div>
           <div class="step"><span class="step-num">03</span><span class="step-icon">🏆</span><h3>Check the results</h3><p>Eligible entries enter an organizer-controlled drawing. Winners are announced on Deepavali night.</p></div>
         </div>
       </section>
@@ -116,9 +116,9 @@ const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
 const SEGMENTS = ['TRY_AGAIN','FESTIVE_DRAW','TRY_AGAIN','GIFT_100','TRY_AGAIN','FESTIVE_DRAW','TRY_AGAIN','GIFT_250'];
 const OUTCOMES = {
   TRY_AGAIN: {emoji:'✨',title:'Try Again!',description:'No draw entry this spin. If this was your first spin, you can unlock one final retry.'},
-  FESTIVE_DRAW:{emoji:'🎇',title:'Festive Draw Entry!',description:'You landed on a festive draw entry, not a confirmed prize. Invite 10 verified participants to qualify for the Deepavali night draw.'},
-  GIFT_100:{emoji:'🧧',title:'₹100 Draw Entry!',description:'You unlocked a sample ₹100 gift-card draw category, not a guaranteed ₹100 gift. Invite 10 verified participants to qualify.'},
-  GIFT_250:{emoji:'🎁',title:'₹250 Draw Entry!',description:'You unlocked a sample ₹250 gift-card draw category, not a guaranteed ₹250 gift. Invite 10 verified participants to qualify.'}
+  FESTIVE_DRAW:{emoji:'🎇',title:'Festive Draw Entry!',description:'You landed on a festive draw entry, not a confirmed prize. Invite 20 verified participants to qualify for the Deepavali night draw.'},
+  GIFT_100:{emoji:'🧧',title:'₹100 Draw Entry!',description:'You unlocked a sample ₹100 gift-card draw category, not a guaranteed ₹100 gift. Invite 20 verified participants to qualify.'},
+  GIFT_250:{emoji:'🎁',title:'₹250 Draw Entry!',description:'You unlocked a sample ₹250 gift-card draw category, not a guaranteed ₹250 gift. Invite 20 verified participants to qualify.'}
 };
 const STORAGE_KEY = 'deepavali_dhamaka_demo_v2';
 const $ = (id) => document.getElementById(id);
@@ -157,12 +157,12 @@ function render(){
   const s=state.spins_used;
   const left=Math.max(0,2-s);
   $('spinsRemaining').textContent=left+' SPIN'+(left===1?'':'S')+' LEFT';
-  $('refProgress').textContent=Math.min(state.referrals||0,10)+' / 10';
-  $('refFill').style.width=Math.min((state.referrals||0)*10,100)+'%';
-  $('refBar').setAttribute('aria-valuenow',String(Math.min(state.referrals||0,10)));
-  const eligible=playerHasAward() && state.referrals >=10;
-  if(eligible){$('statusTitle').textContent='Task complete! 🎊';$('statusCopy').textContent='You have reached 10 referred participants. Your entry awaits organizer review and the official draw.';}
-  else if(playerHasAward()){$('statusTitle').textContent='Gift draw entry unlocked! 🎁';$('statusCopy').textContent='Invite 10 unique participating people to qualify. Sending messages or link clicks alone do not count as verified entries.';}
+  $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
+  $('refFill').style.width=Math.min((state.referrals||0)*5,100)+'%';
+  $('refBar').setAttribute('aria-valuenow',String(Math.min(state.referrals||0,20)));
+  const eligible=playerHasAward() && state.referrals >=20;
+  if(eligible){$('statusTitle').textContent='Task complete! 🎊';$('statusCopy').textContent='You have reached 20 referred participants. Your entry awaits organizer review and the official draw.';}
+  else if(playerHasAward()){$('statusTitle').textContent='Gift draw entry unlocked! 🎁';$('statusCopy').textContent='Invite 20 unique participating people to qualify. Sending messages or link clicks alone do not count as verified entries.';}
   else if(s===0){$('statusTitle').textContent='Ready for your spin?';$('statusCopy').textContent='Spin for a festive draw category or Try Again. No prize is guaranteed.';}
   else if(s===1 && !state.retry_unlocked){$('statusTitle').textContent='Try Again ✨';$('statusCopy').textContent='You can unlock just one final retry. Rewarded ads are not active in this preview.';}
   else if(s===1){$('statusTitle').textContent='One more chance!';$('statusCopy').textContent='Your final spin is available now. Good luck!';}
