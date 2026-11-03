@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#24103c" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <meta name="robots" content="noindex, nofollow" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Deepavali Dhamaka 2026 — Spin & Win DEMO" />
@@ -54,6 +57,32 @@
 .result-receipt p{font-size:12px;color:#ead4ed;line-height:1.65;margin:7px auto 13px;max-width:420px}
 .result-receipt .secondary-btn{margin-top:8px}
 </style>
+<style>
+/* v2: compact, accessible mobile experience. Spin, awards, and ad code unchanged. */
+.hero-jump{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(110deg,#ffdf96,#ffac70);color:#3f1736;border-radius:999px;padding:13px 23px;font:900 13px 'Outfit',sans-serif;box-shadow:0 7px 21px #16041f55;margin-top:24px}
+.hero-jump:hover,.hero-jump:focus-visible{filter:brightness(1.08);outline-offset:4px}
+.stage-tracker{margin:18px 0 10px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stage-item{padding:12px 7px;border-radius:14px;text-align:center;border:1px solid #ffdb993b;background:#ffffff08;opacity:.67}
+.stage-item strong{display:block;font:900 11px 'Outfit',sans-serif;color:#ffdeb2}
+.stage-item small{display:block;font-size:10px;line-height:1.35;margin-top:5px;color:#d9bdd6}
+.stage-item.active{opacity:1;border-color:#ffca7eb0;background:#ffbf6b1b;box-shadow:0 0 0 1px #ffc97532}
+.stage-item.done{opacity:.92;border-color:#85d6b777;background:#36bd7917}
+.stage-help{font-size:12px;line-height:1.6;color:#f4d7e0;text-align:center;max-width:510px;margin:4px auto 9px}
+.ref-copy-status{font-size:12px;color:#d4f9e5;min-height:1.4em;margin:7px 0 3px}
+.share-task-card:focus-within,.ad-panel:focus-within{border-color:#ffcf89a9}
+.share-area .ad-panel{margin:16px 0;padding:17px 15px}
+.share-area .ad-panel h2{font-size:21px}
+.native-ad-slot{overflow-wrap:anywhere}
+@media(max-width:640px){
+ .hero{margin:30px auto 25px}.hero h1{font-size:clamp(42px,11.5vw,64px)}.hero p{font-size:13px;line-height:1.7;margin:19px auto}
+ .hero-chips{gap:7px}.hero-chips span{padding:9px 12px;font-size:11px}
+ .wheel-panel{padding-top:20px}.stage-item{padding:11px 5px}.stage-item small{font-size:9px}
+ .share-task-heading{font-size:18px}.share-task-card{padding:14px}
+ .share-task-card .whatsapp-btn,.share-link button,.ad-settings-btn{min-height:44px}
+ .share-link input{font-size:12px}.result-receipt strong{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){.hero-jump,.stage-item{transition:none}}
+</style>
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -71,11 +100,18 @@
         <h1>Spin a little.<br><em>Shine a lot.</em></h1>
         <p>Deepavali special Spin & Win! First play a warm-up spin with no prize, then unlock one free sample gift-draw spin. Only the gift-draw spin is random. Real eligibility would require verified referrals.</p>
         <div class="hero-chips"><span>🎡 Warm-up round (no prize)</span><span>🎁 Gift-draw spin next</span><span>🤝 20 referrals + 5 groups (demo tasks)</span></div>
+        <a href="#spinGame" class="hero-jump">🎡 Go to Lucky Wheel</a>
       </section>
 
       <section class="game-layout" aria-label="Spin and win game">
-        <div class="wheel-panel">
+        <div class="wheel-panel" id="spinGame">
           <div class="panel-heading"><span>✦ THE LUCKY WHEEL</span><span id="spinsRemaining">WARM-UP READY</span></div>
+          <div class="stage-tracker" role="group" aria-label="Demo steps">
+            <div class="stage-item active" id="stageWarm" aria-current="step"><strong>01 · WARM-UP</strong><small>No prize in this round</small></div>
+            <div class="stage-item" id="stageGift"><strong>02 · GIFT SPIN</strong><small>Random sample entry</small></div>
+            <div class="stage-item" id="stageShare"><strong>03 · SHARING</strong><small>Instructions only</small></div>
+          </div>
+          <p id="stageHelp" class="stage-help" aria-live="polite">Start with the disclosed no-prize warm-up spin.</p>
           <div class="wheel-wrap">
             <div class="wheel-aura"></div>
             <div class="wheel-pointer" aria-hidden="true"></div>
@@ -130,7 +166,8 @@
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Personally send the link to 20 interested people on WhatsApp. For a real draw, 20 unique people must actually join and be verified. Sending 20 messages alone does not count as 20 referrals.</p>
                 <div class="share-heading">Preview referral link — tracking inactive</div>
-                <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button">Copy</button></div>
+                <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button" aria-label="Copy preview referral link">Copy</button></div>
+                <p class="ref-copy-status" id="copyStatus" role="status" aria-live="polite"></p>
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
                 <p class="small-note">Verified member referrals: <b id="refInline">0 / 20</b> — preview links cannot verify joins; progress will remain zero until a backend is activated.</p>
               </div>
@@ -152,7 +189,7 @@
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Share to a WhatsApp group</button>
                 <div class="group-meter" id="groupProgress" aria-live="polite">0 / 5 groups verified — verification unavailable in this demo</div>
-                <p class="small-note">WhatsApp opens the share screen, but this website cannot tell if you actually sent the link or identify which group received it. There is no self-report completion button. Genuine eligibility would require an independent verification process.</p>
+                <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
               <p class="share-task-note">DEMO ONLY: These are example participation tasks. Neither WhatsApp shares nor referrals are being verified. No real prize or 50% discount is being awarded. For live prize eligibility, organizer verification and published terms are essential.</p>
             </div>
@@ -292,6 +329,14 @@ function loadNativeAd(){
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
   const s=state.spins_used;
+  const stage=s===0?0:playerHasAward()?2:1;
+  for(const [i,id] of ['stageWarm','stageGift','stageShare'].entries()){
+    const node=$(id);
+    node.classList.toggle('active',i===stage);
+    node.classList.toggle('done',i<stage);
+    if(i===stage)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
+  }
+  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member sharing, the sponsored ad, then the 5-group instructions below.';
   $('postSpinAdPanel').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode());
   if(playerHasAward()&&!spinning&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
   $('adChoicesBtn').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode()||navigator.globalPrivacyControl===true);
@@ -357,7 +402,17 @@ async function unlockRetry(){if(busy)return;busy=true;$('unlockBtn').disabled=tr
     $('adDialog').close();
   }catch(err){alert(err.message);}finally{busy=false;$('unlockBtn').disabled=false;render();}
 }
-async function copyLink(){try{await navigator.clipboard.writeText(referralUrl());$('copyBtn').textContent='Copied!';setTimeout(()=>$('copyBtn').textContent='Copy',1800);}catch{const inp=$('refLink');inp.select();document.execCommand('copy');$('copyBtn').textContent='Copied!';}}
+async function copyLink(){
+  let copied=false;
+  try{
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(referralUrl());copied=true;}
+    else{const inp=$('refLink');inp.focus();inp.select();copied=document.execCommand('copy');}
+  }catch{
+    try{const inp=$('refLink');inp.focus();inp.select();copied=document.execCommand('copy');}catch{}
+  }
+  $('copyStatus').textContent=copied?'Link copied. Open WhatsApp and choose the contacts yourself.':'Copy was blocked. Select the referral URL above and copy it manually.';
+  $('copyBtn').textContent=copied?'Copied!':'Copy';
+}
 function shareLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up spin first (no prize), then one random sample gift-draw entry. No real gifts or discounts yet: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
 function shareGroupLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up first, then a random sample gift-draw entry. No real prizes or coupons. Share only if this group allows invitations: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
 function tick(){let remaining=Math.max(0,DRAW_DATE.getTime()-Date.now());const days=Math.floor(remaining/86400000);remaining%=86400000;const hours=Math.floor(remaining/3600000);remaining%=3600000;const mins=Math.floor(remaining/60000);remaining%=60000;const secs=Math.floor(remaining/1000);$('countdown').innerHTML=[days,hours,mins,secs].map((n,i)=>`<div><strong>${String(n).padStart(2,'0')}</strong><small>${['DAYS','HOURS','MINS','SECS'][i]}</small></div>`).join('');if(DRAW_DATE<=new Date()){$('countdown').setAttribute('aria-label','Result announcement time has arrived. Official results require organizer publication.');}}
