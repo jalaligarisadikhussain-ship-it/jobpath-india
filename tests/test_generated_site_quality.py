@@ -35,6 +35,19 @@ class GeneratedSiteQuality(unittest.TestCase):
                     if match:
                         self.assertGreaterEqual(match.group(1), TODAY, "Expired job still in public fallback")
 
+    def test_large_social_image_metadata_on_every_generated_page(self):
+        img = (ROOT / "assets/og-share.png").read_bytes()
+        self.assertEqual(img[:8], bytes.fromhex("89504e470d0a1a0a"))
+        self.assertEqual(int.from_bytes(img[16:20], "big"), 1200)
+        self.assertEqual(int.from_bytes(img[20:24], "big"), 630)
+        pages = json.loads((ROOT / "data/pages.json").read_text(encoding="utf-8"))
+        for key, info in pages.items():
+            with self.subTest(page=key):
+                html = (ROOT / info["path"] / "index.html").read_text(encoding="utf-8")
+                self.assertIn('property="og:image" content="' + SITE + '/assets/og-share.png"', html)
+                self.assertIn('name="twitter:card" content="summary_large_image"', html)
+                self.assertIn('name="twitter:image" content="' + SITE + '/assets/og-share.png"', html)
+
     def test_rss_has_only_reviewed_unexpired_recruitment_records(self):
         rss = ET.parse(ROOT / "feed.xml").getroot()
         self.assertEqual(rss.tag, "rss")
