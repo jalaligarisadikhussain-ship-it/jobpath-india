@@ -124,7 +124,7 @@
     <div class="demo-banner" id="modeBanner" role="status">DEMO PREVIEW • No real prizes or verified referrals until the organizer activates the campaign.</div>
 
     <main>
-      <section class="ad-panel top-ad-panel" id="postSpinAdPanel" aria-label="Sponsored advertisement at the top of the page">
+      <section class="ad-panel top-ad-panel hidden" id="postSpinAdPanel" aria-label="Sponsored advertisement at the top of the page">
         <div class="ad-panel-head">
           <div class="card-eyebrow">SPONSORED ADVERTISEMENT</div>
           <span class="ad-label">AD</span>
@@ -263,6 +263,7 @@
 const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
 const AD_PREFERENCE_KEY='deepavali_native_ad_consent_v1';
 const NATIVE_AD_SCRIPT='https://bauval.org/21/c95b749f1554f30e51c974f2e212afef';
+const NATIVE_AD_ENABLED=false;
 let adScriptLoaded=false;
 // Transparent staged demo: first spin is a no-prize warm-up, second spin randomly selects among five sample gift draw entries.
 const SEGMENTS=['TRY_AGAIN','FLIPKART_50','AMAZON_50','MEESHO_50','GIFT_500','GIFT_1000'];
@@ -335,6 +336,7 @@ async function init(){
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
 function initAdvertising(){
+  if(!NATIVE_AD_ENABLED)return;
   if(isPreviewTestMode()){ $('adStatus').textContent='Test mode: sponsored ads disabled to avoid invalid repeat impressions.';return; }
   const gpc=navigator.globalPrivacyControl===true;
   $('adChoicesBtn').classList.toggle('hidden',gpc);
@@ -349,6 +351,7 @@ function setAdConsent(value){
   location.reload();
 }
 function loadNativeAd(){
+  if(!NATIVE_AD_ENABLED)return;
   if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||getAdPreference()==='decline')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
@@ -373,8 +376,8 @@ function render(){
     if(i===stage)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
   }
   $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. The sponsored placement is at the top of the page.';
-  $('postSpinAdPanel').classList.toggle('hidden',isPreviewTestMode());
-  if(!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
+  $('postSpinAdPanel').classList.toggle('hidden',!NATIVE_AD_ENABLED||isPreviewTestMode());
+  if(NATIVE_AD_ENABLED&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
   $('adChoicesBtn').classList.toggle('hidden',isPreviewTestMode()||navigator.globalPrivacyControl===true);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   const awardVisible=playerHasAward();
