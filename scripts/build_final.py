@@ -19,6 +19,8 @@ source=json.loads((root/'data/sources.json').read_text())
 regions=json.loads((root/'data/regions.json').read_text())
 exams=json.loads((root/'data/exam-updates.json').read_text())
 ads_config=load_and_validate()
+# Only the browser-side, host-bound privacy-aware loader mounts Social Bar.
+# Static generated HTML must never embed any third-party Adsterra script directly.
 adsense_loader=(f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ads_config["publisherId"]}" crossorigin="anonymous"></script>' if ads_config['enabled'] and ads_config['provider']=='adsense' else '')
 jsdata={p:json.loads((root/p.lstrip('/')).read_text()) for p in ['/data/jobs.json','/data/sources.json','/data/pages.json','/data/exam-updates.json','/data/regions.json','/data/notice-watch.json','/data/auto-notices.json','/data/ads-config.json','/data/editorial-pages.json']}
 inline_json=json.dumps(jsdata,ensure_ascii=False,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
