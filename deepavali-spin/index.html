@@ -40,7 +40,7 @@
 .ad-panel p{font-size:12px;line-height:1.65;color:var(--muted);margin:12px 0}
 .ad-choices{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
 .ad-choices button,.ad-settings-btn{border-radius:12px;border:1px solid #ffdeaf85;padding:11px 17px;font:800 12px 'DM Sans',sans-serif;color:#fff0d1;background:#ffffff12}
-#adConsentBtn{background:#ffbf6b;color:#3e2037;border-color:#ffbf6b}
+
 .native-ad-slot{margin-top:14px;min-height:80px;max-width:100%;overflow-x:auto;background:#ffffff09;border:1px dashed #ffe2b34a;border-radius:12px;padding:16px}
 .native-ad-slot>div{max-width:100%}
 .ad-settings-btn{font-size:11px;margin-top:2px}
@@ -95,16 +95,12 @@
           <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
           <span class="ad-label">ADVERTISEMENT</span>
         </div>
-        <p>Optional Adsterra Native Banner (display ad, not video). The display advertisement is shown only after your warm-up spin. You can choose whether to load it. It is not a rewarded video; watching or clicking an ad is not required to unlock the free gift spin.</p>
-        <div id="adChoiceButtons" class="ad-choices">
-          <button id="adConsentBtn" type="button">Allow &amp; show advertisement</button>
-          <button id="adDeclineBtn" type="button">Continue without ads</button>
-        </div>
+        <p>Adsterra Native Banner (display ad, not video). Sponsored content loads automatically after the warm-up spin, subject to browser privacy settings and ad availability. No viewing or clicking required for the free demo gift spin.</p>
         <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
           <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
         </div>
-        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Advertising choices</button>
-        <p id="adStatus" class="ad-status" aria-live="polite">Third-party advertising stays off until you allow it.</p>
+        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Hide advertisement</button>
+        <p id="adStatus" class="ad-status" aria-live="polite">Sponsored advertisement loads after your warm-up spin if available.</p>
         <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
       </section>
 
@@ -169,12 +165,12 @@
 <div class="prize"><span>💵</span><b>₹500 Draw Entry</b><small>20% on gift spin</small></div>
 <div class="prize"><span>💰</span><b>₹1,000 Draw Entry</b><small>20% on gift spin</small></div>
 </div></section>
-      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. A separately labeled native display ad may appear after visitors allow third-party ads. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
+      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. A separately labeled native display ad may load after warm-up (unless blocked by browser privacy settings or a saved opt-out). No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
     </main>
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
-  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Optional Adsterra Native Banner is available below the wheel after warm-up.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. You may unlock the free demo gift spin whether or not you choose to display the native advertisement.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
+  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Optional Adsterra Native Banner is available below the wheel after warm-up.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. This separate native display ad has no effect on unlocking the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
    No live giveaway or rewarded-video ad SDK is connected; native display ads are opt-in. */
 'use strict';
@@ -226,33 +222,25 @@ async function init(){
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
   $('markGroupBtn').addEventListener('click',markGroupShared);
-  $('adConsentBtn').addEventListener('click',()=>setAdConsent('allow'));
-  $('adDeclineBtn').addEventListener('click',()=>setAdConsent('decline'));
-  $('adChoicesBtn').addEventListener('click',()=>{try{localStorage.removeItem(AD_PREFERENCE_KEY);}catch{}location.reload();});
+  $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   initAdvertising();
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
 function initAdvertising(){
-  const pref=getAdPreference();
   const gpc=navigator.globalPrivacyControl===true;
-  $('adChoiceButtons').classList.toggle('hidden',Boolean(pref)||gpc);
-  $('adChoicesBtn').classList.toggle('hidden',!pref);
+  $('adChoicesBtn').classList.toggle('hidden',state.spins_used<1||gpc);
+  $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   if(gpc){$('adStatus').textContent='Ads are disabled because your browser sends Global Privacy Control.';return;}
-  if(pref==='allow'&&state.spins_used>=1&&!spinning){loadNativeAd();}
-  else if(pref==='decline'){$('adStatus').textContent='You chose to continue without ads. Spin remains fully available.';}
-  else{$('adStatus').textContent='Third-party advertising stays off until you opt in.';}
+  if(getAdPreference()==='decline'){$('adStatus').textContent='Ads disabled by your preference; gift spin is still available.';return;}
+  if(state.spins_used>=1&&!spinning)loadNativeAd();
 }
 function setAdConsent(value){
-  if(value!=='allow'&&value!=='decline')return;
-  if(navigator.globalPrivacyControl===true){initAdvertising();return;}
+  if(value!=='allow'&&value!=='decline'||navigator.globalPrivacyControl===true)return;
   try{localStorage.setItem(AD_PREFERENCE_KEY,value);}catch{}
-  $('adChoiceButtons').classList.add('hidden');
-  $('adChoicesBtn').classList.remove('hidden');
-  if(value==='allow'&&state.spins_used>=1&&!spinning)loadNativeAd();
-  else $('adStatus').textContent='Ads are disabled by your choice. Change this using Advertising choices.';
+  location.reload();
 }
 function loadNativeAd(){
-  if(navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()!=='allow')return;
+  if(navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()==='decline')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
   adScriptLoaded=true;
@@ -269,7 +257,9 @@ function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN
 function render(){
   const s=state.spins_used;
   $('postSpinAdPanel').classList.toggle('hidden',s<1);
-  if(s>=1&&!spinning&&getAdPreference()==='allow')loadNativeAd();
+  if(s>=1&&!spinning&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
+  $('adChoicesBtn').classList.toggle('hidden',s<1||navigator.globalPrivacyControl===true);
+  $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   $('spinsRemaining').textContent=playerHasAward()?'ENTRY REVEALED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
   $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
   $('refInline').textContent=Math.min(state.referrals||0,20)+' / 20';
