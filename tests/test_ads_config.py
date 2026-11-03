@@ -88,7 +88,8 @@ class AdvertisingConfigurationTests(unittest.TestCase):
 
     def test_unfiltered_category_trial_is_explicit_and_host_bound(self):
         cfg=copy.deepcopy(load_and_validate())
-        self.assertTrue(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertFalse(cfg["cloudflareAdsterra"]["enabled"])
+        self.assertTrue(cfg["cloudflareSocialBar"]["enabled"])
         self.assertFalse(cfg["enabled"])  # Netlify/Render stay disabled
         self.assertEqual(validate(cfg),[])
         for patch in ({"userAuthorizedTrial":False},{"allowUnfilteredCategories":False},
