@@ -91,21 +91,9 @@
               </div>
             </div>
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed warm-up that always ends on Try Again without a prize. After warm-up, the optional sponsored ad section appears first; the gift spin button and saved entry appear below it. No ad viewing is required and no rewarded video or verified referral tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows; then you see 20-member sharing, a sponsored display ad, and five-group sharing, in that order. No rewarded-video or verified WhatsApp tracking is connected.</p>
 
-      <section class="ad-panel hidden" id="postSpinAdPanel" aria-label="Optional sponsored advertisement after warm-up spin">
-        <div class="ad-panel-head">
-          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
-          <span class="ad-label">ADVERTISEMENT</span>
-        </div>
-        <p>Adsterra Native Banner (display ad, not video). Sponsored content loads automatically after the warm-up spin, subject to browser privacy settings and ad availability. No viewing or clicking required for the free demo gift spin.</p>
-        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
-          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
-        </div>
-        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Hide advertisement</button>
-        <p id="adStatus" class="ad-status" aria-live="polite">Sponsored advertisement loads after your warm-up spin if available.</p>
-        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
-      </section>
+
 
           <div class="spin-actions">
             <button class="primary-btn" id="spinBtn" type="button"><span>✦</span> WARM-UP SPIN <span>✦</span></button>
@@ -137,7 +125,7 @@
             <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
             <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
-              <h3 class="share-task-heading" id="shareTasksHeading">🎁 AFTER YOUR GIFT ENTRY — 2 WHATSAPP TASKS</h3>
+              <h3 class="share-task-heading" id="shareTasksHeading">🎁 GIFT ENTRY → 20 MEMBERS → AD → 5 GROUPS</h3>
               <div class="share-task-card">
                 <b>✅ TASK 1 — Share with 20 different people</b>
                 <p>Personally send the link to 20 interested people on WhatsApp. For a real draw, 20 unique people must actually join and be verified. Sending 20 messages alone does not count as 20 referrals.</p>
@@ -146,14 +134,25 @@
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
                 <p class="small-note">Verified member referrals: <b id="refInline">0 / 20</b> — preview links cannot verify joins; progress will remain zero until a backend is activated.</p>
               </div>
+      <section class="ad-panel hidden" id="postSpinAdPanel" aria-label="Sponsored advertisement between the 20-member and five-group sharing tasks">
+        <div class="ad-panel-head">
+          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
+          <span class="ad-label">ADVERTISEMENT</span>
+        </div>
+        <p>Adsterra Native Banner (display ad, not video). Sponsored content can load automatically after your sample gift entry, underneath the 20-member task, subject to browser privacy settings and ad availability. No viewing or clicking required for the free demo gift spin.</p>
+        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
+          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
+        </div>
+        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Hide advertisement</button>
+        <p id="adStatus" class="ad-status" aria-live="polite">Sponsored advertisement may appear after your sample gift entry if available.</p>
+        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
+      </section>
               <div class="share-task-card">
-                <b>✅ TASK 2 — Share in 5 WhatsApp groups</b>
+                <b>📲 TASK 2 — Invite 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Share to a WhatsApp group</button>
-                <div class="group-meter" id="groupProgress" aria-live="polite">0 / 5 groups self-reported</div>
-                <div class="group-progress" aria-hidden="true"><div id="groupFill"></div></div>
-                <button class="secondary-btn" id="markGroupBtn" type="button">✓ I shared in another group (self-report)</button>
-                <p class="small-note">Mark each group only after sharing. This count is saved only in your browser and is NOT verified.</p>
+                <div class="group-meter" id="groupProgress" aria-live="polite">0 / 5 groups verified — verification unavailable in this demo</div>
+                <p class="small-note">WhatsApp opens the share screen, but this website cannot tell if you actually sent the link or identify which group received it. There is no self-report completion button. Genuine eligibility would require an independent verification process.</p>
               </div>
               <p class="share-task-note">DEMO ONLY: These are example participation tasks. Neither WhatsApp shares nor referrals are being verified. No real prize or 50% discount is being awarded. For live prize eligibility, organizer verification and published terms are essential.</p>
             </div>
@@ -219,9 +218,9 @@ function handlePreviewReplayLink(){
 const $ = (id) => document.getElementById(id);
 const wheel = $('wheel');
 let angle = 0, spinning = false, busy = false, mode = 'demo';
-let state = {spins_used:0,retry_unlocked:false,award:null,referrals:0,group_share_claims:0,referral_code:null,prizes_confirmed:false,draw_result:null};
+let state = {spins_used:0,retry_unlocked:false,award:null,referrals:0,referral_code:null,prizes_confirmed:false,draw_result:null};
 function randomId(){const a = new Uint8Array(9); crypto.getRandomValues(a);return Array.from(a,b=>b.toString(16).padStart(2,'0')).join('');}
-function loadDemo(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY));if(data && Number.isInteger(data.spins_used)){state={...state,...data};}}catch{}if(!state.referral_code)state.referral_code='PREVIEW-'+randomId().slice(0,9);saveDemo();}
+function loadDemo(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY));if(data && Number.isInteger(data.spins_used)){state={...state,...data};}}catch{}delete state.group_share_claims;if(!state.referral_code)state.referral_code='PREVIEW-'+randomId().slice(0,9);saveDemo();}
 function saveDemo(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
 async function api(url,opts={}){const r=await fetch(url,{credentials:'same-origin',cache:'no-store',...opts});const body=await r.json();if(!r.ok)throw new Error(body.error||'Server request failed');return body;}
 async function init(){
@@ -252,13 +251,12 @@ async function init(){
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
-  $('modalClose').addEventListener('click',()=>{const guide=state.spins_used===1&&!state.retry_unlocked&&!playerHasAward();$('resultDialog').close();if(guide&&!isPreviewTestMode()){$('postSpinAdPanel').scrollIntoView({behavior:'smooth',block:'start'});}});
+  $('modalClose').addEventListener('click',()=>{$('resultDialog').close();});
   $('goToShareBtn').addEventListener('click',()=>{$('resultDialog').close();$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('viewTasksBtn').addEventListener('click',()=>{$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
-  $('markGroupBtn').addEventListener('click',markGroupShared);
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   initAdvertising();
 }
@@ -266,11 +264,11 @@ function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'
 function initAdvertising(){
   if(isPreviewTestMode()){ $('adStatus').textContent='Test mode: sponsored ads disabled to avoid invalid repeat impressions.';return; }
   const gpc=navigator.globalPrivacyControl===true;
-  $('adChoicesBtn').classList.toggle('hidden',state.spins_used<1||gpc);
+  $('adChoicesBtn').classList.toggle('hidden',!playerHasAward()||gpc);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   if(gpc){$('adStatus').textContent='Ads are disabled because your browser sends Global Privacy Control.';return;}
   if(getAdPreference()==='decline'){$('adStatus').textContent='Ads disabled by your preference; gift spin is still available.';return;}
-  if(state.spins_used>=1&&!spinning)loadNativeAd();
+  if(playerHasAward()&&!spinning)loadNativeAd();
 }
 function setAdConsent(value){
   if(value!=='allow'&&value!=='decline'||navigator.globalPrivacyControl===true)return;
@@ -278,7 +276,7 @@ function setAdConsent(value){
   location.reload();
 }
 function loadNativeAd(){
-  if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()==='decline')return;
+  if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||!playerHasAward()||spinning||getAdPreference()==='decline')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
   adScriptLoaded=true;
@@ -294,9 +292,9 @@ function loadNativeAd(){
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
   const s=state.spins_used;
-  $('postSpinAdPanel').classList.toggle('hidden',s<1||isPreviewTestMode());
-  if(s>=1&&!spinning&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
-  $('adChoicesBtn').classList.toggle('hidden',s<1||isPreviewTestMode()||navigator.globalPrivacyControl===true);
+  $('postSpinAdPanel').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode());
+  if(playerHasAward()&&!spinning&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
+  $('adChoicesBtn').classList.toggle('hidden',!playerHasAward()||isPreviewTestMode()||navigator.globalPrivacyControl===true);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   const awardVisible=playerHasAward();
   $('spinResultReceipt').classList.toggle('hidden',!awardVisible);
@@ -307,14 +305,10 @@ function render(){
   $('spinsRemaining').textContent=awardVisible?'SAMPLE ENTRY SAVED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
   $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
   $('refInline').textContent=Math.min(state.referrals||0,20)+' / 20';
-  const groups=Math.max(0,Math.min(5,Number(state.group_share_claims)||0));
-  $('groupProgress').textContent=groups+' / 5 groups self-reported (not verified)';
-  $('groupFill').style.width=(groups*20)+'%';
-  $('markGroupBtn').disabled=(groups>=5 || !playerHasAward() || mode!=='demo');
-  $('markGroupBtn').textContent=groups>=5?'✓ 5 groups self-reported':'✓ I shared in another group (self-report)';
+  $('groupProgress').textContent='0 / 5 WhatsApp groups verified — no verification service connected';
   $('refFill').style.width=Math.min((state.referrals||0)*5,100)+'%';
   $('refBar').setAttribute('aria-valuenow',String(Math.min(state.referrals||0,20)));
-  const eligible=playerHasAward() && state.referrals >=20 && (Number(state.group_share_claims)||0)>=5;
+  const eligible=mode==='live' && state.prizes_confirmed===true && playerHasAward() && state.referrals>=20 && Number(state.group_shares_verified)>=5;
   if(eligible){$('statusTitle').textContent='Demo threshold reached!';$('statusCopy').textContent='A future real draw would need 20 unique server-verified referrals and organizer approval.';}
   else if(playerHasAward()){$('statusTitle').textContent='Sample draw entry revealed! 🎁';$('statusCopy').textContent='Your random result: '+(OUTCOMES[state.award]?.title||'draw entry')+' This is a demo category, not an actual gift or discount.';}
   else if(s===0){$('statusTitle').textContent='Warm-up spin ready ✨';$('statusCopy').textContent='This is a no-prize warm-up spin. It always lands on Try Again. Your gift-draw spin comes next.';}
@@ -366,7 +360,6 @@ async function unlockRetry(){if(busy)return;busy=true;$('unlockBtn').disabled=tr
 async function copyLink(){try{await navigator.clipboard.writeText(referralUrl());$('copyBtn').textContent='Copied!';setTimeout(()=>$('copyBtn').textContent='Copy',1800);}catch{const inp=$('refLink');inp.select();document.execCommand('copy');$('copyBtn').textContent='Copied!';}}
 function shareLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up spin first (no prize), then one random sample gift-draw entry. No real gifts or discounts yet: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
 function shareGroupLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up first, then a random sample gift-draw entry. No real prizes or coupons. Share only if this group allows invitations: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
-function markGroupShared(){if(mode!=='demo'||!playerHasAward())return;state.group_share_claims=Math.min(5,Math.max(0,Number(state.group_share_claims)||0)+1);saveDemo();render();}
 function tick(){let remaining=Math.max(0,DRAW_DATE.getTime()-Date.now());const days=Math.floor(remaining/86400000);remaining%=86400000;const hours=Math.floor(remaining/3600000);remaining%=3600000;const mins=Math.floor(remaining/60000);remaining%=60000;const secs=Math.floor(remaining/1000);$('countdown').innerHTML=[days,hours,mins,secs].map((n,i)=>`<div><strong>${String(n).padStart(2,'0')}</strong><small>${['DAYS','HOURS','MINS','SECS'][i]}</small></div>`).join('');if(DRAW_DATE<=new Date()){$('countdown').setAttribute('aria-label','Result announcement time has arrived. Official results require organizer publication.');}}
 init();
 </script>
