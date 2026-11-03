@@ -13,7 +13,7 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - Public reset control removed; the existing browser's demo spin state stays in localStorage. Not tamper-proof, does not confer real eligibility.
 - Results placeholder for November 8, 2026, at 8:00 PM IST, with no invented winners.
 - Privacy/terms disclosures; preview is noindex to prevent search users mistaking sample offers for real ones.
-- No real third-party ad script is installed; no claim that watching an ad earned an attempt.
+- An approved Adsterra Native Banner display unit (placement ID 32071962, script provided by the publisher) is now installed in its own marked sponsored section, loaded only after visitor opt-in. The network controls ad creatives; gambling/excluded category filtering remains unconfirmed. It is *not* a rewarded video, and watching or clicking it is never necessary to unlock a spin. No real rewarded video ad SDK is connected.
 
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
