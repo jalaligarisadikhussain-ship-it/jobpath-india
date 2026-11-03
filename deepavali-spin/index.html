@@ -447,13 +447,13 @@ function openWhatsAppShare(link,description){
   window.open('https://wa.me/?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
 }
 function festiveShareMessage(forGroup=false){
-  return '🪔 *DEEPAVALI DHAMAKA — SPIN & WIN* 🎡\\n\\n'+
-    '✨ Try the Festive Lucky Wheel!\\n'+
-    '🎁 *5 Exciting Sample Gift-Draw Categories*\\n'+
-    'Flipkart 50% • Amazon 50% • Meesho 50% • ₹500 • ₹1,000 entries\\n\\n'+
+  return '🪔 *DEEPAVALI DHAMAKA — SPIN & WIN* 🎡\n\n'+
+    '✨ Try the Festive Lucky Wheel!\n'+
+    '🎁 *5 Exciting Sample Gift-Draw Categories*\n'+
+    'Flipkart 50% • Amazon 50% • Meesho 50% • ₹500 • ₹1,000 entries\n\n'+
     '🎉 Join the Deepavali demo experience!'+
-    (forGroup?'\\n📲 Please share only in groups that allow invitations.':'')+
-    '\\n\\n_Demo only — sample entries, not redeemable prizes or discount coupons._';
+    (forGroup?'\n📲 Please share only in groups that allow invitations.':'')+
+    '\n\n_Demo only — sample entries, not redeemable prizes or discount coupons._';
 }
 function shareWebsite(){
   openWhatsAppShare(new URL(location.pathname,location.origin).toString(),festiveShareMessage());
