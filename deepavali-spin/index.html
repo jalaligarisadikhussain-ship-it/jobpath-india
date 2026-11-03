@@ -66,9 +66,9 @@
           <div class="spin-actions">
             <button class="primary-btn" id="spinBtn" type="button"><span>✦</span> SPIN NOW <span>✦</span></button>
             <button class="secondary-btn hidden" id="retryBtn" type="button">🎞 Unlock one retry (demo)</button>
-            <button class="secondary-btn hidden" id="resetDemoBtn" type="button">↻ Reset demo spins</button>
+            
           </div>
-          <p class="micro" id="spinHelp">Demo: first spin always Try Again. Second spin reveals one of five sample entries, each with a 20% chance. No real ad is connected.</p>
+          <p class="micro" id="spinHelp">Demo: first spin always Try Again. Second spin reveals one random sample entry. No real ad, cash gift, or verified referral tracking is connected.</p>
         </div>
 
         <aside class="status-panel">
@@ -86,14 +86,14 @@
             <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
             <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
-              <h3 class="share-task-heading" id="shareTasksHeading">🎁 YOUR 2 WHATSAPP SHARING TASKS</h3>
+              <h3 class="share-task-heading" id="shareTasksHeading">🎁 AFTER YOUR SPIN — 2 WHATSAPP TASKS</h3>
               <div class="share-task-card">
                 <b>✅ TASK 1 — Share with 20 different people</b>
                 <p>Personally send the link to 20 interested people on WhatsApp. For a real draw, 20 unique people must actually join and be verified. Sending 20 messages alone does not count as 20 referrals.</p>
-                <div class="share-heading">Your unique referral link</div>
+                <div class="share-heading">Preview referral link — tracking inactive</div>
                 <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button">Copy</button></div>
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
-                <p class="small-note">Verified member referrals: <b id="refInline">0 / 20</b> — demo links cannot verify joins.</p>
+                <p class="small-note">Verified member referrals: <b id="refInline">0 / 20</b> — preview links cannot verify joins; progress will remain zero until a backend is activated.</p>
               </div>
               <div class="share-task-card">
                 <b>✅ TASK 2 — Share in 5 WhatsApp groups</b>
@@ -107,7 +107,7 @@
               <p class="share-task-note">DEMO ONLY: These are example participation tasks. Neither WhatsApp shares nor referrals are being verified. No real prize or 50% discount is being awarded. For live prize eligibility, organizer verification and published terms are essential.</p>
             </div>
           </div>
-          <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> sample wheel odds are published below. No payment required. An actual gift draw must be officially activated before prizes can be awarded.</p></div>
+          <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> no public reset button, no paid spins, no real advertisements in this preview, and no prizes promised. Actual draws require official activation and verified rules.</p></div>
         </aside>
       </section>
 
@@ -176,7 +176,6 @@ async function init(){
   render();tick();setInterval(tick,1000);
   $('spinBtn').addEventListener('click',spin);
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
-  $('resetDemoBtn').addEventListener('click',resetDemoSpins);
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
   $('modalClose').addEventListener('click',()=>{$('resultDialog').close();});
@@ -211,17 +210,10 @@ function render(){
   $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'DEMO COMPLETED':s===1?'🎁 SPIN FOR ENTRY':'✦ FIRST SPIN ✦';
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
   $('retryBtn').textContent=mode==='demo'?'🎞 FREE DEMO RETRY (NO AD)':'🎞 Unlock one retry';
-  $('resetDemoBtn').classList.toggle('hidden',mode!=='demo'||s===0);
   $('shareArea').classList.toggle('hidden',!playerHasAward());
   if(playerHasAward()){$('refLink').value=referralUrl();}
   if(state.prizes_confirmed && mode==='live'){$('modeBanner').textContent='OFFICIAL CAMPAIGN • No payment needed. Draw entries are not guaranteed prizes.';}
   else if(mode==='live'){$('modeBanner').textContent='PREVIEW MODE • Real prize offer inactive until organizer confirms campaign.';}
-}
-function resetDemoSpins(){
-  if(mode!=='demo'||busy||spinning)return;
-  if(!confirm('Reset the DEMO wheel to 2 spins? This erases this browser’s demo result. No real prize or referral eligibility is affected.'))return;
-  state={spins_used:0,retry_unlocked:false,award:null,referrals:0,group_share_claims:0,referral_code:'PREVIEW-'+randomId().slice(0,9),prizes_confirmed:false,draw_result:null};
-  angle=0;wheel.style.transform='rotate(0deg)';saveDemo();render();
 }
 function referralUrl(){const u=new URL(location.href);u.search='';u.hash='';u.searchParams.set('ref',state.referral_code);return u.toString();}
 function cryptoRewardIndex(){const a=new Uint32Array(1);const max=Math.floor(4294967296/5)*5;do{crypto.getRandomValues(a);}while(a[0]>=max);return 1+(a[0]%5);}
