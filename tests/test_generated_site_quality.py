@@ -35,6 +35,31 @@ class GeneratedSiteQuality(unittest.TestCase):
                     if match:
                         self.assertGreaterEqual(match.group(1), TODAY, "Expired job still in public fallback")
 
+    def test_rss_has_only_reviewed_unexpired_recruitment_records(self):
+        rss = ET.parse(ROOT / "feed.xml").getroot()
+        self.assertEqual(rss.tag, "rss")
+        items = rss.find("channel").findall("item")
+        self.assertLessEqual(len(items), 80)
+        jobs = json.loads((ROOT / "data/jobs.json").read_text(encoding="utf-8"))
+        indexed = {str(job["id"]): job for job in jobs}
+        seen = set()
+        for item in items:
+            guid = item.findtext("guid", "")
+            self.assertTrue(guid.startswith("jobpath:"))
+            jid = guid[len("jobpath:"):]
+            self.assertIn(jid, indexed)
+            self.assertNotIn(jid, seen)
+            seen.add(jid)
+            job = indexed[jid]
+            self.assertTrue(job.get("verified"))
+            self.assertFalse(job.get("isDemo"))
+            self.assertEqual(job.get("status"), "open")
+            self.assertGreaterEqual(job.get("lastDate"), TODAY)
+            self.assertIn("verify official updates", item.findtext("description", ""))
+            self.assertTrue(item.findtext("link", "").startswith(SITE + "/job/?id="))
+        homepage = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn('rel="alternate" type="application/rss+xml"', homepage)
+
     def test_sitemap_is_indexable_primary_routes_only(self):
         pages = json.loads((ROOT / "data/pages.json").read_text(encoding="utf-8"))
         urls = {
