@@ -174,7 +174,7 @@ test('Cloudflare default display loads pinned ad tag without homepage permission
  assert.equal(scripts[0].src,CLOUDFLARE_SOCIAL_BAR_SCRIPT);
  assert.equal(startAdUnits(cloud),0);
  assert.equal(scripts.length,1);
-},{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_ADSTERRA_KEY,script:CLOUDFLARE_ADSTERRA_SCRIPT}));
+},{hostname:CLOUDFLARE_ADSTERRA_HOST,key:CLOUDFLARE_SOCIAL_BAR_KEY,script:CLOUDFLARE_SOCIAL_BAR_SCRIPT}));
 test('Cloudflare defaults never bypass GPC, storage failures or another host',()=>{
  const cloud=resolveAdvertisingConfig(current,CLOUDFLARE_ADSTERRA_HOST);
  const stored=memoryStorage(),prior=globalThis.window;
