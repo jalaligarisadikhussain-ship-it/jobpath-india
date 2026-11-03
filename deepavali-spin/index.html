@@ -89,7 +89,25 @@
             <button class="secondary-btn hidden" id="retryBtn" type="button">🎞 Unlock one retry (demo)</button>
             
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed warm-up that always ends on Try Again without a prize. The second spin randomly picks one of five sample gift entries (20% each). No real ad or verified referral tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed warm-up that always ends on Try Again without a prize. The second spin randomly picks one of five sample gift entries (20% each). No rewarded video or verified referral tracking is connected.</p>
+      <section class="ad-panel hidden" id="postSpinAdPanel" aria-label="Optional sponsored advertisement after warm-up spin">
+        <div class="ad-panel-head">
+          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
+          <span class="ad-label">ADVERTISEMENT</span>
+        </div>
+        <p>Optional Adsterra Native Banner (display ad, not video). The display advertisement is shown only after your warm-up spin. You can choose whether to load it. It is not a rewarded video; watching or clicking an ad is not required to unlock the free gift spin.</p>
+        <div id="adChoiceButtons" class="ad-choices">
+          <button id="adConsentBtn" type="button">Allow &amp; show advertisement</button>
+          <button id="adDeclineBtn" type="button">Continue without ads</button>
+        </div>
+        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
+          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
+        </div>
+        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Advertising choices</button>
+        <p id="adStatus" class="ad-status" aria-live="polite">Third-party advertising stays off until you allow it.</p>
+        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
+      </section>
+
         </div>
 
         <aside class="status-panel">
@@ -132,24 +150,6 @@
         </aside>
       </section>
 
-      <section class="ad-panel" aria-label="Sponsored advertisement">
-        <div class="ad-panel-head">
-          <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
-          <span class="ad-label">ADVERTISEMENT</span>
-        </div>
-        <p>Optional Adsterra Native Banner (display ad, not video). Loading this ad is not required to spin or unlock the free demo gift entry. The advertiser controls the creative; content varies.</p>
-        <div id="adChoiceButtons" class="ad-choices">
-          <button id="adConsentBtn" type="button">Allow &amp; show advertisement</button>
-          <button id="adDeclineBtn" type="button">Continue without ads</button>
-        </div>
-        <div class="native-ad-slot hidden" id="nativeAdSlot" aria-label="Adsterra sponsored placement">
-          <div id="container-c95b749f1554f30e51c974f2e212afef"></div>
-        </div>
-        <button class="ad-settings-btn hidden" id="adChoicesBtn" type="button">Advertising choices</button>
-        <p id="adStatus" class="ad-status" aria-live="polite">Third-party advertising stays off until you allow it.</p>
-        <p>Gambling and other unwanted ad categories have not yet been confirmed as excluded by the provider. <a href="./privacy.html">Privacy notice</a>.</p>
-      </section>
-
       <section class="steps-section">
         <div class="section-eyebrow">HOW IT WORKS</div>
         <h2>Three steps to the festive draw</h2>
@@ -174,7 +174,7 @@
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
-  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">ADVERTISEMENT SPACE<br><small>Preview only · no sponsored ad is playing</small></div><p>No real advertisement is playing or being verified. The warm-up is followed by a free sample gift spin in this demo; live rewarded ads would require a provider that allows incentivized viewing.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
+  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Optional Adsterra Native Banner is available below the wheel after warm-up.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. You may unlock the free demo gift spin whether or not you choose to display the native advertisement.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
    No live giveaway or rewarded-video ad SDK is connected; native display ads are opt-in. */
 'use strict';
@@ -220,7 +220,7 @@ async function init(){
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
-  $('modalClose').addEventListener('click',()=>{$('resultDialog').close();});
+  $('modalClose').addEventListener('click',()=>{const guide=state.spins_used===1&&!state.retry_unlocked&&!playerHasAward();$('resultDialog').close();if(guide){$('postSpinAdPanel').scrollIntoView({behavior:'smooth',block:'start'});}});
   $('goToShareBtn').addEventListener('click',()=>{$('resultDialog').close();$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
@@ -238,7 +238,7 @@ function initAdvertising(){
   $('adChoiceButtons').classList.toggle('hidden',Boolean(pref)||gpc);
   $('adChoicesBtn').classList.toggle('hidden',!pref);
   if(gpc){$('adStatus').textContent='Ads are disabled because your browser sends Global Privacy Control.';return;}
-  if(pref==='allow'){loadNativeAd();}
+  if(pref==='allow'&&state.spins_used>=1&&!spinning){loadNativeAd();}
   else if(pref==='decline'){$('adStatus').textContent='You chose to continue without ads. Spin remains fully available.';}
   else{$('adStatus').textContent='Third-party advertising stays off until you opt in.';}
 }
@@ -248,11 +248,11 @@ function setAdConsent(value){
   try{localStorage.setItem(AD_PREFERENCE_KEY,value);}catch{}
   $('adChoiceButtons').classList.add('hidden');
   $('adChoicesBtn').classList.remove('hidden');
-  if(value==='allow')loadNativeAd();
+  if(value==='allow'&&state.spins_used>=1&&!spinning)loadNativeAd();
   else $('adStatus').textContent='Ads are disabled by your choice. Change this using Advertising choices.';
 }
 function loadNativeAd(){
-  if(navigator.globalPrivacyControl===true||adScriptLoaded)return;
+  if(navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()!=='allow')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
   adScriptLoaded=true;
@@ -268,6 +268,8 @@ function loadNativeAd(){
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
   const s=state.spins_used;
+  $('postSpinAdPanel').classList.toggle('hidden',s<1);
+  if(s>=1&&!spinning&&getAdPreference()==='allow')loadNativeAd();
   $('spinsRemaining').textContent=playerHasAward()?'ENTRY REVEALED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
   $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
   $('refInline').textContent=Math.min(state.referrals||0,20)+' / 20';
@@ -288,7 +290,7 @@ function render(){
   $('spinBtn').disabled=busy||spinning||s>=2||playerHasAward()||(s===1&&!state.retry_unlocked);
   $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'DEMO COMPLETED':s===1?'🎁 SPIN FOR GIFT ENTRY':'✦ WARM-UP SPIN ✦';
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
-  $('retryBtn').textContent=mode==='demo'?'🎞 UNLOCK GIFT SPIN (NO AD)':'🎞 Unlock one retry';
+  $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
   if(playerHasAward()){$('refLink').value=referralUrl();}
   if(state.prizes_confirmed && mode==='live'){$('modeBanner').textContent='OFFICIAL CAMPAIGN • No payment needed. Draw entries are not guaranteed prizes.';}
