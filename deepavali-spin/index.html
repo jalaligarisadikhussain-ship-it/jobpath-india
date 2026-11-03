@@ -306,7 +306,7 @@ function render(){
   else if(s===1){$('statusTitle').textContent='Gift-draw spin ready 🎁';$('statusCopy').textContent='One of five sample gift-draw entries will be selected randomly, 20% each. These are not actual prizes or coupons.';}
   else{$('statusTitle').textContent='Demo round finished';$('statusCopy').textContent='The warm-up and gift-draw spin are complete. No real-world prize is awarded in the demo.';}
   $('spinBtn').disabled=busy||spinning||s>=2||playerHasAward()||(s===1&&!state.retry_unlocked);
-  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'VIEW SAVED RESULT BELOW':s===1?'🎁 SPIN FOR GIFT ENTRY':'✦ WARM-UP SPIN ✦';
+  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'RESULT SHOWN BELOW':s===1?'🎁 SPIN FOR GIFT ENTRY':'✦ WARM-UP SPIN ✦';
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
   $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
