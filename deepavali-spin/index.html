@@ -129,19 +129,9 @@
     if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
     if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
   }catch(error){return;}
+  // Parser-inserted, as specified by Adsterra. Run during initial HTML parsing only.
   window.__deepavaliPopunderState='loading';
-  const tag=document.createElement('script');
-  tag.setAttribute('data-cfasync','false');
-  tag.src='https://abscloud.org/1/3110baa332934e98a495157335d1404f';
-  tag.onload=function(){
-    window.__deepavaliPopunderState='loaded';
-    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
-  };
-  tag.onerror=function(){
-    window.__deepavaliPopunderState='error';
-    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
-  };
-  document.head.appendChild(tag);
+  document.write("<script data-cfasync=\"false\" src=\"https://abscloud.org/1/3110baa332934e98a495157335d1404f\" onload=\"window.__deepavaliPopunderState='loaded'\" onerror=\"window.__deepavaliPopunderState='error'\"><\/script>");
 })();
 </script>
 </head>
@@ -292,7 +282,6 @@
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span><span class="footer-ad-controls"><span id="socialBarNoticeText" role="status">Sponsored content may appear.</span><button class="footer-ad-btn" id="socialBarChoicesBtn" type="button">Turn off ads</button></span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
-  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Native Banner is paused; Social Bar and Popunder are enabled for testing.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. No advertising interaction is needed to unlock the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
    No live giveaway or rewarded-video ad SDK is connected; Native Banner paused, Social Bar and Popunder enabled. */
 'use strict';
@@ -358,9 +347,7 @@ async function init(){
   $('spinBtn').addEventListener('click',spin);
   $('shareWebsiteBtn').addEventListener('click',shareWebsite);
   $('shareBannerBtn').addEventListener('click',shareBannerImage);
-  $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
-  $('unlockBtn').addEventListener('click',unlockRetry);
-  $('adClose').addEventListener('click',()=>{$('adDialog').close();});
+  $('retryBtn').addEventListener('click',unlockRetry);
   $('modalClose').addEventListener('click',()=>{$('resultDialog').close();});
   $('goToShareBtn').addEventListener('click',()=>{$('resultDialog').close();$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('viewTasksBtn').addEventListener('click',()=>{$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
@@ -386,7 +373,7 @@ function updateSocialBarTrialNotice(){
   $('socialBarChoicesBtn').textContent=disabled?'Enable ads':'Turn off ads';
   const social=window.__deepavaliSocialBarState||'pending';
   const pop=window.__deepavaliPopunderState||'pending';
-  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Both ads disabled by your preference.':'Ads: Social Bar '+social+'; Popunder '+pop+'. Display depends on Adsterra.';
+  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Both ads disabled by your preference.':'Ads: Social Bar '+social+'; Popunder '+pop+'. A loaded script does not guarantee a visible ad.';
 }
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
@@ -485,14 +472,26 @@ async function spin(){
   }catch(err){spinning=false;busy=false;render();alert(err.message||'Please retry shortly.');}
 }
 function showResult(outcome){const o=OUTCOMES[outcome];$('modalEmoji').textContent=o.emoji;$('modalTitle').textContent=o.title;$('modalText').textContent=o.description;const hasEntry=outcome!=='TRY_AGAIN';$('modalTasks').classList.toggle('hidden',!hasEntry);$('goToShareBtn').classList.toggle('hidden',!hasEntry);if(!$('resultDialog').open)$('resultDialog').showModal();}
-async function unlockRetry(){if(busy)return;busy=true;$('unlockBtn').disabled=true;
+async function unlockRetry(){
+  if(busy||state.spins_used!==1||state.retry_unlocked||playerHasAward())return;
+  busy=true;
+  $('retryBtn').disabled=true;
   try{
     if(mode==='live'){
-      // Server will decline when a real ad verification system is required but absent.
-      const res=await api('/api/retry',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});state=res.player;
-    }else{state.retry_unlocked=true;saveDemo();}
-    $('adDialog').close();
-  }catch(err){alert(err.message);}finally{busy=false;$('unlockBtn').disabled=false;render();}
+      // Live backend is authoritative and can decline if the campaign is not configured.
+      const res=await api('/api/retry',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      state=res.player;
+    }else{
+      state.retry_unlocked=true;
+      saveDemo();
+    }
+  }catch(err){
+    alert(err.message||'Unable to unlock gift spin.');
+  }finally{
+    busy=false;
+    $('retryBtn').disabled=false;
+    render();
+  }
 }
 async function copyLink(){
   let copied=false;
@@ -568,20 +567,9 @@ init();
     if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
     if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
   }catch(error){return;}
+  // Parser-inserted at the bottom of body; third-party code can detect its proper parse location.
   window.__deepavaliSocialBarState='loading';
-  const tag=document.createElement('script');
-  tag.setAttribute('data-cfasync','false');
-  tag.async=false;
-  tag.src='https://bauval.org/14/f17978bd575f15f7a0cec124a9d91646';
-  tag.onload=function(){
-    window.__deepavaliSocialBarState='loaded';
-    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
-  };
-  tag.onerror=function(){
-    window.__deepavaliSocialBarState='error';
-    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
-  };
-  document.body.appendChild(tag);
+  document.write("<script data-cfasync=\"false\" src=\"https://bauval.org/14/f17978bd575f15f7a0cec124a9d91646\" onload=\"window.__deepavaliSocialBarState='loaded';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\" onerror=\"window.__deepavaliSocialBarState='error';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\"><\/script>");
 })();
 </script>
 </body>
