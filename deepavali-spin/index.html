@@ -10,7 +10,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Deepavali Dhamaka 2026 — Spin & Win DEMO" />
-  <meta property="og:description" content="Festive Spin &amp; Win preview! Try the warm-up and random sample gift spin. DEMO only — no real prizes or discount coupons." />
+  <meta property="og:description" content="🪔 Spin the festive lucky wheel! Explore 5 sample gift-draw categories. Demo preview only — no redeemable prizes or coupons." />
   <meta property="og:site_name" content="Deepavali Dhamaka" />
   <meta property="og:image" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
   <meta property="og:image:url" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
@@ -23,7 +23,7 @@
   <meta property="og:url" content="https://deepavali-dhamaka-spin-2026.onrender.com/" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="🪔 Deepavali Dhamaka — Spin &amp; Win Demo" />
-  <meta name="twitter:description" content="Festive lucky wheel preview. No real prizes or coupons." />
+  <meta name="twitter:description" content="🪔 Spin the festive lucky wheel and explore five sample gift-draw categories. Demo only — no redeemable prizes." />
   <meta name="twitter:image" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
   <meta name="description" content="Deepavali Spin & Win: warm-up round followed by a random sample gift-draw spin. No real gifts are offered." />
   <title>Deepavali Dhamaka ✨ Spin & Win</title>
@@ -446,14 +446,23 @@ function openWhatsAppShare(link,description){
   const message=link+'\n\n'+description;
   window.open('https://wa.me/?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
 }
+function festiveShareMessage(forGroup=false){
+  return '🪔 *DEEPAVALI DHAMAKA — SPIN & WIN* 🎡\\n\\n'+
+    '✨ Try the Festive Lucky Wheel!\\n'+
+    '🎁 *5 Exciting Sample Gift-Draw Categories*\\n'+
+    'Flipkart 50% • Amazon 50% • Meesho 50% • ₹500 • ₹1,000 entries\\n\\n'+
+    '🎉 Join the Deepavali demo experience!'+
+    (forGroup?'\\n📲 Please share only in groups that allow invitations.':'')+
+    '\\n\\n_Demo only — sample entries, not redeemable prizes or discount coupons._';
+}
 function shareWebsite(){
-  openWhatsAppShare(new URL(location.pathname,location.origin).toString(),'🪔 Deepavali Dhamaka — Spin & Win DEMO! Sample wheel only; no real gifts or coupons.');
+  openWhatsAppShare(new URL(location.pathname,location.origin).toString(),festiveShareMessage());
 }
 function shareLink(){
-  openWhatsAppShare(referralUrl(),'🪔 Deepavali Spin & Win DEMO. No real gifts or discounts; this preview does not verify referrals.');
+  openWhatsAppShare(referralUrl(),festiveShareMessage());
 }
 function shareGroupLink(){
-  openWhatsAppShare(referralUrl(),'🪔 Deepavali Spin & Win DEMO. Share only in WhatsApp groups that allow invites. No real prizes.');
+  openWhatsAppShare(referralUrl(),festiveShareMessage(true));
 }
 async function shareBannerImage(){
   const status=$('bannerShareStatus');
@@ -465,7 +474,7 @@ async function shareBannerImage(){
     if(!blob.type.includes('png'))throw new Error('Not a PNG');
     const file=new File([blob],'Deepavali-Dhamaka-Demo-Banner.png',{type:'image/png'});
     if(typeof navigator.share==='function'&&typeof navigator.canShare==='function'&&navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:'Deepavali Dhamaka — Spin & Win Demo',text:'🪔 DEMO preview (no real prizes): https://deepavali-dhamaka-spin-2026.onrender.com/'});
+      await navigator.share({files:[file],title:'Deepavali Dhamaka — Spin & Win Demo',text:'🪔 DEEPAVALI DHAMAKA — SPIN & WIN 🎡\n🎁 Five sample gift-draw categories! Demo only: no redeemable gifts or coupons.\nhttps://deepavali-dhamaka-spin-2026.onrender.com/'});
       status.textContent='Share sheet opened. Choose WhatsApp and send the image. If the URL is missing, add the website link in the caption.';
       return;
     }
