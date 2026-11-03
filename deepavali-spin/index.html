@@ -130,6 +130,10 @@
     </header>
 
     <div class="demo-banner" id="modeBanner" role="status">DEMO PREVIEW • No real prizes or verified referrals until the organizer activates the campaign.</div>
+    <div id="exitPreviewTestRow" class="hidden" style="text-align:center;margin:8px 0 0">
+      <button id="exitPreviewTestBtn" class="footer-ad-btn" type="button">Exit demo test mode</button>
+      <span style="font-size:11px;color:#e4c9de">Returns to normal website; ads may load when permitted.</span>
+    </div>
 
     <main>
       <section class="ad-panel top-ad-panel hidden" id="postSpinAdPanel" aria-label="Sponsored advertisement at the top of the page">
@@ -341,6 +345,11 @@ async function init(){
   $('groupShareBtn').addEventListener('click',shareGroupLink);
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('socialBarChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
+  $('exitPreviewTestBtn').addEventListener('click',()=>{
+    try{sessionStorage.removeItem(TEST_MODE_KEY);}catch{}
+    location.replace(location.pathname);
+  });
+  $('exitPreviewTestRow').classList.toggle('hidden',!isPreviewTestMode());
   updateSocialBarTrialNotice();
   initAdvertising();
 }
@@ -351,7 +360,8 @@ function updateSocialBarTrialNotice(){
   const disabled=getAdPreference()==='decline';
   $('socialBarChoicesBtn').classList.toggle('hidden',test||gpc);
   $('socialBarChoicesBtn').textContent=disabled?'Enable ads':'Turn off ads';
-  $('socialBarNoticeText').textContent=test?'Ads disabled in demo replay.':gpc?'Ads disabled by browser settings.':disabled?'Social Bar ads off.':'Sponsored content may appear.';
+  const adState=window.__deepavaliSocialBarState||'';
+  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Ads off per your preference.':adState==='loaded'?'Social Bar script loaded; ad display depends on Adsterra.':adState==='error'?'Ad script blocked or failed to load.':'Social Bar request pending; ad may appear if available.';
 }
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
@@ -533,10 +543,19 @@ init();
     if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
     if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
   }catch(error){return;}
+  window.__deepavaliSocialBarState='loading';
   const tag=document.createElement('script');
   tag.setAttribute('data-cfasync','false');
+  tag.async=false;
   tag.src='https://bauval.org/14/f17978bd575f15f7a0cec124a9d91646';
-  tag.onerror=function(){window.__deepavaliSocialBarFailed=true;};
+  tag.onload=function(){
+    window.__deepavaliSocialBarState='loaded';
+    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
+  };
+  tag.onerror=function(){
+    window.__deepavaliSocialBarState='error';
+    if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice();
+  };
   document.body.appendChild(tag);
 })();
 </script>
