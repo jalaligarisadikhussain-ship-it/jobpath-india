@@ -205,6 +205,17 @@ const OUTCOMES={
  GIFT_1000:{emoji:'💰',title:'₹1,000 Prize Draw Entry!',description:'Sample only. No ₹1,000 is paid or guaranteed. A real draw would need funded prizes and 20 verified referrals.'}
 };
 const STORAGE_KEY = 'deepavali_dhamaka_demo_v6';
+const TEST_MODE_KEY = 'deepavali_owner_preview_test_v1';
+function isPreviewTestMode(){try{return sessionStorage.getItem(TEST_MODE_KEY)==='1';}catch{return false;}}
+function handlePreviewReplayLink(){
+  const url=new URL(location.href);
+  if(url.searchParams.get('demo_replay')!=='1')return;
+  try{localStorage.removeItem(STORAGE_KEY);}catch{}
+  try{sessionStorage.setItem(TEST_MODE_KEY,'1');}catch{}
+  // A replay clears only this browser's sample spin progress, never real records.
+  url.searchParams.delete('demo_replay');
+  history.replaceState(null,'',url.pathname+url.search+url.hash);
+}
 const $ = (id) => document.getElementById(id);
 const wheel = $('wheel');
 let angle = 0, spinning = false, busy = false, mode = 'demo';
@@ -214,6 +225,7 @@ function loadDemo(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY))
 function saveDemo(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch{}}
 async function api(url,opts={}){const r=await fetch(url,{credentials:'same-origin',cache:'no-store',...opts});const body=await r.json();if(!r.ok)throw new Error(body.error||'Server request failed');return body;}
 async function init(){
+  handlePreviewReplayLink();
   const ref=new URL(location.href).searchParams.get('ref');
   try{
     const params=ref ? '?ref='+encodeURIComponent(ref) : '';
@@ -224,7 +236,7 @@ async function init(){
     } else {throw new Error('Not connected');}
   }catch{
     mode='demo';loadDemo();
-    $('modeBanner').textContent='DEMO PREVIEW • Spins are saved only in this browser. Referrals and gifts are not real or verified.';
+    $('modeBanner').textContent=isPreviewTestMode()?'DEMO TEST MODE • Ads disabled to avoid repeated test impressions. No prizes or referrals are real.':'DEMO PREVIEW • Spins are saved only in this browser. Referrals and gifts are not real or verified.';
     if(ref) $('spinHelp').textContent='You opened a preview referral link. Real referrals are counted only with the verified production backend.';
   }
   // Restore the saved sector at the pointer on refresh without advancing a spin.
@@ -240,7 +252,7 @@ async function init(){
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
-  $('modalClose').addEventListener('click',()=>{const guide=state.spins_used===1&&!state.retry_unlocked&&!playerHasAward();$('resultDialog').close();if(guide){$('postSpinAdPanel').scrollIntoView({behavior:'smooth',block:'start'});}});
+  $('modalClose').addEventListener('click',()=>{const guide=state.spins_used===1&&!state.retry_unlocked&&!playerHasAward();$('resultDialog').close();if(guide&&!isPreviewTestMode()){$('postSpinAdPanel').scrollIntoView({behavior:'smooth',block:'start'});}});
   $('goToShareBtn').addEventListener('click',()=>{$('resultDialog').close();$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('viewTasksBtn').addEventListener('click',()=>{$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('copyBtn').addEventListener('click',copyLink);
@@ -252,6 +264,7 @@ async function init(){
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
 function initAdvertising(){
+  if(isPreviewTestMode()){ $('adStatus').textContent='Test mode: sponsored ads disabled to avoid invalid repeat impressions.';return; }
   const gpc=navigator.globalPrivacyControl===true;
   $('adChoicesBtn').classList.toggle('hidden',state.spins_used<1||gpc);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
@@ -265,7 +278,7 @@ function setAdConsent(value){
   location.reload();
 }
 function loadNativeAd(){
-  if(navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()==='decline')return;
+  if(isPreviewTestMode()||navigator.globalPrivacyControl===true||adScriptLoaded||state.spins_used<1||spinning||getAdPreference()==='decline')return;
   const container=$('container-c95b749f1554f30e51c974f2e212afef');
   if(!container)return;
   adScriptLoaded=true;
@@ -281,9 +294,9 @@ function loadNativeAd(){
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
   const s=state.spins_used;
-  $('postSpinAdPanel').classList.toggle('hidden',s<1);
-  if(s>=1&&!spinning&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
-  $('adChoicesBtn').classList.toggle('hidden',s<1||navigator.globalPrivacyControl===true);
+  $('postSpinAdPanel').classList.toggle('hidden',s<1||isPreviewTestMode());
+  if(s>=1&&!spinning&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
+  $('adChoicesBtn').classList.toggle('hidden',s<1||isPreviewTestMode()||navigator.globalPrivacyControl===true);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
   const awardVisible=playerHasAward();
   $('spinResultReceipt').classList.toggle('hidden',!awardVisible);
