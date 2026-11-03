@@ -6,8 +6,8 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 
 ## Completed in demo
 - Mobile-friendly 6-sector festive wheel.
-- Random first spin across all six equal sectors; the same unbiased randomness applies to the optional second spin, which is available only after a first-spin Try Again.
-- One free demo retry only after a first-spin Try Again; six random outcomes (Try Again plus five sample entries), each 1 in 6, so a retry does not guarantee a gift-draw entry. Five sample entries: Flipkart 50%-offer draw entry; Amazon 50%-offer draw entry; Meesho 50%-offer draw entry; ₹500 draw entry; ₹1,000 draw entry. These are *not* real offers, coupons or prizes and the merchants are not sponsors.
+- Clearly disclosed Stage 1: the warm-up spin always ends on Try Again (no prize or draw entry). It is not presented as a fair chance to win.
+- Stage 2 after the warm-up: one free demo gift-draw spin (no real rewarded ad connected), selecting one of five sample entries at random, 20% each: Flipkart 50%-offer draw entry; Amazon 50%-offer draw entry; Meesho 50%-offer draw entry; ₹500 draw entry; ₹1,000 draw entry. These are *not* real offers, coupons or prizes and the merchants are not sponsors.
 - Result modal presents two clearly labeled sharing tasks: 20 distinct WhatsApp participants and 5 group shares.
 - WhatsApp deep-link sharing, copyable invitation URL; 5-group button and browser-only self-report progress. Cannot verify WhatsApp group shares; cannot count actual unique human referrals from this static frontend.
 - Public reset control removed; the existing browser's demo spin state stays in localStorage. Not tamper-proof, does not confer real eligibility.
