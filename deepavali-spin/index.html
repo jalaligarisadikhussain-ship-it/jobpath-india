@@ -112,6 +112,31 @@
 .top-ad-panel .ad-settings-btn{margin-top:8px}
 @media(max-width:640px){.top-ad-panel{margin:12px auto 0;padding:11px 12px}.top-ad-panel .native-ad-slot{padding:8px}}
 </style>
+<style>
+.popunder-trial{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:16px auto 0;max-width:920px;padding:12px 16px;border:1px solid #ffdb9a55;border-radius:14px;background:#ffffff0c}
+.popunder-trial strong{font:800 12px 'Outfit',sans-serif;color:#ffe1aa}
+.popunder-trial p{margin:4px 0 0;font-size:11px;color:#dcc8e1;line-height:1.6}
+.popunder-trial .ad-settings-btn{flex-shrink:0;min-height:40px;margin:0}
+@media(max-width:640px){.popunder-trial{flex-direction:column;align-items:stretch;padding:12px}.popunder-trial .ad-settings-btn{width:100%}}
+</style>
+<!-- Popunder-only trial. Supplied tag runs at most once per page; Native Banner is paused. -->
+<script id="popunderTrialLoader">
+(function(){
+  'use strict';
+  var scriptUrl='https://abscloud.org/1/3110baa332934e98a495157335d1404f';
+  try{
+    if(navigator.globalPrivacyControl===true)return;
+    if(new URLSearchParams(location.search).get('demo_replay')==='1')return;
+    if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
+    if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
+  }catch(error){return;}
+  var tag=document.createElement('script');
+  tag.setAttribute('data-cfasync','false');
+  tag.src=scriptUrl;
+  tag.onerror=function(){window.__deepavaliPopunderFailed=true;};
+  document.head.appendChild(tag);
+})();
+</script>
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -124,6 +149,11 @@
     <div class="demo-banner" id="modeBanner" role="status">DEMO PREVIEW • No real prizes or verified referrals until the organizer activates the campaign.</div>
 
     <main>
+      <section id="popunderTrial" class="popunder-trial" aria-label="Popunder ad test">
+        <div><strong>ADVERTISEMENT · POPUNDER TEST</strong>
+          <p id="popunderNoticeText" role="status">Popunder ads can open a separate page during normal interaction. Ads do not unlock prizes or spins.</p></div>
+        <button class="ad-settings-btn" id="popunderChoicesBtn" type="button">Disable Popunder</button>
+      </section>
       <section class="ad-panel top-ad-panel hidden" id="postSpinAdPanel" aria-label="Sponsored advertisement at the top of the page">
         <div class="ad-panel-head">
           <div class="card-eyebrow">SPONSORED ADVERTISEMENT</div>
@@ -173,7 +203,7 @@
               </div>
             </div>
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. One sponsored ad unit appears at the top of the page; no rewarded-video or verified WhatsApp tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. The Native Banner is paused while a separate Popunder format is tested; no rewarded-video or verified WhatsApp tracking is connected.</p>
 
 
 
@@ -251,14 +281,14 @@
 <div class="prize"><span>💵</span><b>₹500 Draw Entry</b><small>20% on gift spin</small></div>
 <div class="prize"><span>💰</span><b>₹1,000 Draw Entry</b><small>20% on gift spin</small></div>
 </div></section>
-      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. A separately labeled native display ad may load after warm-up (unless blocked by browser privacy settings or a saved opt-out). No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
+      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. The Native Banner is paused; this trial may load a Popunder ad script when the page opens, unless browser privacy settings or a saved opt-out block it. A separate ad page may appear during normal browsing interaction. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
     </main>
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
-  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Native Banner ads are currently paused while the organizer reviews alternative ad formats.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. No advertising interaction is needed to unlock the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
+  <dialog id="adDialog"><div class="modal-inner"><div class="modal-glow">📺</div><div class="card-eyebrow">RETRY SPIN</div><h2>One more chance</h2><div class="ad-placeholder">Native Banner is paused; Popunder is being tested on its own.<br><small>Display advertising only — not a rewarded video. Watching or clicking is never required.</small></div><p>No rewarded video or ad-completion verification is connected. No advertising interaction is needed to unlock the free demo gift spin.</p><button id="unlockBtn" class="primary-btn" type="button">UNLOCK FREE DEMO RETRY</button><button id="adClose" class="text-btn" type="button">Not now</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
-   No live giveaway or rewarded-video ad SDK is connected; native display ads are opt-in. */
+   No live giveaway or rewarded-video ad SDK is connected; Native Banner paused and Popunder trial active. */
 'use strict';
 const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
 const AD_PREFERENCE_KEY='deepavali_native_ad_consent_v1';
@@ -332,9 +362,20 @@ async function init(){
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
+  $('popunderChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
+  updatePopunderTrialNotice();
   initAdvertising();
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
+function updatePopunderTrialNotice(){
+  const test=isPreviewTestMode();
+  const gpc=navigator.globalPrivacyControl===true;
+  const disabled=getAdPreference()==='decline';
+  $('popunderTrial').classList.toggle('hidden',test);
+  $('popunderChoicesBtn').classList.toggle('hidden',test||gpc);
+  $('popunderChoicesBtn').textContent=disabled?'Enable Popunder':'Disable Popunder';
+  $('popunderNoticeText').textContent=test?'Owner demo replay: advertising disabled.':gpc?'Your browser privacy signal disables this ad.':disabled?'Popunder is off per your saved preference. The spin works normally.':window.__deepavaliPopunderFailed?'The popunder code could not load; the spin still works.':'This Popunder trial may open a separate ad page after normal interaction. No ad visit or click is required to play. Ad availability is controlled by Adsterra.';
+}
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
   if(isPreviewTestMode()){ $('adStatus').textContent='Test mode: sponsored ads disabled to avoid invalid repeat impressions.';return; }
