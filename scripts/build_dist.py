@@ -29,7 +29,7 @@ for page in page_data.values():
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, dst)
 
-for filename in ('robots.txt', 'sitemap.xml', 'googlefcd24aba957dc07b.html'):
+for filename in ('robots.txt', 'sitemap.xml', 'feed.xml', 'googlefcd24aba957dc07b.html'):
     shutil.copyfile(ROOT / filename, DIST / filename)
 shutil.copytree(ROOT / 'assets', DIST / 'assets')
 public_json = ('jobs.json', 'sources.json', 'pages.json', 'exam-updates.json',
