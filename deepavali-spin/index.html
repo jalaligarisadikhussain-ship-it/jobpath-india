@@ -10,9 +10,19 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Deepavali Dhamaka 2026 — Spin & Win DEMO" />
-  <meta property="og:description" content="Festive preview: warm-up followed by a random sample gift-draw spin and optional native display advertising. No real prizes, rewarded-video ads, or verified referrals." />
+  <meta property="og:description" content="Festive Spin &amp; Win preview! Try the warm-up and random sample gift spin. DEMO only — no real prizes or discount coupons." />
+  <meta property="og:site_name" content="Deepavali Dhamaka" />
+  <meta property="og:image" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
+  <meta property="og:image:secure_url" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Deepavali Dhamaka festive Spin and Win demo banner with a colorful wheel; no real prizes" />
   <meta property="og:url" content="https://deepavali-dhamaka-spin-2026.onrender.com/" />
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🪔 Deepavali Dhamaka — Spin &amp; Win Demo" />
+  <meta name="twitter:description" content="Festive lucky wheel preview. No real prizes or coupons." />
+  <meta name="twitter:image" content="https://deepavali-dhamaka-spin-2026.onrender.com/og-preview.png" />
   <meta name="description" content="Deepavali Spin & Win: warm-up round followed by a random sample gift-draw spin. No real gifts are offered." />
   <title>Deepavali Dhamaka ✨ Spin & Win</title>
   <style>@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
@@ -101,6 +111,7 @@
         <p>Deepavali special Spin & Win! First play a warm-up spin with no prize, then unlock one free sample gift-draw spin. Only the gift-draw spin is random. Real eligibility would require verified referrals.</p>
         <div class="hero-chips"><span>🎡 Warm-up round (no prize)</span><span>🎁 Gift-draw spin next</span><span>🤝 20 referrals + 5 groups (demo tasks)</span></div>
         <a href="#spinGame" class="hero-jump">🎡 Go to Lucky Wheel</a>
+        <button type="button" id="shareWebsiteBtn" class="secondary-btn" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin:14px 8px 0">↗ Share on WhatsApp</button>
       </section>
 
       <section class="game-layout" aria-label="Spin and win game">
@@ -285,6 +296,7 @@ async function init(){
   }
   render();tick();setInterval(tick,1000);
   $('spinBtn').addEventListener('click',spin);
+  $('shareWebsiteBtn').addEventListener('click',shareWebsite);
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
   $('unlockBtn').addEventListener('click',unlockRetry);
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
@@ -412,6 +424,11 @@ async function copyLink(){
   }
   $('copyStatus').textContent=copied?'Link copied. Open WhatsApp and choose the contacts yourself.':'Copy was blocked. Select the referral URL above and copy it manually.';
   $('copyBtn').textContent=copied?'Copied!':'Copy';
+}
+function shareWebsite(){
+  const url=new URL(location.pathname,location.origin).toString();
+  const message='🪔 Deepavali Dhamaka — Spin & Win DEMO! Try the festive spin wheel (sample entries only; no real gifts or coupons): '+url;
+  window.open('https://wa.me/?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
 }
 function shareLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up spin first (no prize), then one random sample gift-draw entry. No real gifts or discounts yet: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
 function shareGroupLink(){const message='🪔 Deepavali Spin & Win preview! Warm-up first, then a random sample gift-draw entry. No real prizes or coupons. Share only if this group allows invitations: '+referralUrl();const url='https://wa.me/?text='+encodeURIComponent(message);window.open(url,'_blank','noopener,noreferrer');}
