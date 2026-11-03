@@ -47,6 +47,13 @@
 .ad-status{font-size:11px!important;color:#e6d2e9!important}
 @media(max-width:640px){.ad-panel{padding:18px 14px;margin-top:20px}.native-ad-slot{padding:9px}}
 </style>
+<style>
+.result-receipt{margin:18px 0 6px;padding:18px 16px;border:1px solid #ffdb9a9e;border-radius:17px;background:linear-gradient(135deg,#f9ba6324,#d166a421);text-align:center}
+.result-receipt .result-caption{font:900 11px 'Outfit',sans-serif;letter-spacing:.12em;color:#ffe4a8;text-transform:uppercase}
+.result-receipt strong{display:block;font:800 clamp(21px,4.8vw,28px) 'Outfit',sans-serif;color:#fff5de;margin:9px 0}
+.result-receipt p{font-size:12px;color:#ead4ed;line-height:1.65;margin:7px auto 13px;max-width:420px}
+.result-receipt .secondary-btn{margin-top:8px}
+</style>
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -90,6 +97,12 @@
             
           </div>
           <p class="micro" id="spinHelp">First spin is a disclosed warm-up that always ends on Try Again without a prize. The second spin randomly picks one of five sample gift entries (20% each). No rewarded video or verified referral tracking is connected.</p>
+          <div id="spinResultReceipt" class="result-receipt hidden" role="status" aria-live="polite">
+            <div class="result-caption">🎁 Your saved demo result</div>
+            <strong id="receiptTitle">Sample gift entry</strong>
+            <p id="receiptCopy">This is a sample draw entry, not a redeemable gift, cash payment, or real discount code.</p>
+            <button id="viewTasksBtn" class="secondary-btn" type="button">📲 View 20 Members + 5 Groups Tasks</button>
+          </div>
       <section class="ad-panel hidden" id="postSpinAdPanel" aria-label="Optional sponsored advertisement after warm-up spin">
         <div class="ad-panel-head">
           <div><div class="card-eyebrow">SPONSORED CONTENT</div><h2>Sponsored Advertisement</h2></div>
@@ -211,6 +224,14 @@ async function init(){
     $('modeBanner').textContent='DEMO PREVIEW • Spins are saved only in this browser. Referrals and gifts are not real or verified.';
     if(ref) $('spinHelp').textContent='You opened a preview referral link. Real referrals are counted only with the verified production backend.';
   }
+  // Restore the saved sector at the pointer on refresh without advancing a spin.
+  const displayedSector=playerHasAward()?SEGMENTS.indexOf(state.award):state.spins_used>0?0:-1;
+  if(displayedSector>=0){
+    angle=(360-(displayedSector+.5)*60)%360;
+    wheel.style.transition='none';
+    wheel.style.transform='rotate('+angle+'deg)';
+    requestAnimationFrame(()=>{wheel.style.transition='';});
+  }
   render();tick();setInterval(tick,1000);
   $('spinBtn').addEventListener('click',spin);
   $('retryBtn').addEventListener('click',()=>{$('adDialog').showModal();});
@@ -218,6 +239,7 @@ async function init(){
   $('adClose').addEventListener('click',()=>{$('adDialog').close();});
   $('modalClose').addEventListener('click',()=>{const guide=state.spins_used===1&&!state.retry_unlocked&&!playerHasAward();$('resultDialog').close();if(guide){$('postSpinAdPanel').scrollIntoView({behavior:'smooth',block:'start'});}});
   $('goToShareBtn').addEventListener('click',()=>{$('resultDialog').close();$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
+  $('viewTasksBtn').addEventListener('click',()=>{$('shareArea').scrollIntoView({behavior:'smooth',block:'start'});});
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
@@ -260,7 +282,13 @@ function render(){
   if(s>=1&&!spinning&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
   $('adChoicesBtn').classList.toggle('hidden',s<1||navigator.globalPrivacyControl===true);
   $('adChoicesBtn').textContent=getAdPreference()==='decline'?'Enable advertising':'Hide advertisement';
-  $('spinsRemaining').textContent=playerHasAward()?'ENTRY REVEALED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
+  const awardVisible=playerHasAward();
+  $('spinResultReceipt').classList.toggle('hidden',!awardVisible);
+  if(awardVisible){
+    $('receiptTitle').textContent=OUTCOMES[state.award]?.title||'Sample gift-draw entry';
+    $('receiptCopy').textContent='Your result is saved in this browser. This is a demo DRAW ENTRY only, not cash, a real coupon, or a guaranteed prize. See the sharing tasks below.';
+  }
+  $('spinsRemaining').textContent=awardVisible?'SAMPLE ENTRY SAVED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
   $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
   $('refInline').textContent=Math.min(state.referrals||0,20)+' / 20';
   const groups=Math.max(0,Math.min(5,Number(state.group_share_claims)||0));
@@ -278,7 +306,7 @@ function render(){
   else if(s===1){$('statusTitle').textContent='Gift-draw spin ready 🎁';$('statusCopy').textContent='One of five sample gift-draw entries will be selected randomly, 20% each. These are not actual prizes or coupons.';}
   else{$('statusTitle').textContent='Demo round finished';$('statusCopy').textContent='The warm-up and gift-draw spin are complete. No real-world prize is awarded in the demo.';}
   $('spinBtn').disabled=busy||spinning||s>=2||playerHasAward()||(s===1&&!state.retry_unlocked);
-  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'DEMO COMPLETED':s===1?'🎁 SPIN FOR GIFT ENTRY':'✦ WARM-UP SPIN ✦';
+  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'VIEW SAVED RESULT BELOW':s===1?'🎁 SPIN FOR GIFT ENTRY':'✦ WARM-UP SPIN ✦';
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
   $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
