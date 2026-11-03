@@ -49,6 +49,7 @@ jobs:
             node --test tests/*.test.mjs
             # Only publish generated, tracked pages and supporting SEO/host files.
             git add -u -- '*.html' robots.txt sitemap.xml netlify.toml
+            git add -- feed.xml
             if git diff --cached --quiet; then
               echo "Public HTML is already in sync with verified source data."
               exit 0
