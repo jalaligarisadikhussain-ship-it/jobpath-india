@@ -6,6 +6,9 @@ from validate_ads_config import load_and_validate
 from adsense_identity import ADSENSE_META_TAG
 from site_config import site_origin, search_primary_origin
 from xml.sax.saxutils import escape as xml_escape
+from urllib.parse import quote
+import xml.etree.ElementTree as ET
+from email.utils import format_datetime
 root=Path(__file__).resolve().parent.parent
 build_date_utc=datetime.datetime.now(datetime.timezone.utc).date().isoformat()
 base=site_origin()
@@ -120,12 +123,29 @@ for key,info in pages.items():
  schema={'@context':'https://schema.org','@graph':[{'@type':'WebSite','name':'JobPath India','url':seo_primary+'/','inLanguage':'en-IN','description':'Independent non-government recruitment research website.'},{'@type':'WebPage','name':info['title'],'url':canonical_url,'description':info['description'],'inLanguage':'en-IN','isPartOf':{'@id':seo_primary+'/'},'breadcrumb':{'@type':'BreadcrumbList','itemListElement':breadcrumb}}]}
  static_nav=' '.join(f'<a href="{p}">{html.escape(t)}</a>' for t,p in nav)
  text=f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102e5f">{ADSENSE_META_TAG}<title>{title}</title><meta name="description" content="{desc}"><meta name="robots" content="{meta_status}"><link rel="canonical" href="{html.escape(canonical_url,quote=True)}"><meta property="og:type" content="website"><meta property="og:site_name" content="JobPath India"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:url" content="{html.escape(canonical_url,quote=True)}"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="{title}"><meta name="twitter:description" content="{desc}"><link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg"><link rel="stylesheet" href="/assets/css/styles.css?v=no-publisher-iframe-20261031"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(',',':'))}</script><script id="jobpath-data" type="application/json">{inline_json}</script>{adsense_loader}<script type="module" src="/assets/js/app.mjs?v=no-publisher-iframe-20261031"></script><script type="module" src="/assets/js/analytics.mjs?v=ga4-2026-10-29"></script></head><body data-page="{key}"><a class="skip" href="#main">Skip to main content</a><div id="app"><header class="site-header"><div class="wrap"><nav aria-label="Navigation" class="nav-wrap">{static_nav}</nav></div></header><div class="info-banner"><div class="wrap"><strong>Independent information website.</strong> Not affiliated with any government agency. Refer to official source notices and check last verification dates.</div></div><main id="main"><div class="wrap"><section class="page-intro">{fallback_content(key)}</section></div></main><footer class="footer"><div class="wrap">JobPath India · Independent recruitment information · <a href="/disclaimer/">Disclaimer</a> · <button type="button" class="analytics-choice-trigger" data-analytics-choices>Analytics choices</button></div></footer></div></body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#102e5f">{ADSENSE_META_TAG}<title>{title}</title><meta name="description" content="{desc}"><meta name="robots" content="{meta_status}"><link rel="canonical" href="{html.escape(canonical_url,quote=True)}"><meta property="og:type" content="website"><meta property="og:site_name" content="JobPath India"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:url" content="{html.escape(canonical_url,quote=True)}"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="{title}"><meta name="twitter:description" content="{desc}"><link rel="alternate" type="application/rss+xml" title="JobPath India reviewed government recruitment notices" href="{html.escape(base+'/feed.xml',quote=True)}"><link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg"><link rel="stylesheet" href="/assets/css/styles.css?v=no-publisher-iframe-20261031"><script type="application/ld+json">{json.dumps(schema,ensure_ascii=False,separators=(',',':'))}</script><script id="jobpath-data" type="application/json">{inline_json}</script>{adsense_loader}<script type="module" src="/assets/js/app.mjs?v=no-publisher-iframe-20261031"></script><script type="module" src="/assets/js/analytics.mjs?v=ga4-2026-10-29"></script></head><body data-page="{key}"><a class="skip" href="#main">Skip to main content</a><div id="app"><header class="site-header"><div class="wrap"><nav aria-label="Navigation" class="nav-wrap">{static_nav}</nav></div></header><div class="info-banner"><div class="wrap"><strong>Independent information website.</strong> Not affiliated with any government agency. Refer to official source notices and check last verification dates.</div></div><main id="main"><div class="wrap"><section class="page-intro">{fallback_content(key)}</section></div></main><footer class="footer"><div class="wrap">JobPath India · Independent recruitment information · <a href="/disclaimer/">Disclaimer</a> · <button type="button" class="analytics-choice-trigger" data-analytics-choices>Analytics choices</button></div></footer></div></body></html>
 '''
  target=root/info['path']/'index.html';target.parent.mkdir(parents=True,exist_ok=True);target.write_text(text)
 urls=[base+'/'+(v['path']+'/' if v['path'] else '') for k,v in pages.items() if k not in noindex] if base==seo_primary else []
 sitemap='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{xml_escape(url)}</loc></url>\n' for url in urls)+'</urlset>\n'
 (root/'sitemap.xml').write_text(sitemap)
+# RSS contains only reviewed, non-demo, not-yet-expired records.
+# The original recruiting authority can still amend or withdraw a notice.
+rss=ET.Element('rss',{'version':'2.0'})
+channel=ET.SubElement(rss,'channel')
+for tag,value in [('title','JobPath India — reviewed government recruitment notices'),('link',base+'/'),('description','Independent Indian recruitment summaries. Inclusion does not guarantee current availability. Check the issuing authority and corrections before applying.'),('language','en-IN')]:
+ ET.SubElement(channel,tag).text=value
+ET.SubElement(channel,'lastBuildDate').text=format_datetime(datetime.datetime.now(datetime.timezone.utc),usegmt=True)
+reviewed=[j for j in jsdata['/data/jobs.json'] if j.get('verified') is True and not j.get('isDemo') and j.get('status')=='open' and isinstance(j.get('lastDate'),str) and j.get('lastDate')>=build_date_utc and j.get('lastVerifiedDate')]
+reviewed.sort(key=lambda j:(j['lastDate'],j.get('organization',''),j.get('title','')))
+for job in reviewed[:80]:
+ item=ET.SubElement(channel,'item')
+ ET.SubElement(item,'title').text=str(job.get('title','Recruitment notice'))+' — '+str(job.get('organization','Issuing authority'))
+ ET.SubElement(item,'link').text=base+'/job/?id='+quote(str(job['id']),safe='')
+ ET.SubElement(item,'guid',{'isPermaLink':'false'}).text='jobpath:'+str(job['id'])
+ ET.SubElement(item,'description').text='Application deadline in recorded notice: '+job['lastDate']+'; Last reviewed: '+job['lastVerifiedDate']+'. Independent summary; verify official updates and eligibility.'
+ET.indent(rss,space='  ')
+(root/'feed.xml').write_text(ET.tostring(rss,encoding='unicode',xml_declaration=True)+'\n',encoding='utf-8')
 (root/'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n')
 (root/'netlify.toml').write_text('''[build]
   command = "python3 scripts/build_dist.py"
