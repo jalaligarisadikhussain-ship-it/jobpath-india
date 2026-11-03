@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#24103c" />
-  <meta name="description" content="A festive Deepavali Spin & Win preview with a transparent two-spin limit and share-to-qualify draw." />
+  <meta name="description" content="Deepavali Spin & Win demo: fixed Try Again first spin, random gift-entry second spin." />
   <title>Deepavali Dhamaka ✨ Spin & Win</title>
   <style>@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 :root {--bg:#1b0c2d;--bg2:#33123d;--ink:#fff4f0;--muted:#cbb6d4;--gold:#ffcd72;--gold2:#f5a23d;--pink:#ff91ad;--panel:#ffffff10;--stroke:#ffffff24;--green:#36bd79;}
@@ -34,7 +34,7 @@
 
       <section class="game-layout" aria-label="Spin and win game">
         <div class="wheel-panel">
-          <div class="panel-heading"><span>✦ THE LUCKY WHEEL</span><span id="spinsRemaining">2 SPINS LEFT</span></div>
+          <div class="panel-heading"><span>✦ THE LUCKY WHEEL</span><span id="spinsRemaining">FIRST SPIN READY</span></div>
           <div class="wheel-wrap">
             <div class="wheel-aura"></div>
             <div class="wheel-pointer" aria-hidden="true"></div>
@@ -69,7 +69,7 @@
           <div class="glass-card status-card">
             <div class="card-eyebrow">🎁 YOUR STATUS</div>
             <h2 id="statusTitle">Ready for your spin?</h2>
-            <p id="statusCopy">Tap SPIN NOW to see your result. Prizes shown are preview draw categories, not guaranteed gifts.</p>
+            <p id="statusCopy">First demo spin always shows Try Again; second spin randomly chooses one of five sample prize entries.</p>
             <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
             <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
@@ -164,16 +164,16 @@ function render(){
   $('refFill').style.width=Math.min((state.referrals||0)*5,100)+'%';
   $('refBar').setAttribute('aria-valuenow',String(Math.min(state.referrals||0,20)));
   const eligible=playerHasAward() && state.referrals >=20;
-  if(eligible){$('statusTitle').textContent='Task complete! 🎊';$('statusCopy').textContent='You have reached 20 referred participants. Your entry awaits organizer review and the official draw.';}
-  else if(playerHasAward()){$('statusTitle').textContent='Gift draw entry unlocked! 🎁';$('statusCopy').textContent='Invite 20 unique participating people to qualify. Sending messages or link clicks alone do not count as verified entries.';}
-  else if(s===0){$('statusTitle').textContent='Ready for your spin?';$('statusCopy').textContent='Spin for a festive draw category or Try Again. No prize is guaranteed.';}
-  else if(s===1 && !state.retry_unlocked){$('statusTitle').textContent='Try Again ✨';$('statusCopy').textContent='You can unlock just one final retry. Rewarded ads are not active in this preview.';}
-  else if(s===1){$('statusTitle').textContent='One more chance!';$('statusCopy').textContent='Your final spin is available now. Good luck!';}
-  else{$('statusTitle').textContent='Spins finished';$('statusCopy').textContent='You used the maximum two spins. Try Again is not a prize and does not qualify for the draw.';}
+  if(eligible){$('statusTitle').textContent='Demo threshold reached!';$('statusCopy').textContent='A future real draw would need 20 unique server-verified referrals and organizer approval.';}
+  else if(playerHasAward()){$('statusTitle').textContent='Sample draw entry revealed! 🎁';$('statusCopy').textContent='Your random result: '+(OUTCOMES[state.award]?.title||'draw entry')+' This is a demo category, not an actual gift or discount.';}
+  else if(s===0){$('statusTitle').textContent='First spin: Try Again';$('statusCopy').textContent='First demo spin always lands on Try Again. After the free demo retry, second spin randomly selects a gift category.';}
+  else if(s===1 && !state.retry_unlocked){$('statusTitle').textContent='Try Again ✨';$('statusCopy').textContent='Unlock your one remaining demo spin. No actual sponsored ad is playing.';}
+  else if(s===1){$('statusTitle').textContent='Random gift entry spin!';$('statusCopy').textContent='Your second demo spin randomly selects one of five sample gift entries, 20% chance each.';}
+  else{$('statusTitle').textContent='Demo finished';$('statusCopy').textContent='Your demo entry is revealed. No real prize was awarded.';}
   $('spinBtn').disabled=busy||spinning||s>=2||playerHasAward()||(s===1&&!state.retry_unlocked);
-  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'SPINS COMPLETE':'✦ SPIN NOW ✦';
+  $('spinBtn').textContent=spinning?'SPINNING…':s>=2||playerHasAward()?'DEMO COMPLETED':s===1?'🎁 SPIN FOR ENTRY':'✦ FIRST SPIN ✦';
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
-  $('retryBtn').textContent=mode==='demo'?'🎞 Unlock demo retry':'🎞 Unlock one retry';
+  $('retryBtn').textContent=mode==='demo'?'🎞 FREE DEMO RETRY (NO AD)':'🎞 Unlock one retry';
   $('resetDemoBtn').classList.toggle('hidden',mode!=='demo'||s===0);
   $('shareArea').classList.toggle('hidden',!playerHasAward());
   if(playerHasAward()){$('refLink').value=referralUrl();}
