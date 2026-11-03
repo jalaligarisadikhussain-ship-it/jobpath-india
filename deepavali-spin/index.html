@@ -194,8 +194,7 @@ async function init(){
 function playerHasAward(){return Boolean(state.award && state.award!=='TRY_AGAIN');}
 function render(){
   const s=state.spins_used;
-  const left=Math.max(0,2-s);
-  $('spinsRemaining').textContent=left+' SPIN'+(left===1?'':'S')+' LEFT';
+  $('spinsRemaining').textContent=playerHasAward()?'ENTRY REVEALED':s===0?'1 FREE SPIN':s===1&&!state.retry_unlocked?'RETRY AVAILABLE':s===1?'FINAL SPIN READY':'ROUND COMPLETE';
   $('refProgress').textContent=Math.min(state.referrals||0,20)+' / 20';
   $('refInline').textContent=Math.min(state.referrals||0,20)+' / 20';
   const groups=Math.max(0,Math.min(5,Number(state.group_share_claims)||0));
