@@ -16,8 +16,9 @@ app.use((req,res,next)=>{res.set('X-Content-Type-Options','nosniff');res.set('X-
 app.use((req,res,next)=>{
  const origin=req.get('origin');
  if(origin===SITE){res.set('Access-Control-Allow-Origin',SITE);res.set('Vary','Origin');res.set('Access-Control-Allow-Methods','GET,POST,DELETE,OPTIONS');res.set('Access-Control-Allow-Headers','Content-Type,Authorization');}
- if(req.method==='OPTIONS')return res.sendStatus(origin&&! [SITE].includes(origin)?403:204);
- if(req.path.startsWith('/api/')&&origin&&origin!==SITE)return fail(res,403,'Origin not permitted.');
+ const sameApiOrigin=origin==='https://'+req.get('host');
+ if(req.method==='OPTIONS')return res.sendStatus(origin&&origin!==SITE&&!sameApiOrigin?403:204);
+ if(req.path.startsWith('/api/')&&origin&&origin!==SITE&&!sameApiOrigin)return fail(res,403,'Origin not permitted.');
  next();
 });
 app.use(express.json({limit:'2mb',strict:true}));
@@ -34,6 +35,14 @@ async function migrate(){
 migrate().catch(e=>{console.error('Database initialization unavailable:',e.message);});
 app.get('/healthz',asyncRoute(async(req,res)=>{try{if(!DB)throw Error('missing DB');await DB.query('SELECT 1');res.json({status:'ok',database:'connected',prizes:'demo only'});}catch{res.status(503).json({status:'degraded',database:'not ready'});}}));
 app.get('/api/config',(req,res)=>res.json({trackingReady:dbReady,prizesEnabled:false,spinMode:'demo',referrals:'manual review',groupProofs:'manual review'}));
+app.get('/api/public-counts/:code',dbRequired,asyncRoute(async(req,res)=>{
+ const code=String(req.params.code||'').toUpperCase();
+ if(!/^SPIN-[0-9A-F]{16}$/.test(code))return fail(res,400,'Invalid tracking code.');
+ const p=await DB.query('SELECT id FROM dd_participants WHERE referral_code=$1',[code]);
+ if(!p.rows.length)return fail(res,404,'No tracking account for that code.');
+ const c=await DB.query("SELECT (SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='verified') verified_referrals,(SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='pending') pending_referrals,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='approved') approved_groups,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='pending') pending_groups",[p.rows[0].id]);
+ res.json({referralCode:code,...c.rows[0],prizesEnabled:false});
+}));
 async function visitor(req,res,next){
  const h=req.get('authorization')||'';
  if(!/^Bearer [A-Za-z0-9_-]{30,100}$/.test(h))return fail(res,401,'Registration session missing.');
@@ -102,6 +111,9 @@ function adminOrigin(req,res,next){
  next();
 }
 const adminCsp=(req,res,next)=>{res.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");next();};
+app.get('/join',(req,res)=>res.sendFile(path.join(__dirname,'public','join.html')));
+app.get('/join/app.js',(req,res)=>res.sendFile(path.join(__dirname,'public','join.js')));
+app.get('/join/style.css',(req,res)=>res.sendFile(path.join(__dirname,'public','join.css')));
 app.get('/admin',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.html')));
 app.get('/admin/app.js',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.js')));
 app.get('/admin/admin.css',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.css')));
