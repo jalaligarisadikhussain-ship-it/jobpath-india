@@ -153,7 +153,7 @@
         <p>Deepavali special Spin & Win! First play a warm-up spin with no prize, then unlock one free sample gift-draw spin. Only the gift-draw spin is random. Real eligibility would require verified referrals.</p>
         <div class="hero-chips"><span>🎡 Warm-up round (no prize)</span><span>🎁 Gift-draw spin next</span><span>🤝 20 referrals + 5 groups (demo tasks)</span></div>
         <a href="#spinGame" class="hero-jump">🎡 Go to Lucky Wheel</a>
-        <p class="preview-share-tip">📈 <a class="joinTrackingLink" href="./participate.html">Join & Track Referrals</a> · A separate tracking account records pending joins and verified proofs. No real gifts are offered.</p>
+        <p class="preview-share-tip">🪔 <a class="joinTrackingLink" href="./participate.html">Register for the preview</a> (optional). Registration is privately reviewed by the organizer; no real gifts are offered.</p>
         <div class="preview-share-actions">
           <button type="button" id="shareWebsiteBtn" class="secondary-btn">↗ Share Website Link</button>
           <button type="button" id="shareBannerBtn" class="secondary-btn">🖼 Share Banner Image</button>
@@ -217,28 +217,24 @@
             <div class="card-eyebrow">🎁 YOUR STATUS</div>
             <h2 id="statusTitle">Ready for your spin?</h2>
             <p id="statusCopy">The first spin is a warm-up with no prize. Then a free demo gift-draw spin picks one random sample entry.</p>
-            <div class="progress-top"><span>Valid referred participants</span><b id="refProgress">0 / 20</b></div>
-            <div class="progress-track" role="progressbar" aria-label="Verified referrals" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="refBar"><div id="refFill"></div></div>
             <div id="shareArea" class="share-area hidden">
               <h3 class="share-task-heading" id="shareTasksHeading">🎁 GIFT ENTRY → 20 MEMBERS → 5 GROUPS</h3>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Personally send the link to 20 interested people on WhatsApp. For a real draw, 20 unique people must actually join and be verified. Sending 20 messages alone does not count as 20 referrals.</p>
-                <div class="share-heading" id="trackingLinkHeading">Preview referral link — join to activate verified tracking</div>
-                <p class="small-note"><a class="joinTrackingLink" href="./participate.html">Create tracking account / check verification status</a></p>
-                <p id="trackingLoadStatus" class="small-note" role="status" aria-live="polite">No participant tracking account connected in this browser.</p>
+                <div class="share-heading">Your invitation link</div>
+                <p class="small-note"><a class="joinTrackingLink" href="./participate.html">Register participation (optional)</a> · Confirmation and review remain private.</p>
                 <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button" aria-label="Copy preview referral link">Copy</button></div>
                 <p class="ref-copy-status" id="copyStatus" role="status" aria-live="polite"></p>
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
-                <p class="small-note">Manually verified referred participants: <b id="refInline">0 / 20</b>. Opens and shares alone are not verified joins.</p>
+                <p class="small-note">Shared links are invitations only. Actual registrations are reviewed privately by the organizer; sharing does not automatically count as a verified join.</p>
               </div>
 
               <div class="share-task-card">
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Share to a WhatsApp group</button>
-                <div class="group-meter" id="groupProgress" aria-live="polite">0 / 5 groups manually approved</div>
-                <p class="small-note"><a class="joinTrackingLink" href="./participate.html">Submit redacted group screenshot for private review</a> (not automatic delivery proof).</p>
+                <p class="small-note"><a class="joinTrackingLink" href="./participate.html">Submit optional redacted screenshot</a> for private organizer review. It does not prove WhatsApp delivery automatically.</p>
                 <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
               <p class="share-task-note">REAL RECORDS / DEMO PRIZES: Registered participants and redacted screenshots can be recorded for manual review when the tracking database is connected. Neither link clicks nor screenshots automatically prove real participation. No real prize or 50% discount is awarded.</p>
@@ -334,13 +330,12 @@ async function init(){
     requestAnimationFrame(()=>{wheel.style.transition='';});
   }
   render();tick();setInterval(tick,1000);
-  // Never count WhatsApp clicks as verified joins; only fetch independent review totals.
+  // Signup remains available; visitor referral source is carried to the ad-free join page.
   const incomingRef=new URL(location.href).searchParams.get('ref');
   if(incomingRef&&/^SPIN-[0-9A-F]{16}$/i.test(incomingRef)){
     document.querySelectorAll('.joinTrackingLink').forEach(link=>link.href='./participate.html?ref='+encodeURIComponent(incomingRef));
   }
-  refreshTrackingSnapshot();
-  setInterval(()=>{if(document.visibilityState==='visible')refreshTrackingSnapshot();},60000);
+  preparePublicShareCode();
   $('spinBtn').addEventListener('click',spin);
   $('shareWebsiteBtn').addEventListener('click',shareWebsite);
   $('shareBannerBtn').addEventListener('click',shareBannerImage);
@@ -361,41 +356,24 @@ async function init(){
   updateSocialBarTrialNotice();
   initAdvertising();
 }
-const TRACKING_API='https://deepavali-dhamaka-tracking-api.onrender.com';
 const PUBLIC_TRACKER_KEY='deepavali_public_tracker_code_v1';
-let verifiedTracking=null;
-// Only PUBLIC referral codes are stored on the ad-supported spin site.
-// Participant credentials and private screenshot records remain on the separate ad-free API origin.
-async function refreshTrackingSnapshot(){
-  let code='';
+let ownShareCode='';
+function preparePublicShareCode(){
+  // This is a public invitation code, never an authentication token or hidden count.
   try{
-    const url=new URL(location.href);
-    const incoming=url.searchParams.get('tracker')||'';
+    const u=new URL(location.href);
+    const incoming=u.searchParams.get('tracker')||'';
     if(/^SPIN-[0-9A-F]{16}$/i.test(incoming)){
-      code=incoming.toUpperCase();
-      localStorage.setItem(PUBLIC_TRACKER_KEY,code);
-      url.searchParams.delete('tracker');
-      history.replaceState(null,'',url.pathname+url.search+url.hash);
-    }else code=localStorage.getItem(PUBLIC_TRACKER_KEY)||'';
+      ownShareCode=incoming.toUpperCase();
+      localStorage.setItem(PUBLIC_TRACKER_KEY,ownShareCode);
+      u.searchParams.delete('tracker');
+      history.replaceState(null,'',u.pathname+u.search+u.hash);
+    }else{
+      const saved=localStorage.getItem(PUBLIC_TRACKER_KEY)||'';
+      if(/^SPIN-[0-9A-F]{16}$/.test(saved))ownShareCode=saved;
+    }
   }catch{}
-  if(!/^SPIN-[0-9A-F]{16}$/.test(code)){
-    verifiedTracking=null;
-    $('trackingLoadStatus').textContent='Create a tracking account to count independently reviewed joins. Demo sharing does not verify people.';
-    return;
-  }
-  try{
-    const reply=await fetch(TRACKING_API+'/api/public-counts/'+encodeURIComponent(code),{cache:'no-store'});
-    if(!reply.ok)throw new Error('Tracking counts are not available yet.');
-    const data=await reply.json();
-    if(data.referralCode!==code)throw new Error('Unexpected tracking status.');
-    verifiedTracking=data;
-    $('trackingLinkHeading').textContent='Registered referral link — counts require manual review';
-    $('trackingLoadStatus').textContent='Tracking connected · '+data.pending_referrals+' joins and '+data.pending_groups+' group proofs pending review. No real prizes are active.';
-    render();
-  }catch(e){
-    verifiedTracking=null;
-    $('trackingLoadStatus').textContent=e.message+' Please use Join & Track for more details.';
-  }
+  render();
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
 function updateSocialBarTrialNotice(){
@@ -459,13 +437,6 @@ function render(){
     $('receiptCopy').textContent='Your result is saved in this browser. This is a demo DRAW ENTRY only, not cash, a real coupon, or a guaranteed prize. See the sharing tasks below.';
   }
   $('spinsRemaining').textContent=awardVisible?'SAMPLE ENTRY SAVED':s===0?'WARM-UP ROUND':s===1&&!state.retry_unlocked?'GIFT SPIN TO UNLOCK':s===1?'GIFT SPIN READY':'ROUND COMPLETE';
-  const verified=verifiedTracking?Math.min(Number(verifiedTracking.verified_referrals)||0,20):0;
-  const groups=verifiedTracking?Math.min(Number(verifiedTracking.approved_groups)||0,5):0;
-  $('refProgress').textContent=verified+' / 20';
-  $('refInline').textContent=verified+' / 20';
-  $('groupProgress').textContent=groups+' / 5 group screenshot reviews approved — not direct WhatsApp delivery verification';
-  $('refFill').style.width=(verified*5)+'%';
-  $('refBar').setAttribute('aria-valuenow',String(verified));
   const eligible=mode==='live' && state.prizes_confirmed===true && playerHasAward() && state.referrals>=20 && Number(state.group_shares_verified)>=5;
   if(eligible){$('statusTitle').textContent='Demo threshold reached!';$('statusCopy').textContent='A future real draw would need 20 unique server-verified referrals and organizer approval.';}
   else if(playerHasAward()){$('statusTitle').textContent='Sample draw entry revealed! 🎁';$('statusCopy').textContent='Your random result: '+(OUTCOMES[state.award]?.title||'draw entry')+' This is a demo category, not an actual gift or discount.';}
@@ -484,7 +455,7 @@ function render(){
 }
 function referralUrl(){
   const u=new URL(location.href);u.search='';u.hash='';
-  u.searchParams.set('ref',verifiedTracking?.referralCode||state.referral_code);
+  u.searchParams.set('ref',ownShareCode||state.referral_code);
   return u.toString();
 }
 function cryptoGiftIndex(){const a=new Uint32Array(1);const max=Math.floor(4294967296/5)*5;do{crypto.getRandomValues(a);}while(a[0]>=max);return 1+(a[0]%5);}
