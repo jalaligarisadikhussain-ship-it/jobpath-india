@@ -4,6 +4,7 @@ from pathlib import Path
 import json,html,datetime,re
 from validate_ads_config import load_and_validate
 from adsense_identity import ADSENSE_META_TAG
+# Ownership tag follows the current AdSense publisher; ad serving remains separately gated.
 from site_config import site_origin, search_primary_origin
 from xml.sax.saxutils import escape as xml_escape
 from urllib.parse import quote
