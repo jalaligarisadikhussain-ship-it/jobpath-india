@@ -235,7 +235,7 @@
                 <div class="share-target"><strong>20 PEOPLE</strong><small>WhatsApp contacts</small></div>
                 <div class="share-target"><strong>5 GROUPS</strong><small>WhatsApp groups</small></div>
               </div>
-              <p class="small-note">Registration-free tracking counts referred <strong>browsers that actually begin spinning</strong>, not WhatsApp sends or verified people. Five redacted group screenshots may be approved privately by the organizer. No prizes are active.</p>
+              <p class="small-note">Registration-free tracking counts referred <strong>browsers that actually begin spinning</strong>, not WhatsApp sends or verified people. The 5-group WhatsApp sharing goal is optional and is not automatically verifiable. No screenshots are required to play or share. No prizes are active.</p>
               <p id="anonStatus" class="anon-status" role="status">Checking registration-free tracking…</p>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
@@ -253,9 +253,7 @@
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Open WhatsApp to share in a group</button><p id="groupShareFeedback" class="ref-copy-status" aria-live="polite"></p>
-                <div class="anon-metric"><strong id="anonGroups">— / 5</strong><p>Group screenshots approved after private human review — NOT direct WhatsApp delivery confirmation.</p></div>
-                <button type="button" class="whatsapp-btn" id="proofOpenBtn">📷 Submit 5 Redacted Group Screenshots</button>
-                <p class="share-verification-note">Five different allowed group screenshots, one per group. Blur phone numbers, faces and members before uploading. Organizer approval is required; no login needed.</p>
+                <p class="share-verification-note">5 WhatsApp group sharing task ni voluntary ga complete cheyyandi. Group select chesi WhatsApp lo Send press cheyyandi. <strong>Screenshot upload avasaram ledu.</strong> Website actual Send ni verify cheyyadu, kabatti false 5/5 completion chupinchadu.</p>
                 <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
               <p class="share-task-note">NO REGISTRATION REQUIRED · DEMO ONLY: Spin → sample gift entry → share with 20 interested people and 5 allowed WhatsApp groups. The website cannot automatically verify WhatsApp delivery or unique people. A WhatsApp message can be confirmed as sent only inside WhatsApp; this website receives no Send or delivery event and does not display a false completed counter. No real prize, cash or 50% coupon is awarded.</p>
@@ -320,8 +318,6 @@ async function anonFetch(route,options={}){
 }
 function drawAnonStats(){
  $('anonProgress').textContent=anonData?Math.min(20,anonData.engagedBrowserVisits)+' / 20':'— / 20';
- $('anonGroups').textContent=anonData?Math.min(5,anonData.approvedGroups)+' / 5':'— / 5';
- $('proofOpenBtn').disabled=!anonToken||!anonData;
  if(playerHasAward())$('refLink').value=referralUrl();
 }
 async function anonStart(ref){
@@ -416,10 +412,6 @@ async function init(){
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
-  $('proofOpenBtn').addEventListener('click',()=>{
-    if(!anonToken)return anonStatus('Tracking database must be connected before screenshot review.');
-    window.open(ANON_API+'/proof#key='+encodeURIComponent(anonToken),'_blank','noopener,noreferrer');
-  });
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')anonRefresh();});
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('socialBarChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
