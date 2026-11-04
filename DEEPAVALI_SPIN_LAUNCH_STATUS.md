@@ -46,6 +46,15 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - The standalone API's password-protected organizer dashboard is preserved and hidden from public navigation. Without participant registrations or independent proof, **20/20 and 5/5 cannot be automatically verified**. No fake completion counters or identity claims are shown.
 - Adsterra Social Bar stays ON; Popunder and Native Banner stay OFF. Gift outcomes remain **demo-only**, with no funded or redeemable prizes.
 
+## Anonymous referral tracking and 5-group screenshots (4 November 2026)
+
+- Added `dd_anon_players` and `dd_anon_proofs` Postgres schema and API endpoints `/api/anon/start`, `/api/anon/play`, `/api/anon/me`, `/api/anon/proof`, and `/api/anon/me` DELETE; no registration, email, phone or OTP.
+- Anonymous per-browser referral code is added to shared wheel URL. A referral counts only after the receiving browser starts a spin, once per browser token. Counters are 0/20 unique browser plays, not 20 verified people and not WhatsApp sent events; deleting storage may generate duplicates.
+- Optional group-proof screenshots use separate ad-free API-origin `/proof` page. At most five distinct group labels, JPEG/PNG/WebP images compressed below 900 KB, prior redaction/consent; statuses pending/approved/rejected controlled only in password-protected `/admin`.
+- Admin dashboard now includes anonymous browser totals and group-proof queue. No public access to submitted images.
+- **Launch blocker**: `DATABASE_URL` must still be set privately on the Render tracking API service to connect the free Postgres (expires December 4, 2026). Until connected, the public site says tracking unavailable and continues to allow the free demo spin without inventing counters.
+- Social Bar unchanged/on, Native Banner and Popunder remain off. Demo prizes remain inactive.
+
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
 2. **Rewarded video approval:** Obtain written consent from the ad network for *incentivized/rewarded viewing*. Use its sanctioned SDK, complete-view postback and anti-abuse verification. Do not substitute a regular banner, iframe or simulated five-second watch. The current retry is free.
