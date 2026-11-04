@@ -362,27 +362,39 @@ async function init(){
   initAdvertising();
 }
 const TRACKING_API='https://deepavali-dhamaka-tracking-api.onrender.com';
+const PUBLIC_TRACKER_KEY='deepavali_public_tracker_code_v1';
 let verifiedTracking=null;
+// Only PUBLIC referral codes are stored on the ad-supported spin site.
+// Participant credentials and private screenshot records remain on the separate ad-free API origin.
 async function refreshTrackingSnapshot(){
-  let secret='';
-  try{secret=localStorage.getItem('deepavali_tracking_participant_token_v1')||'';}catch{}
-  if(!secret||!/^[-_A-Za-z0-9]{30,100}$/.test(secret)){
+  let code='';
+  try{
+    const url=new URL(location.href);
+    const incoming=url.searchParams.get('tracker')||'';
+    if(/^SPIN-[0-9A-F]{16}$/i.test(incoming)){
+      code=incoming.toUpperCase();
+      localStorage.setItem(PUBLIC_TRACKER_KEY,code);
+      url.searchParams.delete('tracker');
+      history.replaceState(null,'',url.pathname+url.search+url.hash);
+    }else code=localStorage.getItem(PUBLIC_TRACKER_KEY)||'';
+  }catch{}
+  if(!/^SPIN-[0-9A-F]{16}$/.test(code)){
     verifiedTracking=null;
-    $('trackingLoadStatus').textContent='Register to enable real tracking. Shared preview links cannot verify participation.';
+    $('trackingLoadStatus').textContent='Create a tracking account to count independently reviewed joins. Demo sharing does not verify people.';
     return;
   }
   try{
-    const reply=await fetch(TRACKING_API+'/api/me',{cache:'no-store',headers:{Authorization:'Bearer '+secret}});
-    if(!reply.ok)throw new Error('Account review status unavailable.');
-    const result=await reply.json();
-    if(!result.member||!/^SPIN-[0-9A-F]{16}$/i.test(result.member.referralCode))throw new Error('Invalid tracking record.');
-    verifiedTracking=result;
-    $('trackingLoadStatus').textContent='Tracking account linked · '+result.pending_referrals+' joins awaiting review; '+result.pending_groups+' group screenshots awaiting review.';
-    $('trackingLinkHeading').textContent='Registered referral link — manually verified joins only';
+    const reply=await fetch(TRACKING_API+'/api/public-counts/'+encodeURIComponent(code),{cache:'no-store'});
+    if(!reply.ok)throw new Error('Tracking counts are not available yet.');
+    const data=await reply.json();
+    if(data.referralCode!==code)throw new Error('Unexpected tracking status.');
+    verifiedTracking=data;
+    $('trackingLinkHeading').textContent='Registered referral link — counts require manual review';
+    $('trackingLoadStatus').textContent='Tracking connected · '+data.pending_referrals+' joins and '+data.pending_groups+' group proofs pending review. No real prizes are active.';
     render();
   }catch(e){
     verifiedTracking=null;
-    $('trackingLoadStatus').textContent=e.message+' Counts will remain unverified until the backend is available.';
+    $('trackingLoadStatus').textContent=e.message+' Please use Join & Track for more details.';
   }
 }
 function getAdPreference(){try{return localStorage.getItem(AD_PREFERENCE_KEY)||'';}catch{return '';}}
@@ -472,7 +484,7 @@ function render(){
 }
 function referralUrl(){
   const u=new URL(location.href);u.search='';u.hash='';
-  u.searchParams.set('ref',verifiedTracking?.member?.referralCode||state.referral_code);
+  u.searchParams.set('ref',verifiedTracking?.referralCode||state.referral_code);
   return u.toString();
 }
 function cryptoGiftIndex(){const a=new Uint32Array(1);const max=Math.floor(4294967296/5)*5;do{crypto.getRandomValues(a);}while(a[0]>=max);return 1+(a[0]%5);}
