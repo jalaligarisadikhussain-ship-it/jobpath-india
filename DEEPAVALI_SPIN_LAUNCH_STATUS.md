@@ -55,6 +55,13 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - **Launch blocker**: `DATABASE_URL` must still be set privately on the Render tracking API service to connect the free Postgres (expires December 4, 2026). Until connected, the public site says tracking unavailable and continues to allow the free demo spin without inventing counters.
 - Social Bar unchanged/on, Native Banner and Popunder remain off. Demo prizes remain inactive.
 
+## Viewer screenshot step removed (November 4, 2026)
+
+- Removed the screenshot submission button and public 0/5 pending/approved screenshot counter from the Spin & Win viewer interface. 20-browser referral tracking remains available.
+- The 5-group sharing goal is still visible, but it does **not** imply automatic WhatsApp send/delivery verification.
+- Existing uploaded proof records and private administrator review/deletion tools remain intact. No private images were automatically deleted.
+- The legacy ad-free proof endpoint remains for existing participants' records; it is no longer linked from the public wheel.
+
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
 2. **Rewarded video approval:** Obtain written consent from the ad network for *incentivized/rewarded viewing*. Use its sanctioned SDK, complete-view postback and anti-abuse verification. Do not substitute a regular banner, iframe or simulated five-second watch. The current retry is free.
