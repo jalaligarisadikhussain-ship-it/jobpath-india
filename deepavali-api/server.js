@@ -158,5 +158,73 @@ app.delete('/admin/api/proofs/:id',dbRequired,adminOnly,adminOrigin,asyncRoute(a
  const r=await DB.query('DELETE FROM dd_group_proofs WHERE id=$1 RETURNING id',[req.params.id]);
  if(!r.rows.length)return fail(res,404,'Proof not found');res.json({deleted:true});
 }));
+
+const anonLimit=new Map(),anonUploadLimit=new Map();
+const cleanAnonCode=x=>typeof x==='string'&&/^SPIN-[A-F0-9]{16}$/i.test(x)?x.toUpperCase():'';
+async function anonAuth(req,res,next){
+ const h=req.get('authorization')||'';
+ if(!/^Bearer [A-Za-z0-9_-]{30,100}$/.test(h))return fail(res,401,'Browser token missing. Open Spin Wheel again.');
+ const q=await DB.query('SELECT * FROM dd_anon_players WHERE token_hash=$1',[hash(h.slice(7))]);
+ if(!q.rows.length)return fail(res,401,'Browser token expired or deleted.');
+ req.anon=q.rows[0];next();
+}
+const anonOnly=(req,res,next)=>asyncRoute(anonAuth)(req,res,next);
+async function anonOverview(p){
+ const [refs,proofs]=await Promise.all([
+ DB.query('SELECT COUNT(*)::INT AS total FROM dd_anon_players WHERE referred_by=$1 AND engaged_at IS NOT NULL',[p.id]),
+ DB.query('SELECT id,group_label,status,created_at FROM dd_anon_proofs WHERE player_id=$1 ORDER BY created_at',[p.id])
+ ]);
+ return {referralCode:p.referral_code,engagedBrowserVisits:refs.rows[0].total,groupProofs:proofs.rows.map(q=>({id:q.id,groupLabel:q.group_label,status:q.status,createdAt:q.created_at})),approvedGroups:proofs.rows.filter(q=>q.status==='approved').length,prizesEnabled:false,disclaimer:'Unique browser plays do not verify unique humans. Screenshot review cannot verify WhatsApp delivery.'};
+}
+app.post('/api/anon/start',dbRequired,asyncRoute(async(req,res)=>{
+ if(!dbReady)return fail(res,503,'Tracking database is preparing.');
+ const prior=typeof req.body?.token==='string'?req.body.token:'',incoming=cleanAnonCode(req.body?.ref);
+ let p=null,secret=prior;
+ if(prior&&/^[A-Za-z0-9_-]{30,100}$/.test(prior)){
+  const r=await DB.query('SELECT * FROM dd_anon_players WHERE token_hash=$1',[hash(prior)]);
+  if(r.rows.length)p=r.rows[0];
+ }
+ if(!p){
+  if(!limit(anonLimit,req.ip,8,3600000))return fail(res,429,'Too many new browser sessions from this connection.');
+  secret=token();
+  const r=await DB.query('INSERT INTO dd_anon_players(id,token_hash,referral_code) VALUES($1,$2,$3) RETURNING *',[crypto.randomUUID(),hash(secret),'SPIN-'+crypto.randomBytes(8).toString('hex').toUpperCase()]);
+  p=r.rows[0];
+ }
+ if(incoming&&incoming!==p.referral_code&&!p.referred_by){
+  const q=await DB.query('SELECT id FROM dd_anon_players WHERE referral_code=$1',[incoming]);
+  if(q.rows.length&&q.rows[0].id!==p.id){
+   const r=await DB.query('UPDATE dd_anon_players SET referred_by=$1 WHERE id=$2 AND referred_by IS NULL RETURNING *',[q.rows[0].id,p.id]);
+   if(r.rows.length)p=r.rows[0];
+  }
+ }
+ res.json({token:secret,overview:await anonOverview(p)});
+}));
+app.post('/api/anon/play',dbRequired,anonOnly,asyncRoute(async(req,res)=>{
+ await DB.query('UPDATE dd_anon_players SET engaged_at=COALESCE(engaged_at,NOW()) WHERE id=$1',[req.anon.id]);
+ res.json({recorded:true,note:'Unique browser play recorded, NOT a verified unique person.'});
+}));
+app.get('/api/anon/me',dbRequired,anonOnly,asyncRoute(async(req,res)=>res.json({overview:await anonOverview(req.anon)})));
+app.post('/api/anon/proof',dbRequired,anonOnly,asyncRoute(async(req,res)=>{
+ if(!limit(anonUploadLimit,req.anon.id,8,3600000))return fail(res,429,'Too many image submissions.');
+ const d=req.body||{},label=typeof d.groupLabel==='string'?d.groupLabel.trim():'',picture=validateImage(d.imageData);
+ if(d.consent!==true)return fail(res,400,'Consent required for storing a redacted screenshot.');
+ if(label.length<3||label.length>80)return fail(res,400,'Group label must be 3 to 80 characters.');
+ if(!picture)return fail(res,400,'Use JPEG, PNG or WebP image under 900 KB.');
+ const c=await DB.connect();try{
+  await c.query('BEGIN');
+  await c.query('SELECT id FROM dd_anon_players WHERE id=$1 FOR UPDATE',[req.anon.id]);
+  const n=await c.query('SELECT COUNT(*)::INT n FROM dd_anon_proofs WHERE player_id=$1',[req.anon.id]);
+  if(n.rows[0].n>=5){await c.query('ROLLBACK');return fail(res,409,'Five screenshots already submitted.');}
+  const id=crypto.randomUUID();
+  await c.query('INSERT INTO dd_anon_proofs(id,player_id,group_label,mime,image_bytes) VALUES($1,$2,$3,$4,$5)',[id,req.anon.id,label,picture.mime,picture.bytes]);
+  await c.query('COMMIT');
+  res.status(201).json({id,status:'pending',note:'Queued for private human review; not confirmed WhatsApp delivery.'});
+ }catch(e){await c.query('ROLLBACK');if(e.code==='23505')return fail(res,409,'Group label already submitted.');throw e;}finally{c.release();}
+}));
+app.delete('/api/anon/me',dbRequired,anonOnly,asyncRoute(async(req,res)=>{
+ await DB.query('DELETE FROM dd_anon_players WHERE id=$1',[req.anon.id]);res.json({deleted:true});
+}));
+app.get('/proof',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','anonymous-proof.html')));
+app.get('/proof/app.js',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','anonymous-proof.js')));
 app.use((err,req,res,next)=>{console.error('Request error:',err.message);if(!res.headersSent)fail(res,err.type==='entity.too.large'?413:500,err.type==='entity.too.large'?'Image too large. Compress it.':'Server error. Please retry.');});
 app.listen(Number(process.env.PORT)||10000,'0.0.0.0',()=>console.log('Deepavali tracking preview API started'));
