@@ -35,14 +35,6 @@ async function migrate(){
 migrate().catch(e=>{console.error('Database initialization unavailable:',e.message);});
 app.get('/healthz',asyncRoute(async(req,res)=>{try{if(!DB)throw Error('missing DB');await DB.query('SELECT 1');res.json({status:'ok',database:'connected',prizes:'demo only'});}catch{res.status(503).json({status:'degraded',database:'not ready'});}}));
 app.get('/api/config',(req,res)=>res.json({trackingReady:dbReady,prizesEnabled:false,spinMode:'demo',referrals:'manual review',groupProofs:'manual review'}));
-app.get('/api/public-counts/:code',dbRequired,asyncRoute(async(req,res)=>{
- const code=String(req.params.code||'').toUpperCase();
- if(!/^SPIN-[0-9A-F]{16}$/.test(code))return fail(res,400,'Invalid tracking code.');
- const p=await DB.query('SELECT id FROM dd_participants WHERE referral_code=$1',[code]);
- if(!p.rows.length)return fail(res,404,'No tracking account for that code.');
- const c=await DB.query("SELECT (SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='verified') verified_referrals,(SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='pending') pending_referrals,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='approved') approved_groups,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='pending') pending_groups",[p.rows[0].id]);
- res.json({referralCode:code,...c.rows[0],prizesEnabled:false});
-}));
 async function visitor(req,res,next){
  const h=req.get('authorization')||'';
  if(!/^Bearer [A-Za-z0-9_-]{30,100}$/.test(h))return fail(res,401,'Registration session missing.');
@@ -69,9 +61,14 @@ app.post('/api/enroll',dbRequired,asyncRoute(async(req,res)=>{
 }));
 app.get('/api/me',dbRequired,registered,asyncRoute(async(req,res)=>{
  const p=req.participant;
- const counts=await DB.query("SELECT (SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='verified') verified_referrals,(SELECT COUNT(*)::INT FROM dd_participants WHERE referred_by=$1 AND status='pending') pending_referrals,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='approved') approved_groups,(SELECT COUNT(*)::INT FROM dd_group_proofs WHERE participant_id=$1 AND status='pending') pending_groups",[p.id]);
- const proofs=await DB.query('SELECT id,group_name,status,created_at FROM dd_group_proofs WHERE participant_id=$1 ORDER BY created_at DESC',[p.id]);
- res.json({member:{id:p.id,nickname:p.nickname,email:p.email,referralCode:p.referral_code,status:p.status},...counts.rows[0],proofs:proofs.rows.map(q=>({id:q.id,groupName:q.group_name,status:q.status})),eligibleForPrize:false,prizesEnabled:false});
+ const proofs=await DB.query('SELECT id,group_name,created_at FROM dd_group_proofs WHERE participant_id=$1 ORDER BY created_at DESC',[p.id]);
+ res.json({
+  member:{id:p.id,nickname:p.nickname,email:p.email,referralCode:p.referral_code,status:p.status},
+  proofs:proofs.rows.map(q=>({id:q.id,groupName:q.group_name,createdAt:q.created_at})),
+  eligibleForPrize:false,
+  prizesEnabled:false,
+  note:'Only the private organizer dashboard can view verified referral counts and group-review totals.'
+ });
 }));
 function validateImage(data){
  if(typeof data!=='string'||data.length>1300000)return null;
