@@ -1,0 +1,15 @@
+{
+  "name": "deepavali-dhamaka-referral-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Independent server for voluntary preview registration, administrator-reviewed referrals and group proofs; no real prize payouts",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.14.0"
+  }
+}
