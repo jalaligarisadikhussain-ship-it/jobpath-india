@@ -337,7 +337,8 @@ async function anonStart(ref){
 async function anonRecordPlay(){
  if(anonStartup)await anonStartup;
  if(!anonToken)return;
- try{await anonFetch('play',{method:'POST',body:'{}'});}catch{}
+ try{await anonFetch('play',{method:'POST',body:'{}'});}
+ catch(e){anonStatus('Spin works, but backend could not record this browser play: '+e.message);}
 }
 async function anonRefresh(){
  if(!anonToken)return;
