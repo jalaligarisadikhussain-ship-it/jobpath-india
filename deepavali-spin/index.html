@@ -47,6 +47,12 @@
 .share-target{padding:13px 8px;text-align:center;border:1px solid #ffc9838a;border-radius:13px;background:#ffe4a611}
 .share-target strong{display:block;font:900 clamp(19px,4vw,29px) 'Outfit',sans-serif;color:#ffe4ae}
 .share-target small{display:block;margin-top:5px;font-size:11px;color:#e3c8dc}
+.anon-metric{padding:13px;border:1px solid #ffffff45;border-radius:12px;background:#ffffff08;margin:10px 0}
+.anon-metric strong{font:900 24px 'Outfit',sans-serif;color:#ffe5a9}
+.anon-metric p{margin:5px 0;font-size:11px}
+.anon-status{font-size:12px!important;color:#f3d8e9!important;line-height:1.5!important;margin:10px 0!important}
+.proof-link{display:inline-flex;padding:12px 16px;border:1px solid #e2c98b;border-radius:12px;background:#ffe1a91c;color:#ffe9bc;font-weight:800;font-size:12px;text-decoration:none}
+.proof-link[aria-disabled="true"]{opacity:.5;pointer-events:none}
 .share-verification-note{margin:12px 0 2px;padding:12px 13px;border-left:3px solid #ffcf82;border-radius:0 10px 10px 0;background:#ffffff0b;color:#ecdce7;font-size:12px;line-height:1.65}
 @media(max-width:440px){.share-target strong{font-size:22px}}
 .share-task-note{font-size:12px;color:#d8c2de;line-height:1.65;border-left:3px solid #ffcd72;padding-left:12px;margin-top:13px}
@@ -229,7 +235,8 @@
                 <div class="share-target"><strong>20 PEOPLE</strong><small>WhatsApp contacts</small></div>
                 <div class="share-target"><strong>5 GROUPS</strong><small>WhatsApp groups</small></div>
               </div>
-              <p class="small-note">Sharing goals are visible after the sample gift spin. WhatsApp does not tell this website which contacts or groups actually received a message. Opening the share screen does NOT complete a task; no automatic completion counter is shown.</p>
+              <p class="small-note">Registration-free tracking counts referred <strong>browsers that actually begin spinning</strong>, not WhatsApp sends or verified people. Five redacted group screenshots may be approved privately by the organizer. No prizes are active.</p>
+              <p id="anonStatus" class="anon-status" role="status">Checking registration-free tracking…</p>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Choose 20 different interested WhatsApp contacts and send this Spin & Win link if they would like to participate. No account, phone number or email registration required to spin. This website cannot confirm actual message delivery.</p>
@@ -238,14 +245,17 @@
                 <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button" aria-label="Copy preview referral link">Copy</button></div>
                 <p class="ref-copy-status" id="copyStatus" role="status" aria-live="polite"></p>
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Open WhatsApp to share with people</button><p id="contactShareFeedback" class="ref-copy-status" aria-live="polite"></p>
-                <p class="share-verification-note"><strong>20-person goal:</strong> WhatsApp lo contact ni select chesi <strong>Send</strong> press cheyyandi. Button click chesinantha matrana task complete avvadu. Website actual delivery ni verify cheyyaledu; fake 1/20 count chupinchadam ledu.</p>
+                <div class="anon-metric"><strong id="anonProgress">— / 20</strong><p>Unique referred browsers that opened your link and started spinning — NOT confirmed WhatsApp sends or distinct humans.</p></div>
+                <p class="share-verification-note">Share click ki count peragadu. Mee unique invitation link open chesi vere browser lo spin start ayinappudu matrame count perugutundi. One browser can only be counted once; browser resets/fakes may affect accuracy.</p>
               </div>
 
               <div class="share-task-card">
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Open WhatsApp to share in a group</button><p id="groupShareFeedback" class="ref-copy-status" aria-live="polite"></p>
-                <p class="share-verification-note"><strong>5-group goal:</strong> WhatsApp lo sharing allow chese group ni select chesi <strong>Send</strong> press cheyyandi. Website 5 different groups ki actual ga send ayyindani confirm cheyyaledu. Fake 1/5 count chupinchadam ledu.</p>
+                <div class="anon-metric"><strong id="anonGroups">— / 5</strong><p>Group screenshots approved after private human review — NOT direct WhatsApp delivery confirmation.</p></div>
+                <button type="button" class="whatsapp-btn" id="proofOpenBtn">📷 Submit 5 Redacted Group Screenshots</button>
+                <p class="share-verification-note">Five different allowed group screenshots, one per group. Blur phone numbers, faces and members before uploading. Organizer approval is required; no login needed.</p>
                 <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
               <p class="share-task-note">NO REGISTRATION REQUIRED · DEMO ONLY: Spin → sample gift entry → share with 20 interested people and 5 allowed WhatsApp groups. The website cannot automatically verify WhatsApp delivery or unique people. A WhatsApp message can be confirmed as sent only inside WhatsApp; this website receives no Send or delivery event and does not display a false completed counter. No real prize, cash or 50% coupon is awarded.</p>
@@ -298,6 +308,41 @@ const OUTCOMES={
  GIFT_1000:{emoji:'💰',title:'₹1,000 Prize Draw Entry!',description:'Sample only. No ₹1,000 is paid or guaranteed. A real draw would need funded prizes and 20 verified referrals.'}
 };
 const STORAGE_KEY = 'deepavali_dhamaka_demo_v6';
+const ANON_API='https://deepavali-dhamaka-tracking-api.onrender.com';
+const ANON_TOKEN_KEY='deepavali_anon_browser_token_v1';
+let anonData=null,anonStartup=null,anonToken='';
+function anonStatus(text){$('anonStatus').textContent=text;}
+async function anonFetch(route,options={}){
+ const response=await fetch(ANON_API+'/api/anon/'+route,{cache:'no-store',...options,headers:{'Content-Type':'application/json',...(anonToken?{'Authorization':'Bearer '+anonToken}:{}),...(options.headers||{})}});
+ const obj=await response.json();
+ if(!response.ok)throw Error(obj.error||'Tracking backend unavailable.');
+ return obj;
+}
+function drawAnonStats(){
+ $('anonProgress').textContent=anonData?Math.min(20,anonData.engagedBrowserVisits)+' / 20':'— / 20';
+ $('anonGroups').textContent=anonData?Math.min(5,anonData.approvedGroups)+' / 5':'— / 5';
+ $('proofOpenBtn').disabled=!anonToken||!anonData;
+ if(playerHasAward())$('refLink').value=referralUrl();
+}
+async function anonStart(ref){
+ try{
+  let prev='';try{prev=localStorage.getItem(ANON_TOKEN_KEY)||'';}catch{}
+  const d=await anonFetch('start',{method:'POST',body:JSON.stringify({token:prev,ref:ref||''})});
+  anonToken=d.token;anonData=d.overview;
+  try{localStorage.setItem(ANON_TOKEN_KEY,anonToken);}catch{}
+  anonStatus('Tracking connected — only browsers that actually start a spin are counted. Not WhatsApp delivery proof.');
+  drawAnonStats();
+ }catch(e){anonStatus('Registration-free tracking unavailable: '+e.message+' You can still spin and share, but there is no saved count.');drawAnonStats();}
+}
+async function anonRecordPlay(){
+ if(anonStartup)await anonStartup;
+ if(!anonToken)return;
+ try{await anonFetch('play',{method:'POST',body:'{}'});}catch{}
+}
+async function anonRefresh(){
+ if(!anonToken)return;
+ try{const d=await anonFetch('me');anonData=d.overview;drawAnonStats();}catch{anonStatus('Tracking refresh unavailable. Existing wheel and sharing still work.');}
+}
 const TEST_MODE_KEY = 'deepavali_owner_preview_test_v1';
 function isPreviewTestMode(){try{return sessionStorage.getItem(TEST_MODE_KEY)==='1';}catch{return false;}}
 function handlePreviewReplayLink(){
@@ -341,6 +386,10 @@ async function init(){
     requestAnimationFrame(()=>{wheel.style.transition='';});
   }
   render();tick();setInterval(tick,1000);
+  drawAnonStats();
+  if(!isPreviewTestMode())anonStartup=anonStart(ref);
+  else anonStatus('Owner demo replay — tracking is paused to prevent fake test referrals.');
+  setInterval(()=>{if(document.visibilityState==='visible')anonRefresh();},45000);
   // Mobile visitors opening the direct website URL see the wheel promptly.
   // Preserve explicit anchors, accessibility reduced-motion preference, and the owner's demo replay view.
   if(!location.hash && matchMedia('(max-width: 640px)').matches && !isPreviewTestMode()){
@@ -366,6 +415,11 @@ async function init(){
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
+  $('proofOpenBtn').addEventListener('click',()=>{
+    if(!anonToken)return anonStatus('Tracking database must be connected before screenshot review.');
+    window.open(ANON_API+'/proof#key='+encodeURIComponent(anonToken),'_blank','noopener,noreferrer');
+  });
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')anonRefresh();});
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('socialBarChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('exitPreviewTestBtn').addEventListener('click',()=>{
@@ -453,12 +507,14 @@ function render(){
   $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
   if(playerHasAward()){$('refLink').value=referralUrl();}
+  drawAnonStats();
   if(state.prizes_confirmed && mode==='live'){$('modeBanner').textContent='OFFICIAL CAMPAIGN • No payment needed. Draw entries are not guaranteed prizes.';}
   else if(mode==='live'){$('modeBanner').textContent='PREVIEW MODE • Real prize offer inactive until organizer confirms campaign.';}
 }
 function referralUrl(){
-  // Anyone opening the shared link lands directly on the wheel; no signup is involved.
-  return 'https://deepavali-dhamaka-spin-2026.onrender.com/#spinGame';
+  // Tokens are private, not part of shared URLs. Only the public referral code is shared.
+  const base='https://deepavali-dhamaka-spin-2026.onrender.com/';
+  return anonData?base+'?ref='+encodeURIComponent(anonData.referralCode)+'#spinGame':base+'#spinGame';
 }
 function cryptoGiftIndex(){const a=new Uint32Array(1);const max=Math.floor(4294967296/5)*5;do{crypto.getRandomValues(a);}while(a[0]>=max);return 1+(a[0]%5);}
 async function spin(){
@@ -469,6 +525,7 @@ async function spin(){
     if(mode==='live'){
       const result=await api('/api/spin',{method:'POST'});state=result.player;index=result.segment_index;
     }else{
+      if(state.spins_used===0)anonRecordPlay();
       index=state.spins_used===0?0:cryptoGiftIndex();state.spins_used++;
       const award=SEGMENTS[index];if(award!=='TRY_AGAIN')state.award=award;
       saveDemo();
@@ -533,7 +590,7 @@ function festiveShareMessage(forGroup=false){
 }
 function shareWebsite(){
   // WhatsApp deep-link opens the destination picker; it returns no send receipt.
-  openWhatsAppShare(new URL(location.pathname,location.origin).toString(),festiveShareMessage());
+  openWhatsAppShare(referralUrl(),festiveShareMessage());
 }
 function shareLink(){
   $('contactShareFeedback').textContent='WhatsApp open avutundi. Contact select chesi Send press cheyyandi. Actual send verify ayye callback website ki ledu, so count increase avvadu.';
