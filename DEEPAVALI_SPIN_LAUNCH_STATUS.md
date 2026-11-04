@@ -27,6 +27,15 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - **Database expiration:** free Postgres is scheduled to expire **4 December 2026**. Plan a persistent storage move/upgrade with explicit budget approval before accepting real campaign registrations.
 - **Real gifts (6):** intentionally unchanged and disabled. There is no real sponsored Flipkart, Amazon, Meesho coupon or funded cash prize.
 
+## Organizer-only tracking visibility (4 November 2026)
+
+- Public spin page no longer shows `0/20`, `0/5`, referral progress bars, group-review statuses, or a public tracking dashboard. Visitors can still spin, share invitations, register voluntarily, and submit redacted screenshots.
+- Public registration page omits verification totals and group-review outcomes; the administrator sign-in link was removed from its footer.
+- Public `/api/public-counts/:code` endpoint was removed, and `/api/me` no longer returns referral/group totals.
+- **Only** the password-protected organizer dashboard at `https://deepavali-dhamaka-tracking-api.onrender.com/admin` has the approval and tracking controls; the URL alone does not grant access.
+- Tracking backend database connection `DATABASE_URL` remains required. Do not claim enrollment/verification operational until /healthz reports a connected database.
+- Adsterra Social Bar remains enabled; Popunder and Native Banner disabled. Demo prizes unchanged.
+
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
 2. **Rewarded video approval:** Obtain written consent from the ad network for *incentivized/rewarded viewing*. Use its sanctioned SDK, complete-view postback and anti-abuse verification. Do not substitute a regular banner, iframe or simulated five-second watch. The current retry is free.
