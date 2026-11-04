@@ -193,7 +193,7 @@ app.post('/api/anon/start',dbRequired,asyncRoute(async(req,res)=>{
  if(incoming&&incoming!==p.referral_code&&!p.referred_by){
   const q=await DB.query('SELECT id FROM dd_anon_players WHERE referral_code=$1',[incoming]);
   if(q.rows.length&&q.rows[0].id!==p.id){
-   const r=await DB.query('UPDATE dd_anon_players SET referred_by=$1 WHERE id=$2 AND referred_by IS NULL RETURNING *',[q.rows[0].id,p.id]);
+   const r=await DB.query('UPDATE dd_anon_players SET referred_by=$1 WHERE id=$2 AND referred_by IS NULL AND engaged_at IS NULL RETURNING *',[q.rows[0].id,p.id]);
    if(r.rows.length)p=r.rows[0];
   }
  }
