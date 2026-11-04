@@ -30,6 +30,10 @@ async function migrate(){
  await DB.query('CREATE INDEX IF NOT EXISTS dd_referrers ON dd_participants(referred_by,status)');
  await DB.query("CREATE TABLE IF NOT EXISTS dd_group_proofs (id UUID PRIMARY KEY,participant_id UUID NOT NULL REFERENCES dd_participants(id) ON DELETE CASCADE,group_name VARCHAR(80) NOT NULL,mime VARCHAR(20) NOT NULL,image_bytes BYTEA NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','approved','rejected')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),reviewed_at TIMESTAMPTZ)");
  await DB.query('CREATE UNIQUE INDEX IF NOT EXISTS dd_proof_distinct_group ON dd_group_proofs(participant_id,LOWER(group_name))');
+ await DB.query("CREATE TABLE IF NOT EXISTS dd_anon_players (id UUID PRIMARY KEY,token_hash CHAR(64) UNIQUE NOT NULL,referral_code VARCHAR(24) UNIQUE NOT NULL,referred_by UUID REFERENCES dd_anon_players(id) ON DELETE SET NULL,engaged_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW())");
+ await DB.query('CREATE INDEX IF NOT EXISTS dd_anon_referrers ON dd_anon_players(referred_by,engaged_at)');
+ await DB.query("CREATE TABLE IF NOT EXISTS dd_anon_proofs (id UUID PRIMARY KEY,player_id UUID NOT NULL REFERENCES dd_anon_players(id) ON DELETE CASCADE,group_label VARCHAR(80) NOT NULL,mime VARCHAR(20) NOT NULL,image_bytes BYTEA NOT NULL,status VARCHAR(12) NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','approved','rejected')),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),reviewed_at TIMESTAMPTZ)");
+ await DB.query('CREATE UNIQUE INDEX IF NOT EXISTS dd_anon_unique_proof_group ON dd_anon_proofs(player_id,LOWER(group_label))');
  dbReady=true;console.log('Database initialized');
 }
 migrate().catch(e=>{console.error('Database initialization unavailable:',e.message);});
