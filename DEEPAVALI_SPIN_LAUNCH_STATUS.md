@@ -36,6 +36,15 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - Tracking backend database connection `DATABASE_URL` remains required. Do not claim enrollment/verification operational until /healthz reports a connected database.
 - Adsterra Social Bar remains enabled; Popunder and Native Banner disabled. Demo prizes unchanged.
 
+## Registration-free public flow (4 November 2026)
+
+- Viewers open the main Spin & Win URL and can start the two-stage demo directly; **no registration or email entry is needed**.
+- On mobile, the page scrolls to the wheel when opened via the normal URL. The public invitation URL points to `/#spinGame`, which opens directly at the wheel on any screen.
+- After the sample gift spin, **Task 1** offers WhatsApp sharing with 20 interested people and **Task 2** with 5 groups that allow invitations. Both WhatsApp buttons work without a signup.
+- Public registration links and public proof-submission links have been removed from the spin page. Legacy `/participate.html` and API `/join` pages redirect to the wheel, not to a signup form.
+- The standalone API's password-protected organizer dashboard is preserved and hidden from public navigation. Without participant registrations or independent proof, **20/20 and 5/5 cannot be automatically verified**. No fake completion counters or identity claims are shown.
+- Adsterra Social Bar stays ON; Popunder and Native Banner stay OFF. Gift outcomes remain **demo-only**, with no funded or redeemable prizes.
+
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
 2. **Rewarded video approval:** Obtain written consent from the ad network for *incentivized/rewarded viewing*. Use its sanctioned SDK, complete-view postback and anti-abuse verification. Do not substitute a regular banner, iframe or simulated five-second watch. The current retry is free.
