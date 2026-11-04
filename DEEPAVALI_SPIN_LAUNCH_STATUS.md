@@ -62,6 +62,12 @@ Source branch: `deepavali-spin-2026` (isolated from JobPath India production bra
 - Existing uploaded proof records and private administrator review/deletion tools remain intact. No private images were automatically deleted.
 - The legacy ad-free proof endpoint remains for existing participants' records; it is no longer linked from the public wheel.
 
+## Popunder re-enabled at organizer request (November 4, 2026)
+
+- Adsterra site-specific **Popunder_1 placement 32076389** (`https://abscloud.org/1/3110baa332934e98a495157335d1404f`) is back in the static site, once per page, alongside Social Bar **32077118**.
+- Popunder and Social Bar both respect visitor opt-out stored in `deepavali_native_ad_consent_v1`, Global Privacy Control, and owner demo replay. Native Banner remains OFF. No ad engagement is required to spin.
+- Script load success is **not** proof that an advertisement is shown; browser popup blockers, network policy, frequency limits and inventory apply. Earlier misleading pop creatives can recur until the Adsterra publisher account blocks unsafe advertiser categories. Review category filters promptly.
+
 ## Must be completed before a public prize promotion
 1. **Prizes and authority:** Organizer must obtain genuine redeemable inventory and written permission for brand-specific discount claims (and discount limitations) or remove those brand references; publish organizer identity, eligibility rules, number of winners, drawing method, claim deadlines and contact details. Never imply an unaffiliated merchant sponsors the campaign.
 2. **Rewarded video approval:** Obtain written consent from the ad network for *incentivized/rewarded viewing*. Use its sanctioned SDK, complete-view postback and anti-abuse verification. Do not substitute a regular banner, iframe or simulated five-second watch. The current retry is free.
