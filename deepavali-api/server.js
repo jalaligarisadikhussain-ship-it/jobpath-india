@@ -108,7 +108,7 @@ function adminOrigin(req,res,next){
  next();
 }
 const adminCsp=(req,res,next)=>{res.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");next();};
-app.get('/join',(req,res)=>res.sendFile(path.join(__dirname,'public','join.html')));
+app.get('/join',(req,res)=>res.redirect(302,'https://deepavali-dhamaka-spin-2026.onrender.com/#spinGame'));
 app.get('/join/app.js',(req,res)=>res.sendFile(path.join(__dirname,'public','join.js')));
 app.get('/join/style.css',(req,res)=>res.sendFile(path.join(__dirname,'public','join.css')));
 app.get('/admin',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.html')));
