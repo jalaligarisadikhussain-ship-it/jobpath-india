@@ -104,6 +104,7 @@ function adminOrigin(req,res,next){
 const adminCsp=(req,res,next)=>{res.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");next();};
 app.get('/admin',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.html')));
 app.get('/admin/app.js',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.js')));
+app.get('/admin/admin.css',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','admin.css')));
 app.get('/admin/api/session',(req,res)=>res.json({authenticated:adminSession(req),prizesEnabled:false}));
 app.post('/admin/api/login',adminOrigin,(req,res)=>{
  if(!limit(loginLimit,req.ip,8,900000))return fail(res,429,'Too many login attempts. Retry in 15 minutes.');
