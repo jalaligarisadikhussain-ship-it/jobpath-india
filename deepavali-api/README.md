@@ -4,8 +4,8 @@ The free-spin gift wheel remains a **DEMO**. This backend stores voluntary parti
 
 ## Architecture / privacy
 
-- Public wheel: `https://deepavali-dhamaka-spin-2026.onrender.com/` (Render Static Site; Adsterra Social Bar only).
-- Participant enrollment: `https://deepavali-dhamaka-tracking-api.onrender.com/join` (separate Render Node service, no third-party ads).
+- Public wheel: `https://deepavali-dhamaka-spin-2026.onrender.com/` (Render Static Site; Adsterra Social Bar only). Public progress bars/counters are removed; visitors can only spin, share, or voluntarily register.
+- Participant enrollment: `https://deepavali-dhamaka-tracking-api.onrender.com/join` (separate Render Node service, no third-party ads; no member/group tracking dashboard).
 - Private admin: `https://deepavali-dhamaka-tracking-api.onrender.com/admin` (password + signed, HttpOnly, Secure, SameSite=Strict admin session; 8-hour expiry).
 - Private participant token is stored **only on the API origin**, never on the ad-supported wheel's origin. The public wheel sees a shareable code and queries counts only, **not emails or images**.
 - Render Postgres `deepavali-dhamaka-tracking-db` stores registrations (name/email, invite relationship, random session-token hash) and at most five screenshots per member, private to the admin.
@@ -33,7 +33,7 @@ The Render **free** Postgres created 4 November 2026 has a scheduled expiration 
 - `GET /api/me` – participant's pending/verified counts, requires their bearer token.
 - `POST /api/proofs` – max five distinct group labels, image under 900 KB, token and consent required.
 - `DELETE /api/me` – participant-owned account and proof deletion.
-- `GET /api/public-counts/:code` – aggregate-only counters; no personal data or tokens.
+- Verified referral counts and group-proof review totals are exclusively exposed by password-protected `/admin/api/*` endpoints. Public `/api/public-counts/:code` has been disabled; the visitor enrollment page does not display any verification statistics.
 - `/admin` and `/admin/api/*` – authenticated review and private image access.
 
 ## Deployment
