@@ -226,5 +226,35 @@ app.delete('/api/anon/me',dbRequired,anonOnly,asyncRoute(async(req,res)=>{
 }));
 app.get('/proof',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','anonymous-proof.html')));
 app.get('/proof/app.js',adminCsp,(req,res)=>res.sendFile(path.join(__dirname,'public','anonymous-proof.js')));
+
+app.get('/admin/api/anon-players',dbRequired,adminOnly,asyncRoute(async(req,res)=>{
+ const [players,totals]=await Promise.all([
+  DB.query("SELECT p.id,p.referral_code,p.referred_by,p.created_at,p.engaged_at,(SELECT COUNT(*)::INT FROM dd_anon_players q WHERE q.referred_by=p.id AND q.engaged_at IS NOT NULL) unique_browser_plays,(SELECT COUNT(*)::INT FROM dd_anon_proofs g WHERE g.player_id=p.id AND g.status='approved') approved_groups FROM dd_anon_players p ORDER BY p.created_at DESC LIMIT 250"),
+  DB.query("SELECT (SELECT COUNT(*)::INT FROM dd_anon_players) browsers,(SELECT COUNT(*)::INT FROM dd_anon_players WHERE engaged_at IS NOT NULL) players,(SELECT COUNT(*)::INT FROM dd_anon_proofs WHERE status='pending') pending_group_proofs")
+ ]);
+ res.json({players:players.rows,totals:totals.rows[0],note:'Browser sessions are not proof of distinct humans.'});
+}));
+app.get('/admin/api/anon-proofs',dbRequired,adminOnly,asyncRoute(async(req,res)=>{
+ const q=await DB.query("SELECT g.id,g.player_id,g.group_label,g.status,g.created_at,p.referral_code FROM dd_anon_proofs g JOIN dd_anon_players p ON g.player_id=p.id ORDER BY CASE WHEN g.status='pending' THEN 0 ELSE 1 END,g.created_at DESC LIMIT 250");
+ res.json({proofs:q.rows});
+}));
+app.get('/admin/api/anon-proofs/:id/image',dbRequired,adminOnly,asyncRoute(async(req,res)=>{
+ if(!/^[0-9a-f-]{36}$/i.test(req.params.id))return fail(res,400,'Invalid screenshot ID');
+ const q=await DB.query('SELECT mime,image_bytes FROM dd_anon_proofs WHERE id=$1',[req.params.id]);
+ if(!q.rows.length)return fail(res,404,'Screenshot not found.');
+ res.type(q.rows[0].mime).set('Content-Disposition','inline').send(q.rows[0].image_bytes);
+}));
+app.post('/admin/api/anon-proofs/:id/status',dbRequired,adminOnly,adminOrigin,asyncRoute(async(req,res)=>{
+ const status=req.body?.status;
+ if(!['pending','approved','rejected'].includes(status))return fail(res,400,'Invalid review decision');
+ const q=await DB.query("UPDATE dd_anon_proofs SET status=$1,reviewed_at=CASE WHEN $1='pending' THEN NULL ELSE NOW() END WHERE id=$2 RETURNING id,status",[status,req.params.id]);
+ if(!q.rows.length)return fail(res,404,'Screenshot not found');
+ res.json({updated:q.rows[0]});
+}));
+app.delete('/admin/api/anon-proofs/:id',dbRequired,adminOnly,adminOrigin,asyncRoute(async(req,res)=>{
+ const q=await DB.query('DELETE FROM dd_anon_proofs WHERE id=$1 RETURNING id',[req.params.id]);
+ if(!q.rows.length)return fail(res,404,'Screenshot not found');
+ res.json({deleted:true});
+}));
 app.use((err,req,res,next)=>{console.error('Request error:',err.message);if(!res.headersSent)fail(res,err.type==='entity.too.large'?413:500,err.type==='entity.too.large'?'Image too large. Compress it.':'Server error. Please retry.');});
 app.listen(Number(process.env.PORT)||10000,'0.0.0.0',()=>console.log('Deepavali tracking preview API started'));
