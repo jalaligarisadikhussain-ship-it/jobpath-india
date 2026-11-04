@@ -423,7 +423,9 @@ function updateSocialBarTrialNotice(){
   $('socialBarChoicesBtn').classList.toggle('hidden',test||gpc);
   $('socialBarChoicesBtn').textContent=disabled?'Enable ads':'Turn off ads';
   const social=window.__deepavaliSocialBarState||'pending';
-  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Social Bar off by your preference.':'Social Bar: '+social+'. Ad availability is controlled by Adsterra.';
+  // Script onload confirms download/execution only; never imply that an Adsterra creative was shown.
+  const explanation=social==='loaded'?'Social Bar script loaded. An ad may still be unavailable due to Adsterra inventory, frequency limits or browser settings.':social==='error'?'Social Bar script failed to load. Check browser ad blocking or network restrictions.':'Social Bar script: '+social+'. Visibility is decided by Adsterra.';
+  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Social Bar off by your preference.':explanation;
 }
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
