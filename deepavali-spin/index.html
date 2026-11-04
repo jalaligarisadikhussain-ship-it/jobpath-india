@@ -119,21 +119,7 @@
 .footer-ad-btn:focus-visible{outline:3px solid #fff0a5;outline-offset:2px}
 @media(max-width:640px){.footer-ad-controls{gap:8px}}
 </style>
-<!-- Adsterra Popunder 32076389 for this specific website; Native Banner disabled. -->
-<script id="popunderTrialLoader">
-(function(){
-  'use strict';
-  try{
-    if(navigator.globalPrivacyControl===true)return;
-    if(new URLSearchParams(location.search).get('demo_replay')==='1')return;
-    if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
-    if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
-  }catch(error){return;}
-  // Parser-inserted, as specified by Adsterra. Run during initial HTML parsing only.
-  window.__deepavaliPopunderState='loading';
-  document.write("<script data-cfasync=\"false\" src=\"https://abscloud.org/1/3110baa332934e98a495157335d1404f\" onload=\"window.__deepavaliPopunderState='loaded'\" onerror=\"window.__deepavaliPopunderState='error'\"><\/script>");
-})();
-</script>
+
 </head>
 <body>
   <div class="decor star s1">✦</div><div class="decor star s2">✦</div><div class="decor star s3">✦</div>
@@ -199,7 +185,7 @@
               </div>
             </div>
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. The Native Banner is paused. Social Bar and Popunder are both enabled; neither is needed for the free demo spin. No rewarded-video or verified WhatsApp tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. Native Banner and Popunder are disabled. Only the Social Bar ad format remains enabled; no ad interaction is needed for the free demo spin. No rewarded-video or verified WhatsApp tracking is connected.</p>
 
 
 
@@ -277,13 +263,13 @@
 <div class="prize"><span>💵</span><b>₹500 Draw Entry</b><small>20% on gift spin</small></div>
 <div class="prize"><span>💰</span><b>₹1,000 Draw Entry</b><small>20% on gift spin</small></div>
 </div></section>
-      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. The Native Banner remains paused. Social Bar may display a floating sponsored advertisement and Popunder may open a separate ad page during normal interaction. Both formats depend on Adsterra inventory and browser behavior. Saved ad preferences, Global Privacy Control and demo replay are respected. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
+      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. Native Banner and Popunder are disabled. Only Social Bar may display floating sponsored content when permitted by saved ad preferences and browser privacy controls. Ad availability depends on Adsterra, and demo replay suppresses ads. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
     </main>
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span><span class="footer-ad-controls"><span id="socialBarNoticeText" role="status">Sponsored content may appear.</span><button class="footer-ad-btn" id="socialBarChoicesBtn" type="button">Turn off ads</button></span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your task after this sample prize entry</b><p>1. Share your referral link with 20 different WhatsApp members. In a real draw, 20 people must join and be verified.</p><p>2. Share the link in 5 WhatsApp groups where invites are permitted.</p><p><small>WhatsApp group shares cannot be automatically verified. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
-   No live giveaway or rewarded-video ad SDK is connected; Native Banner paused, Social Bar and Popunder enabled. */
+   No live giveaway or rewarded-video ad SDK is connected; Native Banner and Popunder disabled, Social Bar enabled. */
 'use strict';
 const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
 const AD_PREFERENCE_KEY='deepavali_native_ad_consent_v1';
@@ -372,8 +358,7 @@ function updateSocialBarTrialNotice(){
   $('socialBarChoicesBtn').classList.toggle('hidden',test||gpc);
   $('socialBarChoicesBtn').textContent=disabled?'Enable ads':'Turn off ads';
   const social=window.__deepavaliSocialBarState||'pending';
-  const pop=window.__deepavaliPopunderState||'pending';
-  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Both ads disabled by your preference.':'Ads: Social Bar '+social+'; Popunder '+pop+'. A loaded script does not guarantee a visible ad.';
+  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Social Bar off by your preference.':'Social Bar: '+social+'. Ad availability is controlled by Adsterra.';
 }
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
@@ -415,7 +400,7 @@ function render(){
     node.classList.toggle('done',i<stage);
     if(i===stage)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
   }
-  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. Native Banner paused; Social Bar and Popunder are the two enabled ad formats.';
+  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. Native Banner and Popunder disabled; only Social Bar is enabled.';
   $('postSpinAdPanel').classList.toggle('hidden',!NATIVE_AD_ENABLED||isPreviewTestMode());
   if(NATIVE_AD_ENABLED&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
   $('adChoicesBtn').classList.toggle('hidden',isPreviewTestMode()||navigator.globalPrivacyControl===true);
