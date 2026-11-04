@@ -11,11 +11,11 @@ from adsense_identity import ADSENSE_ACCOUNT_ID, ADSENSE_META_TAG, ADS_TXT_LINE
 
 class AdSenseOwnershipTests(unittest.TestCase):
     def test_verified_public_identity(self):
-        self.assertEqual(ADSENSE_ACCOUNT_ID, "ca-pub-8073443569494348")
+        self.assertEqual(ADSENSE_ACCOUNT_ID, "ca-pub-4312394725152098")
         self.assertIn('name="google-adsense-account"', ADSENSE_META_TAG)
         self.assertEqual(
             ADS_TXT_LINE,
-            "google.com, pub-8073443569494348, DIRECT, f08c47fec0942fa0\n",
+            "google.com, pub-4312394725152098, DIRECT, f08c47fec0942fa0\n",
         )
 
     def test_build_prepares_ownership_without_enabling_ads(self):
