@@ -47,12 +47,7 @@
 .share-target{padding:13px 8px;text-align:center;border:1px solid #ffc9838a;border-radius:13px;background:#ffe4a611}
 .share-target strong{display:block;font:900 clamp(19px,4vw,29px) 'Outfit',sans-serif;color:#ffe4ae}
 .share-target small{display:block;margin-top:5px;font-size:11px;color:#e3c8dc}
-.self-share-label{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 7px}
-.self-share-label strong{color:#ffe5ae;font:900 21px 'Outfit',sans-serif}
-.self-share-label span{font-size:11px;color:#e4cbdb}
-.self-share-track{height:10px;overflow:hidden;border-radius:20px;background:#ffffff21}
-.self-share-track>div{height:100%;width:0;background:linear-gradient(90deg,#6edaac,#c5ed9c);border-radius:20px;transition:width .2s}
-.self-share-note{font-size:11px!important;color:#e9d4e4!important;line-height:1.55}
+.share-verification-note{margin:12px 0 2px;padding:12px 13px;border-left:3px solid #ffcf82;border-radius:0 10px 10px 0;background:#ffffff0b;color:#ecdce7;font-size:12px;line-height:1.65}
 @media(max-width:440px){.share-target strong{font-size:22px}}
 .share-task-note{font-size:12px;color:#d8c2de;line-height:1.65;border-left:3px solid #ffcd72;padding-left:12px;margin-top:13px}
 #modalTasks{margin:14px 0 18px;text-align:left;padding:13px 16px;background:#ffffff12;border:1px solid #ffcd7260;border-radius:15px;line-height:1.6}
@@ -234,7 +229,7 @@
                 <div class="share-target"><strong>20 PEOPLE</strong><small>WhatsApp contacts</small></div>
                 <div class="share-target"><strong>5 GROUPS</strong><small>WhatsApp groups</small></div>
               </div>
-              <p class="small-note">Sharing goals are visible after the sample gift spin. On supported phones, a count may update after the device share sheet reports a completed handoff to an app — NOT when the Share button is tapped. This cannot confirm a WhatsApp message was actually sent, a distinct recipient, or prize eligibility. On browsers without share-sheet callbacks, counts stay unchanged.</p>
+              <p class="small-note">Sharing goals are visible after the sample gift spin. WhatsApp does not tell this website which contacts or groups actually received a message. Opening the share screen does NOT complete a task; no automatic completion counter is shown.</p>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Choose 20 different interested WhatsApp contacts and send this Spin & Win link if they would like to participate. No account, phone number or email registration required to spin. This website cannot confirm actual message delivery.</p>
@@ -242,22 +237,18 @@
                 <p class="small-note">🎡 Your friends can open this link and spin directly — <strong>no registration required</strong>.</p>
                 <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button" aria-label="Copy preview referral link">Copy</button></div>
                 <p class="ref-copy-status" id="copyStatus" role="status" aria-live="polite"></p>
-                <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button><p id="contactShareFeedback" class="ref-copy-status" aria-live="polite"></p>
-                <div class="self-share-label"><strong id="contactSelfCount">0 / 20</strong><span>Device share handoffs (not verified)</span></div>
-                <div class="self-share-track" role="progressbar" aria-label="Device contact-share handoffs, not confirmed WhatsApp sends" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="contactSelfBar"><div id="contactSelfFill"></div></div>
-                <p class="self-share-note">This count changes only when the phone reports that the share sheet handed your invitation to another app. Just tapping Share or cancelling must not count. Even a completed handoff cannot prove that WhatsApp sent the message or which contact received it.</p>
+                <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Open WhatsApp to share with people</button><p id="contactShareFeedback" class="ref-copy-status" aria-live="polite"></p>
+                <p class="share-verification-note"><strong>20-person goal:</strong> WhatsApp lo contact ni select chesi <strong>Send</strong> press cheyyandi. Button click chesinantha matrana task complete avvadu. Website actual delivery ni verify cheyyaledu; fake 1/20 count chupinchadam ledu.</p>
               </div>
 
               <div class="share-task-card">
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
-                <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Share to a WhatsApp group</button><p id="groupShareFeedback" class="ref-copy-status" aria-live="polite"></p>
-                <div class="self-share-label"><strong id="groupSelfCount">0 / 5</strong><span>Device group-share handoffs (not verified)</span></div>
-                <div class="self-share-track" role="progressbar" aria-label="Device group-share handoffs, not confirmed WhatsApp group posts" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="groupSelfBar"><div id="groupSelfFill"></div></div>
-                <p class="self-share-note">This count changes only after the device reports a completed share-sheet handoff. Just opening WhatsApp or cancelling does not count. The website cannot confirm whether you selected a group or successfully posted in it.</p>
+                <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Open WhatsApp to share in a group</button><p id="groupShareFeedback" class="ref-copy-status" aria-live="polite"></p>
+                <p class="share-verification-note"><strong>5-group goal:</strong> WhatsApp lo sharing allow chese group ni select chesi <strong>Send</strong> press cheyyandi. Website 5 different groups ki actual ga send ayyindani confirm cheyyaledu. Fake 1/5 count chupinchadam ledu.</p>
                 <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
-              <p class="share-task-note">NO REGISTRATION REQUIRED · DEMO ONLY: Spin → sample gift entry → share with 20 interested people and 5 allowed WhatsApp groups. The website cannot automatically verify WhatsApp delivery or unique people. A completed phone share-sheet handoff is NOT proof of a sent message, so neither counter signifies task completion or prize eligibility. No real prize, cash or 50% coupon is awarded.</p>
+              <p class="share-task-note">NO REGISTRATION REQUIRED · DEMO ONLY: Spin → sample gift entry → share with 20 interested people and 5 allowed WhatsApp groups. The website cannot automatically verify WhatsApp delivery or unique people. A WhatsApp message can be confirmed as sent only inside WhatsApp; this website receives no Send or delivery event and does not display a false completed counter. No real prize, cash or 50% coupon is awarded.</p>
             </div>
           </div>
           <div class="mini-card"><div>🔒</div><p><b>Fair & clear:</b> no public reset button, no paid spins, no rewarded-video ad verification, and no prizes promised. Actual draws require official activation and verified rules.</p></div>
@@ -307,42 +298,12 @@ const OUTCOMES={
  GIFT_1000:{emoji:'💰',title:'₹1,000 Prize Draw Entry!',description:'Sample only. No ₹1,000 is paid or guaranteed. A real draw would need funded prizes and 20 verified referrals.'}
 };
 const STORAGE_KEY = 'deepavali_dhamaka_demo_v6';
-const SHARE_OPEN_KEY='deepavali_device_share_handoffs_v2';
-function loadShareOpenCounts(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(SHARE_OPEN_KEY)||'{}');
-    return {
-      contacts:Math.max(0,Math.min(20,Number.isInteger(saved.contacts)?saved.contacts:0)),
-      groups:Math.max(0,Math.min(5,Number.isInteger(saved.groups)?saved.groups:0))
-    };
-  }catch{return {contacts:0,groups:0};}
-}
-let shareOpens=loadShareOpenCounts();
-function renderShareOpenCounts(){
-  const contacts=shareOpens.contacts,groups=shareOpens.groups;
-  $('contactSelfCount').textContent=contacts+' / 20 handoffs';
-  $('contactSelfFill').style.width=(contacts*5)+'%';
-  $('contactSelfBar').setAttribute('aria-valuenow',String(contacts));
-  $('groupSelfCount').textContent=groups+' / 5 handoffs';
-  $('groupSelfFill').style.width=(groups*20)+'%';
-  $('groupSelfBar').setAttribute('aria-valuenow',String(groups));
-}
-function recordDeviceHandoff(type){
-  // This records only navigator.share resolving after a device handoff.
-  // It is NOT a WhatsApp delivery receipt or proof of a unique recipient/group.
-  if(!playerHasAward()||!['contacts','groups'].includes(type))return;
-  const max=type==='contacts'?20:5;
-  shareOpens[type]=Math.min(max,shareOpens[type]+1);
-  try{localStorage.setItem(SHARE_OPEN_KEY,JSON.stringify(shareOpens));}catch{}
-  renderShareOpenCounts();
-}
 const TEST_MODE_KEY = 'deepavali_owner_preview_test_v1';
 function isPreviewTestMode(){try{return sessionStorage.getItem(TEST_MODE_KEY)==='1';}catch{return false;}}
 function handlePreviewReplayLink(){
   const url=new URL(location.href);
   if(url.searchParams.get('demo_replay')!=='1')return;
-  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(SHARE_OPEN_KEY);localStorage.removeItem('deepavali_whatsapp_self_reported_v1');localStorage.removeItem('deepavali_whatsapp_share_opens_v1');}catch{}
-  shareOpens={contacts:0,groups:0};
+  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem('deepavali_device_share_handoffs_v2');localStorage.removeItem('deepavali_whatsapp_self_reported_v1');localStorage.removeItem('deepavali_whatsapp_share_opens_v1');}catch{}
   try{sessionStorage.setItem(TEST_MODE_KEY,'1');}catch{}
   // A replay clears only this browser's sample spin progress, never real records.
   url.searchParams.delete('demo_replay');
@@ -491,7 +452,6 @@ function render(){
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
   $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
-  renderShareOpenCounts();
   if(playerHasAward()){$('refLink').value=referralUrl();}
   if(state.prizes_confirmed && mode==='live'){$('modeBanner').textContent='OFFICIAL CAMPAIGN • No payment needed. Draw entries are not guaranteed prizes.';}
   else if(mode==='live'){$('modeBanner').textContent='PREVIEW MODE • Real prize offer inactive until organizer confirms campaign.';}
@@ -571,42 +531,17 @@ function festiveShareMessage(forGroup=false){
     (forGroup?'\n📲 Please share only in groups that allow invitations.':'')+
     '\n\n_Demo only — sample entries, not redeemable prizes or discount coupons._';
 }
-function deviceShareStatus(type,text){
-  const node=type==='contacts'?$('contactShareFeedback'):type==='groups'?$('groupShareFeedback'):$('bannerShareStatus');
-  if(node)node.textContent=text;
-}
-async function handoffToSharingApp(type,link,forGroup=false){
-  const description=festiveShareMessage(forGroup);
-  const message=link+'\n\n'+description;
-  if(typeof navigator.share!=='function'){
-    // WhatsApp's wa.me deep link has NO message-sent callback. Never count opening it.
-    deviceShareStatus(type,'Opening WhatsApp. This browser cannot confirm a send, so no counter change.');
-    openWhatsAppShare(link,description);
-    return;
-  }
-  try{
-    // Invoke within the original click activation; do not await anything first.
-    await navigator.share({title:'Deepavali Dhamaka — Spin & Win Demo',text:message});
-    // Only a successful device handoff is observed, NOT the WhatsApp target,
-    // conversation, recipients, actual send, group count or delivery.
-    if(type==='contacts'||type==='groups')recordDeviceHandoff(type);
-    deviceShareStatus(type,'Device reports share handed to an app. This is not proof of WhatsApp message sent or contact/group received it.');
-  }catch(error){
-    if(error&&error.name==='AbortError'){
-      deviceShareStatus(type,'Share was cancelled or dismissed. No count added.');
-      return;
-    }
-    deviceShareStatus(type,'Unable to confirm share handoff. No count added. You can copy the link and send it in WhatsApp.');
-  }
-}
 function shareWebsite(){
-  handoffToSharingApp('top',new URL(location.pathname,location.origin).toString(),false);
+  // WhatsApp deep-link opens the destination picker; it returns no send receipt.
+  openWhatsAppShare(new URL(location.pathname,location.origin).toString(),festiveShareMessage());
 }
 function shareLink(){
-  handoffToSharingApp('contacts',referralUrl(),false);
+  $('contactShareFeedback').textContent='WhatsApp open avutundi. Contact select chesi Send press cheyyandi. Actual send verify ayye callback website ki ledu, so count increase avvadu.';
+  openWhatsAppShare(referralUrl(),festiveShareMessage());
 }
 function shareGroupLink(){
-  handoffToSharingApp('groups',referralUrl(),true);
+  $('groupShareFeedback').textContent='WhatsApp open avutundi. Group select chesi Send press cheyyandi. Actual group post verify ayye callback website ki ledu, so count increase avvadu.';
+  openWhatsAppShare(referralUrl(),festiveShareMessage(true));
 }
 async function shareBannerImage(){
   const status=$('bannerShareStatus');
