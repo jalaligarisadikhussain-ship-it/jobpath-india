@@ -198,7 +198,7 @@
               </div>
             </div>
           </div>
-          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. Native Banner and Popunder are disabled. Only the Social Bar ad format remains enabled; no ad interaction is needed for the free demo spin. No rewarded-video or verified WhatsApp tracking is connected.</p>
+          <p class="micro" id="spinHelp">First spin is a disclosed no-prize warm-up. The random sample gift spin follows, then the 20-member and five-group demo sharing tasks. Native Banner is disabled. Social Bar and Popunder ad formats are enabled when privacy settings allow; the free demo spin never requires an ad click or view. No rewarded-video or verified WhatsApp tracking is connected.</p>
 
 
 
@@ -282,13 +282,13 @@
 <div class="prize"><span>💵</span><b>₹500 Draw Entry</b><small>20% on gift spin</small></div>
 <div class="prize"><span>💰</span><b>₹1,000 Draw Entry</b><small>20% on gift spin</small></div>
 </div></section>
-      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. Native Banner and Popunder are disabled. Only Social Bar may display floating sponsored content when permitted by saved ad preferences and browser privacy controls. Ad availability depends on Adsterra, and demo replay suppresses ads. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
+      <section class="fine-print"><h3>Important information</h3><p>This is a preview, not a live giveaway. The first warm-up spin is not random and always displays Try Again, with no gift chance. Only the second spin randomly selects one of five sample gift entries (20% each). Flipkart, Amazon and Meesho are sample prize categories only, not sponsors or issuers of actual 50% discount codes. Real prize funding, eligibility, winner selection and terms must be confirmed. Native Banner is disabled. Adsterra Social Bar and Popunder may display sponsored content when visitor ad preferences and browser privacy controls permit. Popunders can open a separate browser tab/window. Ads are controlled by Adsterra, can be blocked by browsers, and are suppressed in owner demo replay mode. No rewarded-video ads or ad-completion verification are connected. Never send money, OTPs, banking details, or passwords to claim a prize. One person may not qualify through fake accounts. <a href="./terms.html">Rules & terms</a> · <a href="./privacy.html">Privacy</a></p></section>
     </main>
     <footer><span>🪔 Deepavali Dhamaka 2026</span><span>Made for festive fun · Preview build</span><span class="footer-ad-controls"><span id="socialBarNoticeText" role="status">Sponsored content may appear.</span><button class="footer-ad-btn" id="socialBarChoicesBtn" type="button">Turn off ads</button></span></footer>
   </div>
   <dialog id="resultDialog"><div class="modal-inner"><div class="modal-glow" id="modalEmoji">🎊</div><div class="card-eyebrow">YOUR SPIN RESULT</div><h2 id="modalTitle">A festive surprise!</h2><p id="modalText"></p><div id="modalTasks" class="hidden"><b>🎁 Your WhatsApp sharing tasks (no signup needed)</b><p>1. Share the Spin & Win link with 20 different interested WhatsApp contacts.</p><p>2. Share in 5 WhatsApp groups that allow these invitations.</p><p><small>The site cannot automatically confirm who received the link or which group it reached. Preview only; no real gift is awarded.</small></p></div><button id="modalClose" type="button" class="primary-btn">CONTINUE</button><button id="goToShareBtn" type="button" class="secondary-btn hidden">📲 View WhatsApp sharing tasks</button></div></dialog>
   <script>/* Deepavali Dhamaka • static preview with optional Cloudflare Pages D1 API.
-   No live giveaway or rewarded-video ad SDK is connected; Native Banner and Popunder disabled, Social Bar enabled. */
+   No live giveaway or rewarded-video ad SDK is connected; Native Banner disabled, Social Bar and Popunder enabled. */
 'use strict';
 const DRAW_DATE = new Date('2026-11-08T20:00:00+05:30');
 const AD_PREFERENCE_KEY='deepavali_native_ad_consent_v1';
@@ -432,8 +432,10 @@ function updateSocialBarTrialNotice(){
   $('socialBarChoicesBtn').textContent=disabled?'Enable ads':'Turn off ads';
   const social=window.__deepavaliSocialBarState||'pending';
   // Script onload confirms download/execution only; never imply that an Adsterra creative was shown.
-  const explanation=social==='loaded'?'Social Bar script loaded. An ad may still be unavailable due to Adsterra inventory, frequency limits or browser settings.':social==='error'?'Social Bar script failed to load. Check browser ad blocking or network restrictions.':'Social Bar script: '+social+'. Visibility is decided by Adsterra.';
-  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Social Bar off by your preference.':explanation;
+  const pop=window.__deepavaliPopunderState||'pending';
+  const socialText=social==='loaded'?'Social Bar script loaded (ad not guaranteed)':social==='error'?'Social Bar script blocked/failed':'Social Bar '+social;
+  const popText=pop==='loaded'?'Popunder script loaded (ad not guaranteed)':pop==='error'?'Popunder script blocked/failed':'Popunder '+pop;
+  $('socialBarNoticeText').textContent=test?'Demo replay: ads off. Exit test mode above.':gpc?'Ads off due to browser privacy settings.':disabled?'Social Bar and Popunder are off by your preference.':socialText+' · '+popText+'. Ad serving is controlled by Adsterra.';
 }
 function initAdvertising(){
   if(!NATIVE_AD_ENABLED)return;
@@ -475,7 +477,7 @@ function render(){
     node.classList.toggle('done',i<stage);
     if(i===stage)node.setAttribute('aria-current','step');else node.removeAttribute('aria-current');
   }
-  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. Native Banner and Popunder disabled; only Social Bar is enabled.';
+  $('stageHelp').textContent=spinning?'Wheel is spinning — result will appear below.':stage===0?'Start with the disclosed no-prize warm-up spin.':stage===1?'Warm-up complete. Unlock the free gift spin; your result will be random.':'Your sample entry is saved. See 20-member and 5-group sharing instructions below. Social Bar and Popunder may display sponsored content; no ad interaction is required.';
   $('postSpinAdPanel').classList.toggle('hidden',!NATIVE_AD_ENABLED||isPreviewTestMode());
   if(NATIVE_AD_ENABLED&&!isPreviewTestMode()&&navigator.globalPrivacyControl!==true&&getAdPreference()!=='decline')loadNativeAd();
   $('adChoicesBtn').classList.toggle('hidden',isPreviewTestMode()||navigator.globalPrivacyControl===true);
@@ -634,6 +636,20 @@ init();
   // Parser-inserted at the bottom of body; third-party code can detect its proper parse location.
   window.__deepavaliSocialBarState='loading';
   document.write("<script data-cfasync=\"false\" src=\"https://bauval.org/14/f17978bd575f15f7a0cec124a9d91646\" onload=\"window.__deepavaliSocialBarState='loaded';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\" onerror=\"window.__deepavaliSocialBarState='error';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\"><\/script>");
+})();
+</script>
+<!-- Adsterra Popunder_1 placement 32076389; visitor opt-out and owner test suppression match Social Bar. -->
+<script id="popunderPlacementLoader">
+(function(){
+  'use strict';
+  try{
+    if(navigator.globalPrivacyControl===true)return;
+    if(new URLSearchParams(location.search).get('demo_replay')==='1')return;
+    if(sessionStorage.getItem('deepavali_owner_preview_test_v1')==='1')return;
+    if(localStorage.getItem('deepavali_native_ad_consent_v1')==='decline')return;
+  }catch(error){return;}
+  window.__deepavaliPopunderState='loading';
+  document.write("<script data-cfasync=\"false\" src=\"https://abscloud.org/1/3110baa332934e98a495157335d1404f\" onload=\"window.__deepavaliPopunderState='loaded';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\" onerror=\"window.__deepavaliPopunderState='error';if(typeof updateSocialBarTrialNotice==='function')updateSocialBarTrialNotice()\"><\/script>");
 })();
 </script>
 </body>
