@@ -38,7 +38,7 @@ async function migrate(){
 }
 migrate().catch(e=>{console.error('Database initialization unavailable:',e.message);});
 app.get('/healthz',asyncRoute(async(req,res)=>{try{if(!DB)throw Error('missing DB');await DB.query('SELECT 1');res.json({status:'ok',database:'connected',prizes:'demo only'});}catch{res.status(503).json({status:'degraded',database:'not ready'});}}));
-app.get('/api/config',(req,res)=>res.json({trackingReady:dbReady,prizesEnabled:false,spinMode:'demo',referrals:'manual review',groupProofs:'manual review'}));
+app.get('/api/config',(req,res)=>res.json({trackingReady:dbReady,prizesEnabled:false,spinMode:'demo',browserPlays:'unique browser tokens engaged by first spin, not unique people',referrals:'anonymous browser-play counts',groupProofs:'private manual screenshot review'}));
 async function visitor(req,res,next){
  const h=req.get('authorization')||'';
  if(!/^Bearer [A-Za-z0-9_-]{30,100}$/.test(h))return fail(res,401,'Registration session missing.');
@@ -185,7 +185,7 @@ app.post('/api/anon/start',dbRequired,asyncRoute(async(req,res)=>{
   if(r.rows.length)p=r.rows[0];
  }
  if(!p){
-  if(!limit(anonLimit,req.ip,8,3600000))return fail(res,429,'Too many new browser sessions from this connection.');
+  if(!limit(anonLimit,req.ip,40,3600000))return fail(res,429,'Too many new browser sessions from this connection.');
   secret=token();
   const r=await DB.query('INSERT INTO dd_anon_players(id,token_hash,referral_code) VALUES($1,$2,$3) RETURNING *',[crypto.randomUUID(),hash(secret),'SPIN-'+crypto.randomBytes(8).toString('hex').toUpperCase()]);
   p=r.rows[0];
