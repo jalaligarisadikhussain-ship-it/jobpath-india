@@ -43,6 +43,21 @@
 .group-meter{font-size:13px;font-weight:800;color:#ffe8be;margin:10px 0}
 .group-progress{height:10px;border-radius:20px;overflow:hidden;background:#ffffff20;margin:8px 0 14px}
 .group-progress>div{height:100%;width:0;background:linear-gradient(90deg,#41c995,#abebae);border-radius:20px;transition:width .3s}
+.share-targets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 19px}
+.share-target{padding:13px 8px;text-align:center;border:1px solid #ffc9838a;border-radius:13px;background:#ffe4a611}
+.share-target strong{display:block;font:900 clamp(19px,4vw,29px) 'Outfit',sans-serif;color:#ffe4ae}
+.share-target small{display:block;margin-top:5px;font-size:11px;color:#e3c8dc}
+.self-share-label{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:14px 0 7px}
+.self-share-label strong{color:#ffe5ae;font:900 21px 'Outfit',sans-serif}
+.self-share-label span{font-size:11px;color:#e4cbdb}
+.self-share-track{height:10px;overflow:hidden;border-radius:20px;background:#ffffff21}
+.self-share-track>div{height:100%;width:0;background:linear-gradient(90deg,#6edaac,#c5ed9c);border-radius:20px;transition:width .2s}
+.self-share-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:11px 0}
+.self-share-controls button{border-radius:10px;padding:11px 14px;font:800 12px 'Outfit',sans-serif;border:1px solid #bbf0cb;color:#122a22;background:#aaf1c9;min-height:44px}
+.self-share-controls button.subtle{border-color:#ffffff78;color:#e9d9e7;background:#ffffff0e}
+.self-share-controls button:disabled{cursor:not-allowed;opacity:.48}
+.self-share-note{font-size:11px!important;color:#e9d4e4!important;line-height:1.55}
+@media(max-width:440px){.self-share-controls button{flex:1}.share-target strong{font-size:22px}}
 .share-task-note{font-size:12px;color:#d8c2de;line-height:1.65;border-left:3px solid #ffcd72;padding-left:12px;margin-top:13px}
 #modalTasks{margin:14px 0 18px;text-align:left;padding:13px 16px;background:#ffffff12;border:1px solid #ffcd7260;border-radius:15px;line-height:1.6}
 #modalTasks b{color:#ffe09c;font-size:16px}#modalTasks p{font-size:13px;margin:6px 0}
@@ -219,6 +234,11 @@
             <p id="statusCopy">The first spin is a warm-up with no prize. Then a free demo gift-draw spin picks one random sample entry.</p>
             <div id="shareArea" class="share-area hidden">
               <h3 class="share-task-heading" id="shareTasksHeading">🎁 GIFT ENTRY → 20 MEMBERS → 5 GROUPS</h3>
+              <div class="share-targets" aria-label="WhatsApp sharing goals">
+                <div class="share-target"><strong>20 PEOPLE</strong><small>WhatsApp contacts</small></div>
+                <div class="share-target"><strong>5 GROUPS</strong><small>WhatsApp groups</small></div>
+              </div>
+              <p class="small-note">Share goals are visible to every viewer after the sample gift spin. Progress below is a private, self-reported checklist saved only in this browser — not a verified referral or prize eligibility counter.</p>
               <div class="share-task-card">
                 <b>👥 TASK 1 — Invite 20 different people</b>
                 <p>Choose 20 different interested WhatsApp contacts and send this Spin & Win link if they would like to participate. No account, phone number or email registration required to spin. This website cannot confirm actual message delivery.</p>
@@ -227,14 +247,20 @@
                 <div class="share-link"><input id="refLink" aria-label="Your referral link" type="text" readonly><button id="copyBtn" type="button" aria-label="Copy preview referral link">Copy</button></div>
                 <p class="ref-copy-status" id="copyStatus" role="status" aria-live="polite"></p>
                 <button class="whatsapp-btn" id="whatsappBtn" type="button">↗ Share to people on WhatsApp</button>
-                <p class="small-note">This is a suggested 20-person sharing task, not a verified 20/20 counter. WhatsApp does not tell this site who actually received a message. Please avoid unsolicited bulk messages.</p>
+                <div class="self-share-label"><strong id="contactSelfCount">0 / 20</strong><span>Contacts you say you shared with</span></div>
+                <div class="self-share-track" role="progressbar" aria-label="Self-reported WhatsApp contacts (not verified)" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="contactSelfBar"><div id="contactSelfFill"></div></div>
+                <div class="self-share-controls"><button id="markContactSent" type="button">✓ I sent to 1 person</button><button id="undoContactSent" type="button" class="subtle">Undo one</button></div>
+                <p class="self-share-note">After you actually send the message in WhatsApp, come back and tap “I sent to 1 person.” One mark per different interested person. This count is self-reported and not verified by WhatsApp; it does not confirm 20 unique recipients.</p>
               </div>
 
               <div class="share-task-card">
                 <b>📲 TASK 2 — Share in 5 WhatsApp groups</b>
                 <p>Choose up to 5 relevant groups where sharing this invitation is welcome. You select the groups in WhatsApp; our website cannot read your groups or verify that a post was sent.</p>
                 <button class="whatsapp-btn" id="groupShareBtn" type="button">↗ Share to a WhatsApp group</button>
-                <p class="small-note">Share in up to 5 groups where the group's rules allow invitations. Opening WhatsApp is not evidence that a message was delivered, so the page does not claim 5/5 verified.</p>
+                <div class="self-share-label"><strong id="groupSelfCount">0 / 5</strong><span>Groups you say you shared with</span></div>
+                <div class="self-share-track" role="progressbar" aria-label="Self-reported WhatsApp groups (not verified)" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0" id="groupSelfBar"><div id="groupSelfFill"></div></div>
+                <div class="self-share-controls"><button id="markGroupSent" type="button">✓ I shared to 1 group</button><button id="undoGroupSent" type="button" class="subtle">Undo one</button></div>
+                <p class="self-share-note">After sending in an allowed WhatsApp group, come back and mark one group. Mark each different group only once. WhatsApp does not independently confirm these self-reports.</p>
                 <p class="small-note"><strong>How to share:</strong> Tap the WhatsApp button, select a group that allows invitations, then press Send in WhatsApp. Opening the share screen alone does not count as a share. This website cannot confirm delivery or which group received it; genuine eligibility requires independent verification.</p>
               </div>
               <p class="share-task-note">NO REGISTRATION REQUIRED · DEMO ONLY: Spin → sample gift entry → share with 20 interested people and 5 allowed WhatsApp groups. The website cannot automatically verify WhatsApp delivery or unique people. No real prize, cash or 50% coupon is awarded. Organizer tracking, where available, is private.</p>
@@ -287,12 +313,45 @@ const OUTCOMES={
  GIFT_1000:{emoji:'💰',title:'₹1,000 Prize Draw Entry!',description:'Sample only. No ₹1,000 is paid or guaranteed. A real draw would need funded prizes and 20 verified referrals.'}
 };
 const STORAGE_KEY = 'deepavali_dhamaka_demo_v6';
+const SELF_SHARE_KEY='deepavali_whatsapp_self_reported_v1';
+function loadSelfReportedShare(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(SELF_SHARE_KEY)||'{}');
+    return {
+      contacts:Math.max(0,Math.min(20,Number.isInteger(saved.contacts)?saved.contacts:0)),
+      groups:Math.max(0,Math.min(5,Number.isInteger(saved.groups)?saved.groups:0))
+    };
+  }catch{return {contacts:0,groups:0};}
+}
+let selfReportedShare=loadSelfReportedShare();
+function renderSelfReportedShare(){
+  const people=selfReportedShare.contacts;
+  const groups=selfReportedShare.groups;
+  $('contactSelfCount').textContent=people+' / 20 self-reported';
+  $('contactSelfFill').style.width=(people/20*100)+'%';
+  $('contactSelfBar').setAttribute('aria-valuenow',String(people));
+  $('markContactSent').disabled=people>=20||!playerHasAward();
+  $('undoContactSent').disabled=people<=0||!playerHasAward();
+  $('groupSelfCount').textContent=groups+' / 5 self-reported';
+  $('groupSelfFill').style.width=(groups/5*100)+'%';
+  $('groupSelfBar').setAttribute('aria-valuenow',String(groups));
+  $('markGroupSent').disabled=groups>=5||!playerHasAward();
+  $('undoGroupSent').disabled=groups<=0||!playerHasAward();
+}
+function recordSelfReportedShare(type,step){
+  if(!playerHasAward()||!['contacts','groups'].includes(type)||![1,-1].includes(step))return;
+  const max=type==='contacts'?20:5;
+  selfReportedShare[type]=Math.max(0,Math.min(max,selfReportedShare[type]+step));
+  try{localStorage.setItem(SELF_SHARE_KEY,JSON.stringify(selfReportedShare));}catch{}
+  renderSelfReportedShare();
+}
 const TEST_MODE_KEY = 'deepavali_owner_preview_test_v1';
 function isPreviewTestMode(){try{return sessionStorage.getItem(TEST_MODE_KEY)==='1';}catch{return false;}}
 function handlePreviewReplayLink(){
   const url=new URL(location.href);
   if(url.searchParams.get('demo_replay')!=='1')return;
-  try{localStorage.removeItem(STORAGE_KEY);}catch{}
+  try{localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(SELF_SHARE_KEY);}catch{}
+  selfReportedShare={contacts:0,groups:0};
   try{sessionStorage.setItem(TEST_MODE_KEY,'1');}catch{}
   // A replay clears only this browser's sample spin progress, never real records.
   url.searchParams.delete('demo_replay');
@@ -355,6 +414,10 @@ async function init(){
   $('copyBtn').addEventListener('click',copyLink);
   $('whatsappBtn').addEventListener('click',shareLink);
   $('groupShareBtn').addEventListener('click',shareGroupLink);
+  $('markContactSent').addEventListener('click',()=>recordSelfReportedShare('contacts',1));
+  $('undoContactSent').addEventListener('click',()=>recordSelfReportedShare('contacts',-1));
+  $('markGroupSent').addEventListener('click',()=>recordSelfReportedShare('groups',1));
+  $('undoGroupSent').addEventListener('click',()=>recordSelfReportedShare('groups',-1));
   $('adChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('socialBarChoicesBtn').addEventListener('click',()=>setAdConsent(getAdPreference()==='decline'?'allow':'decline'));
   $('exitPreviewTestBtn').addEventListener('click',()=>{
@@ -439,6 +502,7 @@ function render(){
   $('retryBtn').classList.toggle('hidden',!(s===1&&!state.retry_unlocked&&!playerHasAward()));
   $('retryBtn').textContent=mode==='demo'?'🎁 UNLOCK FREE GIFT SPIN':'🎞 Unlock one retry';
   $('shareArea').classList.toggle('hidden',!playerHasAward());
+  renderSelfReportedShare();
   if(playerHasAward()){$('refLink').value=referralUrl();}
   if(state.prizes_confirmed && mode==='live'){$('modeBanner').textContent='OFFICIAL CAMPAIGN • No payment needed. Draw entries are not guaranteed prizes.';}
   else if(mode==='live'){$('modeBanner').textContent='PREVIEW MODE • Real prize offer inactive until organizer confirms campaign.';}
