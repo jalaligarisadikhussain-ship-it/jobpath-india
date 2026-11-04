@@ -22,15 +22,8 @@ function setAccount(registered){
 function displayRecord(d){
  me=d;setAccount(true);
  $('registrationStatus').textContent='Your registration: '+d.member.status.toUpperCase()+'. Email identity is not automatically verified.';
- $('verifiedReferrals').textContent=d.verified_referrals+' / 20';
- $('pendingReferrals').textContent=String(d.pending_referrals);
- $('approvedGroups').textContent=d.approved_groups+' / 5';
- $('pendingGroups').textContent=String(d.pending_groups);
  $('trackingLink').value='https://deepavali-dhamaka-spin-2026.onrender.com/?ref='+encodeURIComponent(d.member.referralCode);
- $('returnToSpin').href='https://deepavali-dhamaka-spin-2026.onrender.com/?tracker='+encodeURIComponent(d.member.referralCode);
- const host=$('proofHistory');host.replaceChildren();
- for(const p of d.proofs){const e=document.createElement('div');e.className='proof';const strong=document.createElement('strong');strong.textContent=p.groupName+' — '+p.status;e.append(strong);host.append(e);}
- if(!d.proofs.length)host.textContent='No screenshots submitted yet.';
+ $('returnToSpin').href='https://deepavali-dhamaka-spin-2026.onrender.com/';
  $('proofButton').disabled=d.proofs.length>=5;
 }
 async function reloadMember(){
