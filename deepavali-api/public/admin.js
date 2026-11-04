@@ -48,13 +48,43 @@ function renderProof(p){
  },'reject'));
  card.append(controls);return card;
 }
+
+function renderAnonPlayer(p){
+ const card=make('article',null,'item');card.append(make('h3','Anonymous browser '+p.referral_code));
+ kv(card,'Unique browser plays from its link (NOT unique humans)',p.unique_browser_plays+' / 20');
+ kv(card,'Group screenshots reviewed approved',p.approved_groups+' / 5');
+ kv(card,'Played spin',p.engaged_at?'Yes':'Not yet');kv(card,'Referred from',p.referred_by||'Direct');
+ return card;
+}
+async function changeAnonProof(id,status){
+ if(status==='approved'&&!confirm('The screenshot is redacted and reviewable. Approval is NOT WhatsApp delivery verification. Approve?'))return;
+ await call('anon-proofs/'+id+'/status',{method:'POST',body:JSON.stringify({status})});
+ feedback('Anonymous proof review: '+status);await load();
+}
+function renderAnonProof(p){
+ const card=make('article',null,'item');card.append(make('h3',p.group_label+' — '+p.status));
+ kv(card,'Browser referral code',p.referral_code);kv(card,'Uploaded',new Date(p.created_at).toLocaleString());
+ const controls=make('div',null,'controls'),link=make('a','View private screenshot');
+ link.href='/admin/api/anon-proofs/'+encodeURIComponent(p.id)+'/image';link.target='_blank';link.rel='noopener noreferrer';
+ controls.append(link,action('Approve review',()=>changeAnonProof(p.id,'approved'),'confirm'),action('Reject',()=>changeAnonProof(p.id,'rejected'),'reject'),action('Set pending',()=>changeAnonProof(p.id,'pending')));
+ controls.append(action('Delete screenshot',async()=>{
+  if(!confirm('Permanently delete this private screenshot?'))return;
+  await call('anon-proofs/'+p.id,{method:'DELETE'});await load();
+ },'reject'));
+ card.append(controls);return card;
+}
 async function load(){
- const [m,p]=await Promise.all([call('participants'),call('proofs')]);
+ const [m,p,anon,anonProof]=await Promise.all([call('participants'),call('proofs'),call('anon-players'),call('anon-proofs')]);
  $('stats').replaceChildren(summary('Registered',m.totals.total_members),summary('Manually verified members',m.totals.verified_members),summary('Pending proof reviews',m.totals.pending_proofs));
  $('members').replaceChildren(...m.participants.map(renderMember));
  if(!m.participants.length)$('members').append(make('p','No participant registrations yet.'));
  $('proofs').replaceChildren(...p.proofs.map(renderProof));
  if(!p.proofs.length)$('proofs').append(make('p','No WhatsApp proof submissions yet.'));
+ $('anonStats').replaceChildren(summary('Anonymous browsers',anon.totals.browsers),summary('Browsers that spun',anon.totals.players),summary('Pending group screenshots',anon.totals.pending_group_proofs));
+ $('anonPlayers').replaceChildren(...anon.players.map(renderAnonPlayer));
+ if(!anon.players.length)$('anonPlayers').append(make('p','No anonymous browser sessions yet.'));
+ $('anonProofs').replaceChildren(...anonProof.proofs.map(renderAnonProof));
+ if(!anonProof.proofs.length)$('anonProofs').append(make('p','No anonymous group screenshots submitted.'));
 }
 async function updateSession(){
  const s=await call('session');
