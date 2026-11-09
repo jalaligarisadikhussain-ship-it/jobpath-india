@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/daily-source-watch.yml'
+      - 'tests/**'
       - 'scripts/enrich_notice_pdfs.py'
       - 'scripts/discover_notice_leads.py'
       - 'scripts/publish_detected_notices.py'
