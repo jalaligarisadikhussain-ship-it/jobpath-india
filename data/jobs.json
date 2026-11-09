@@ -8,7 +8,7 @@
     "qualification": "Other",
     "department": "Administration",
     "category": "Medical & Research",
-    "status": "open",
+    "status": "closed",
     "sourceOrganization": "Indian Council of Medical Research (ICMR)",
     "lastDate": "2026-11-06",
     "publishedDate": "2026-11-02",
@@ -48,7 +48,7 @@
     "qualification": "Other",
     "department": "Research",
     "category": "Medical & Research",
-    "status": "open",
+    "status": "closed",
     "sourceOrganization": "Indian Council of Medical Research (ICMR)",
     "lastDate": "2026-11-06",
     "publishedDate": "2026-11-02",
@@ -181,7 +181,7 @@
     "lastVerifiedDate": "2026-11-02",
     "verified": true,
     "isDemo": false,
-    "status": "open",
+    "status": "closed",
     "description": "Temporary contract; see official ICMR recruitment advertisement for eligibility, application procedure and vacancies. Official source listing checked 2 Nov 2026; no eligibility or fee details inferred."
   },
   {
@@ -424,7 +424,7 @@
     "lastVerifiedDate": "2026-10-28",
     "verified": true,
     "isDemo": false,
-    "status": "open",
+    "status": "closed",
     "description": "Four categories: Chief Commercial cum Ticket Supervisor (127); Goods Train Manager (2750); Junior Accounts Assistant cum Typist (300); Senior Clerk cum Typist (371). Graduation required; age 18–33 as of 1 Jan 2027 subject to relaxations. Deadline 6 Nov 2026 at 11:59 PM. See detailed CEN at official RRB website for complete terms."
   },
   {
