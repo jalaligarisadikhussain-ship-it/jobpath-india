@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'data/**'
+      - 'tests/**'
       - 'scripts/build_final.py'
       - 'scripts/site_config.py'
       - 'assets/js/**'
