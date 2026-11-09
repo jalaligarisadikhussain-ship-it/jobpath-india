@@ -22,15 +22,15 @@
       "url": "https://www.ibps.in/",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-06",
-      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-09",
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "d3dd2c3943b1ef2941e1a1a98f9e456d1ed1025978a0041e600a0fdad57e8217",
-      "last_change_or_status_date": "2026-11-06"
+      "fingerprint": "cbee7792e7e9626c715df62e8610ef1685f8b2eacc61bc20aee8fa0401519a6e",
+      "last_change_or_status_date": "2026-11-09"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -66,10 +66,9 @@
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
-      "status": "unreachable",
-      "fingerprint": "abcb7548e58179bc663e86048a3f9376552991be2584dfb664c9770ccb1e21c4",
-      "last_change_or_status_date": "2026-11-06",
-      "note": "Could not check: request timed out; not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "1ea01462fb714050fffdb6a10ea392167a17ca36fc52646a285849117793fd00",
+      "last_change_or_status_date": "2026-11-09"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
