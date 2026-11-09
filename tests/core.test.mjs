@@ -11,17 +11,22 @@ test('unique records: duplicate ID is rejected',()=>{assert.match(validateJobs([
 test('invalid dates and missing HTTPS official links are rejected',()=>{const bad={...demoJobs[0],isDemo:false,verified:true,status:'open',lastDate:'2026-02-30'};assert.match(validateJobs([bad]).join(','),/bad lastDate/);assert.match(validateJobs([bad]).join(','),/official HTTPS/)});
 test('deadline arithmetic: today, future and expired',()=>{assert.equal(daysUntil('2026-10-28',now),0);assert.equal(daysUntil('2026-10-30',now),2);assert.equal(daysUntil('2026-10-25',now),-3)});
 test('status closes verified expired jobs automatically',()=>{assert.equal(effectiveStatus({...demoJobs[0],isDemo:false,verified:true,status:'open',lastDate:'2026-10-25'},now),'closed');assert.equal(effectiveStatus(demoJobs[0],now),'unverified')});
-test('sample status can change without implying verification',()=>{assert.equal(sampleStatus(jobs.find(j=>j.id==='DEMO-004'),now),'closed');assert.equal(sampleStatus(jobs.find(j=>j.id==='DEMO-006'),now),'upcoming')});
+test('sample status can change without implying verification',()=>{
+ const closedFixture={...demoJobs[0],id:'TEST-EXPIRED-DEMO',startDate:'2026-10-01',lastDate:'2026-10-25'};
+ assert.equal(sampleStatus(closedFixture,now),'closed');
+ assert.equal(sampleStatus(jobs.find(j=>j.id==='DEMO-006'),now),'upcoming');
+});
 test('search and six category filters',()=>{assert.equal(filterJobs(jobs,{q:'sample railway'},now).length,1);assert.equal(filterJobs(jobs,{state:'Telangana',qualification:'Diploma',type:'State'},now).length,1);assert.equal(filterJobs(jobs,{category:'Banking',organization:'Example Banking Careers Unit',department:'Banking'},now).length,1);assert.equal(filterJobs(jobs,{q:'no such title'},now).length,0)});
 test('sample status and deadline filter works after daily verified-job status updates',()=>{
- // Verified records can legitimately change from open to closed across days;
- // the fixture must not hard-code the original count of closed jobs.
- const expectedClosed=jobs.filter(j=>(j.isDemo?sampleStatus(j,now):effectiveStatus(j,now))==='closed')
+ // Removed/expired demo records must not make production regression tests fail.
+ const closedFixture={...demoJobs[0],id:'TEST-EXPIRED-DEMO',startDate:'2026-10-01',lastDate:'2026-10-25'};
+ const fixtures=[...jobs,closedFixture];
+ const expectedClosed=fixtures.filter(j=>(j.isDemo?sampleStatus(j,now):effectiveStatus(j,now))==='closed')
   .map(j=>j.id).sort();
- const filteredClosed=filterJobs(jobs,{status:'closed'},now).map(j=>j.id).sort();
- assert(expectedClosed.includes('DEMO-004'));
+ const filteredClosed=filterJobs(fixtures,{status:'closed'},now).map(j=>j.id).sort();
+ assert(expectedClosed.includes('TEST-EXPIRED-DEMO'));
  assert.deepEqual(filteredClosed,expectedClosed);
- assert(filterJobs(jobs,{deadline:'30'},now).every(j=>daysUntil(j.lastDate,now)<=30&&daysUntil(j.lastDate,now)>=0));
+ assert(filterJobs(fixtures,{deadline:'30'},now).every(j=>daysUntil(j.lastDate,now)<=30&&daysUntil(j.lastDate,now)>=0));
 });
 test('sort nearest deadline and title',()=>{const x=filterJobs(jobs,{sort:'deadline'},now);assert(x.every((j,i)=>i===0||x[i-1].lastDate<=j.lastDate));const t=filterJobs(jobs,{sort:'title'},now);assert(t.every((j,i)=>i===0||t[i-1].title.localeCompare(j.title)<=0))});
 test('HTML escaping and HTTPS URL validation block injection',()=>{assert.equal(escapeHTML('<img src=x onerror="alert(1)">'),'&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');assert.equal(safeUrl('javascript:alert(1)'),null);assert.equal(safeUrl('http://example.com'),null);assert.equal(isISODate('2026-02-30'),false)});
