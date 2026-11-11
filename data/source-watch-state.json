@@ -22,15 +22,15 @@
       "url": "https://www.ibps.in/",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-10",
-      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-11",
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "b373b2b34521d98c6715d404ede58afb1501e47a373eee810cbda96a9bb71613",
-      "last_change_or_status_date": "2026-11-10"
+      "fingerprint": "1954aaa46b9a08f3e0379f4a918053bda35b31ee1e6bc1743417c551a6748035",
+      "last_change_or_status_date": "2026-11-11"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -45,8 +45,8 @@
       "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-05",
-      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-11",
+      "note": "Could not check: network/DNS/TLS error (gaierror); not proof of a closed recruitment"
     },
     "tgpsc": {
       "name": "Telangana Public Service Commission",
@@ -67,8 +67,8 @@
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "b9d8efb2d8804f984a5b56fdbcfb806f760428ed13629aa9638a9aefaeca077d",
-      "last_change_or_status_date": "2026-11-10"
+      "fingerprint": "487639bc959b14871b3d74ddf22d811b7a35362c2c95a64fe5aa0cec32cdfb54",
+      "last_change_or_status_date": "2026-11-11"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
