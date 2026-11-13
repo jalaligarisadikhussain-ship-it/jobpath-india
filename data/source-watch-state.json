@@ -20,17 +20,16 @@
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
-      "status": "unreachable",
-      "fingerprint": null,
-      "last_change_or_status_date": "2026-11-11",
-      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "e11baf8ddab59d2027f7788c295ef1b96c16507a622a4aba4c8473a668d099a7",
+      "last_change_or_status_date": "2026-11-13"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "d31dbd08a749c62ce89a6f354ce94a8fe063d55b9f3e271679e720e89ed56bc9",
-      "last_change_or_status_date": "2026-11-12"
+      "fingerprint": "c950e7a40652f27bebe3828da607be4bf39e997455aaf8b0ce5eef49e43759c9",
+      "last_change_or_status_date": "2026-11-13"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -67,8 +66,8 @@
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "295983c1b63bfcd9600ec4e42b37ba559b5ecdfe6df3370f726c47bdde7457e8",
-      "last_change_or_status_date": "2026-11-12"
+      "fingerprint": "e7e4a1a68a71c1fdfc3fafe1541fe8f29be6037abf673713c322f74290656abd",
+      "last_change_or_status_date": "2026-11-13"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
