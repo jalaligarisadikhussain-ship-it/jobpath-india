@@ -29,8 +29,8 @@
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "2a3d846d7018c201985aa2d899b019141838cd844cd5f23f7d81ebbc6ef68f41",
-      "last_change_or_status_date": "2026-11-14"
+      "fingerprint": "880b3da612f0d497b94e6b8a6ac7b275caccae7c24c4a248d03bcf89c95237d6",
+      "last_change_or_status_date": "2026-11-15"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -66,9 +66,10 @@
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
-      "status": "reachable",
+      "status": "unreachable",
       "fingerprint": "6ab80a0bb3f81b957021a47917b69db9c02f9a98b2542638d67d5027acab9f9d",
-      "last_change_or_status_date": "2026-11-14"
+      "last_change_or_status_date": "2026-11-15",
+      "note": "Could not check: request timed out; not proof of a closed recruitment"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
