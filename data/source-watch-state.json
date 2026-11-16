@@ -20,17 +20,16 @@
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
-      "status": "unreachable",
-      "fingerprint": "e11baf8ddab59d2027f7788c295ef1b96c16507a622a4aba4c8473a668d099a7",
-      "last_change_or_status_date": "2026-11-14",
-      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "9ab8f4377661bbce2194c69aab2bbc347d930c85a8ab9810aac6ca865307da6c",
+      "last_change_or_status_date": "2026-11-16"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "880b3da612f0d497b94e6b8a6ac7b275caccae7c24c4a248d03bcf89c95237d6",
-      "last_change_or_status_date": "2026-11-15"
+      "fingerprint": "caf61639fd3e5cda96b05b36519c95d5de9b5de75a83268d4c632cc7b582074c",
+      "last_change_or_status_date": "2026-11-16"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -45,16 +44,15 @@
       "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-12",
-      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-16",
+      "note": "Could not check: network/DNS/TLS error (gaierror); not proof of a closed recruitment"
     },
     "tgpsc": {
       "name": "Telangana Public Service Commission",
       "url": "https://www.tgpsc.gov.in/",
-      "status": "unreachable",
-      "fingerprint": null,
-      "last_change_or_status_date": "2026-10-28",
-      "note": "Could not check: HTTP 403 (remote server blocked or rejected request); not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "a43555e0d622b676a36cd290a0ce061d86a25300a5a1a69ab13c70f90ee7db5a",
+      "last_change_or_status_date": "2026-11-16"
     },
     "ctet": {
       "name": "Central Teacher Eligibility Test",
@@ -66,10 +64,9 @@
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
-      "status": "unreachable",
-      "fingerprint": "6ab80a0bb3f81b957021a47917b69db9c02f9a98b2542638d67d5027acab9f9d",
-      "last_change_or_status_date": "2026-11-15",
-      "note": "Could not check: request timed out; not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "1838cbac78558def2ccc41c30f3b4ca916fa9a6e0b76063c5625a4518e94bf9d",
+      "last_change_or_status_date": "2026-11-16"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
