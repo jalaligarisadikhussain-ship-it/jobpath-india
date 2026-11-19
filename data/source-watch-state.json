@@ -21,15 +21,15 @@
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
       "status": "reachable",
-      "fingerprint": "cd817393ef2b23992d4648f26c0454a5c2339e26eeb5b5104b4df6d328546dd1",
-      "last_change_or_status_date": "2026-11-17"
+      "fingerprint": "7a7381afbaea1fe98e31a552a982495244fcaf77e7f09c26489cbd0e748ae9f8",
+      "last_change_or_status_date": "2026-11-19"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "2450e38ef4c620cf37adcccf90806bc6a9f592f79c932d39f0eb4768f022103a",
-      "last_change_or_status_date": "2026-11-18"
+      "fingerprint": "df43386501e8eb021cff15ed6b94d3503870ee046817e3fd78b1101db49454b8",
+      "last_change_or_status_date": "2026-11-19"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -44,8 +44,8 @@
       "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-18",
-      "note": "Could not check: network/DNS/TLS error (gaierror); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-19",
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "tgpsc": {
       "name": "Telangana Public Service Commission",
@@ -59,15 +59,15 @@
       "name": "Central Teacher Eligibility Test",
       "url": "https://ctet.nic.in/",
       "status": "reachable",
-      "fingerprint": "33a862e9c89aa39a3516459f79670ab9f1a81bc3a8f42ae39d0d12e4fd17291e",
-      "last_change_or_status_date": "2026-10-31"
+      "fingerprint": "fce82b0cddd01b6327012bf31d00d0277b4a44fc7d5e96807b808e38076eacec",
+      "last_change_or_status_date": "2026-11-19"
     },
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "54ce6939fc8ce3fc8e07a84bd645dae8b80c860ca5626eeb6d292eb736f9b343",
-      "last_change_or_status_date": "2026-11-18"
+      "fingerprint": "9ea0d6dc61f899fa94745f17d38dd40c6af3bdd25cac17f556d7332fcb79398a",
+      "last_change_or_status_date": "2026-11-19"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
