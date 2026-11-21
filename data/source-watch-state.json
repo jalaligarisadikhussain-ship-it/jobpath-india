@@ -20,16 +20,17 @@
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
-      "status": "reachable",
+      "status": "unreachable",
       "fingerprint": "7a7381afbaea1fe98e31a552a982495244fcaf77e7f09c26489cbd0e748ae9f8",
-      "last_change_or_status_date": "2026-11-19"
+      "last_change_or_status_date": "2026-11-21",
+      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "0d68937a0639ac12689a4ba433663434db4f00d96035b9bdb109dab8cddab564",
-      "last_change_or_status_date": "2026-11-20"
+      "fingerprint": "9ced5f5d900787bc3316c84e7a0135212990675638b3c5782cf6de4a0d1806db",
+      "last_change_or_status_date": "2026-11-21"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -50,10 +51,9 @@
     "tgpsc": {
       "name": "Telangana Public Service Commission",
       "url": "https://www.tgpsc.gov.in/",
-      "status": "unreachable",
-      "fingerprint": "a43555e0d622b676a36cd290a0ce061d86a25300a5a1a69ab13c70f90ee7db5a",
-      "last_change_or_status_date": "2026-11-17",
-      "note": "Could not check: HTTP 403 (remote server blocked or rejected request); not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "510b3bec89605dae6ed631fa77bb22bd895e6b87a01702dfa6d5a7b4dea99e2a",
+      "last_change_or_status_date": "2026-11-21"
     },
     "ctet": {
       "name": "Central Teacher Eligibility Test",
@@ -66,8 +66,8 @@
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "f136bac2d11ccd8f5b74a46e45db252cc26630494cfd2504d9960af21beda571",
-      "last_change_or_status_date": "2026-11-20"
+      "fingerprint": "7c7c1c7c15fecb40509f725362748f1a44913af9cc70dd23963723fdd77f42bd",
+      "last_change_or_status_date": "2026-11-21"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
