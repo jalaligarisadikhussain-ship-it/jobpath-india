@@ -20,17 +20,16 @@
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
-      "status": "unreachable",
-      "fingerprint": "7a7381afbaea1fe98e31a552a982495244fcaf77e7f09c26489cbd0e748ae9f8",
-      "last_change_or_status_date": "2026-11-21",
-      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
+      "status": "reachable",
+      "fingerprint": "b04918549dadabdf47e07e63636f8b0a36d66b841383dc0fdbbcccd41f17b885",
+      "last_change_or_status_date": "2026-11-22"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "9ced5f5d900787bc3316c84e7a0135212990675638b3c5782cf6de4a0d1806db",
-      "last_change_or_status_date": "2026-11-21"
+      "fingerprint": "a2e9a688a95e9caaa183c9bbeca4579362ed73ad7f241316920cfba977420f14",
+      "last_change_or_status_date": "2026-11-22"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -51,23 +50,24 @@
     "tgpsc": {
       "name": "Telangana Public Service Commission",
       "url": "https://www.tgpsc.gov.in/",
-      "status": "reachable",
+      "status": "unreachable",
       "fingerprint": "510b3bec89605dae6ed631fa77bb22bd895e6b87a01702dfa6d5a7b4dea99e2a",
-      "last_change_or_status_date": "2026-11-21"
+      "last_change_or_status_date": "2026-11-22",
+      "note": "Could not check: HTTP 403 (remote server blocked or rejected request); not proof of a closed recruitment"
     },
     "ctet": {
       "name": "Central Teacher Eligibility Test",
       "url": "https://ctet.nic.in/",
       "status": "reachable",
-      "fingerprint": "fce82b0cddd01b6327012bf31d00d0277b4a44fc7d5e96807b808e38076eacec",
-      "last_change_or_status_date": "2026-11-19"
+      "fingerprint": "cf0b4711f64d540d54a101e1dc7a92e5011bf43e342a209d7142cded7602d6b8",
+      "last_change_or_status_date": "2026-11-22"
     },
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "7c7c1c7c15fecb40509f725362748f1a44913af9cc70dd23963723fdd77f42bd",
-      "last_change_or_status_date": "2026-11-21"
+      "fingerprint": "d5408c3f14a28b23dc10278e15b2f63cc5b01317a4ff03514b0d7d7fd134191e",
+      "last_change_or_status_date": "2026-11-22"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
