@@ -21,15 +21,15 @@
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
       "status": "reachable",
-      "fingerprint": "e9d68349a03f6ac10a788b47163268ae9bc5119839d65deeb58026bf8452b9c6",
-      "last_change_or_status_date": "2026-11-24"
+      "fingerprint": "7407932fa9bf1dad2c2485cf47cf1d679f8ab77cf845b4a8710ce11892639b13",
+      "last_change_or_status_date": "2026-11-25"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "f80d46636f16745b4420cdbd99496d49218497fe0e7da943d4df211e65327a15",
-      "last_change_or_status_date": "2026-11-24"
+      "fingerprint": "092704aca9d310ae10ab305545ef4a58662c928cd354eb1ab4ecfead83196d79",
+      "last_change_or_status_date": "2026-11-25"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -59,15 +59,15 @@
       "name": "Central Teacher Eligibility Test",
       "url": "https://ctet.nic.in/",
       "status": "reachable",
-      "fingerprint": "f98edea2a2163a08b3d52c5514fb0c94c84554b0bf0a0f06e003d46578d4d475",
-      "last_change_or_status_date": "2026-11-24"
+      "fingerprint": "d81b5db64a4b63ae4708feccd7ddf620d4486f1a5acd78d90214d80d34f9b3dd",
+      "last_change_or_status_date": "2026-11-25"
     },
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
       "status": "reachable",
-      "fingerprint": "93e7496d34352d059d698dae3a8718ecaee1f9430b24a6c7e8aacd955c4695f1",
-      "last_change_or_status_date": "2026-11-24"
+      "fingerprint": "742ecf24040fefaa57e98a9f8648646ac936ff2eeddd837a5f97fe97609c8ca3",
+      "last_change_or_status_date": "2026-11-25"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
