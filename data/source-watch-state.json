@@ -20,16 +20,17 @@
     "ibps": {
       "name": "Institute of Banking Personnel Selection (IBPS)",
       "url": "https://www.ibps.in/",
-      "status": "reachable",
+      "status": "unreachable",
       "fingerprint": "7407932fa9bf1dad2c2485cf47cf1d679f8ab77cf845b4a8710ce11892639b13",
-      "last_change_or_status_date": "2026-11-25"
+      "last_change_or_status_date": "2026-11-26",
+      "note": "Could not check: network/DNS/TLS error (SSLError); not proof of a closed recruitment"
     },
     "sbi": {
       "name": "State Bank of India Careers",
       "url": "https://sbi.co.in/web/careers",
       "status": "reachable",
-      "fingerprint": "092704aca9d310ae10ab305545ef4a58662c928cd354eb1ab4ecfead83196d79",
-      "last_change_or_status_date": "2026-11-25"
+      "fingerprint": "1c3743af2ca79da92a4733e05a47943c1daa0a9a4f3fc040e32fb1b5fa2ad58a",
+      "last_change_or_status_date": "2026-11-26"
     },
     "rrb": {
       "name": "Railway Recruitment Board Chandigarh",
@@ -44,8 +45,8 @@
       "url": "https://portal-psc.ap.gov.in/HomePages/RecruitmentNotifications",
       "status": "unreachable",
       "fingerprint": null,
-      "last_change_or_status_date": "2026-11-23",
-      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
+      "last_change_or_status_date": "2026-11-26",
+      "note": "Could not check: network/DNS/TLS error (gaierror); not proof of a closed recruitment"
     },
     "tgpsc": {
       "name": "Telangana Public Service Commission",
@@ -59,15 +60,16 @@
       "name": "Central Teacher Eligibility Test",
       "url": "https://ctet.nic.in/",
       "status": "reachable",
-      "fingerprint": "d81b5db64a4b63ae4708feccd7ddf620d4486f1a5acd78d90214d80d34f9b3dd",
-      "last_change_or_status_date": "2026-11-25"
+      "fingerprint": "91315f66fb70365a75fefd75e20474d713d0c795a771eee260a0b867ac9d8dfe",
+      "last_change_or_status_date": "2026-11-26"
     },
     "kvs": {
       "name": "Kendriya Vidyalaya Sangathan",
       "url": "https://kvsangathan.nic.in/",
-      "status": "reachable",
+      "status": "unreachable",
       "fingerprint": "742ecf24040fefaa57e98a9f8648646ac936ff2eeddd837a5f97fe97609c8ca3",
-      "last_change_or_status_date": "2026-11-25"
+      "last_change_or_status_date": "2026-11-26",
+      "note": "Could not check: network/DNS/TLS error (SSLCertVerificationError); not proof of a closed recruitment"
     },
     "nvs": {
       "name": "Navodaya Vidyalaya Samiti",
